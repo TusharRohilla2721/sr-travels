@@ -46,11 +46,11 @@ const GALLERY_DATA = {
   ],
 }
 
-const TABS   = ['all','fleet','services','festivals','destination','staff']
-const WIDTHS = ['12%','19%','15%','22%','16%','16%']
-const RATIOS = ['2/3','4/5','1/1','3/4','4/5','2/3']
+const TABS = ['all', 'fleet', 'services', 'festivals', 'destination', 'staff']
+const WIDTHS = ['12%', '19%', '15%', '22%', '16%', '16%']
+const RATIOS = ['2/3', '4/5', '1/1', '3/4', '4/5', '2/3']
 const SPEEDS = [24, 19, 22, 17, 25, 20]
-const DIRS   = ['gdn','gup','gdn','gup','gdn','gup']
+const DIRS = ['gdn', 'gup', 'gdn', 'gup', 'gdn', 'gup']
 
 function buildStrip(imgs) {
   const set = Array.from({ length: 20 }, (_, j) => imgs[j % imgs.length])
@@ -58,12 +58,12 @@ function buildStrip(imgs) {
 }
 
 export default function Galleria() {
-  const [cat, setCat]       = useState('all')
+  const [cat, setCat] = useState('all')
   const [dissolve, setDissolve] = useState(false)
-  const [imgs, setImgs]     = useState(() => buildStrip(GALLERY_DATA.all))
-  const [lb, setLb]         = useState(null)
-  const stripsRef           = useRef(null)
-  const wrapRef             = useRef(null)
+  const [imgs, setImgs] = useState(() => buildStrip(GALLERY_DATA.all))
+  const [lb, setLb] = useState(null)
+  const stripsRef = useRef(null)
+  const wrapRef = useRef(null)
 
   const changeCat = (next) => {
     if (next === cat) return
@@ -77,13 +77,13 @@ export default function Galleria() {
 
 
   useEffect(() => {
-    const wrap   = wrapRef.current
+    const wrap = wrapRef.current
     const strips = stripsRef.current
     if (!wrap || !strips) return
     const onMove = e => {
-      const r  = wrap.getBoundingClientRect()
-      const nx = (e.clientX - r.left) / r.width  - 0.5
-      const ny = (e.clientY - r.top)  / r.height - 0.5
+      const r = wrap.getBoundingClientRect()
+      const nx = (e.clientX - r.left) / r.width - 0.5
+      const ny = (e.clientY - r.top) / r.height - 0.5
       strips.style.transform = `rotateX(${ny * -6}deg) rotateY(${nx * 6}deg)`
     }
     const onLeave = () => { strips.style.transform = 'rotateX(0deg) rotateY(0deg)' }
@@ -105,16 +105,17 @@ export default function Galleria() {
         @keyframes gdn { from { transform: translateY(-50%); } to { transform: translateY(0%); } }
         @keyframes gup { from { transform: translateY(0%);   } to { transform: translateY(-50%); } }
         @keyframes lbIn { from { opacity:0; transform:scale(0.9); } to { opacity:1; transform:scale(1); } }
-        .gin-dissolve { opacity:0 !important; transform: scale(0.95) translateY(-50%) !important; transition: opacity 0.28s, transform 0.28s !important; }
-        .gin-show     { opacity:1 !important; transform: scale(1) !important; transition: opacity 0.32s, transform 0.32s !important; }
-      `}</style>
+        .gin-dissolve { opacity: 0 !important; transition: opacity 0.28s !important; }
+        .gin-show { opacity: 1 !important; transition: opacity 0.32s !important; }
+      `}
+      </style>
 
       <section id="galleria" style={{
         height: '100vh', overflow: 'hidden', background: 'var(--bg-darkest)',
         position: 'relative', display: 'flex', flexDirection: 'column',
         transition: 'background 0.4s'
       }}>
-        {}
+        { }
         <div style={{
           position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10,
           display: 'flex', justifyContent: 'space-between', alignItems: 'center',
@@ -144,7 +145,7 @@ export default function Galleria() {
           </div>
         </div>
 
-        {}
+        { }
         <div ref={wrapRef} style={{
           flex: 1, perspective: '900px', perspectiveOrigin: '50% 50%',
           padding: '20px', overflow: 'hidden'
@@ -189,7 +190,7 @@ export default function Galleria() {
         </div>
       </section>
 
-      {}
+      { }
       {lb && (
         <div onClick={() => setLb(null)} style={{
           position: 'fixed', inset: 0, zIndex: 9990,
