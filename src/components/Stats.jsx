@@ -1,58 +1,84 @@
 import { useEffect, useRef } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+
 gsap.registerPlugin(ScrollTrigger)
 
 const STATS = [
-  { count: 100, suffix: '+', label: 'Happy Clients'       },
-  { count: 50,  suffix: '+', label: 'Tour Packages'       },
-  { count: 100, suffix: '+', label: 'Destinations Covered'},
-  { count: 25,  suffix: '+', label: 'Years of Excellence' },
+  { count: 100, suffix: '+', label: 'Happy Clients' },
+  { count: 50, suffix: '+', label: 'Tour Packages' },
+  { count: 100, suffix: '+', label: 'Destinations Covered' },
+  { count: 25, suffix: '+', label: 'Years of Excellence' },
 ]
 
 export default function Stats() {
-  const blockRefs = useRef([])
-  const numRefs   = useRef([])
+  const sectionRef = useRef(null)
+  const numbersRef = useRef([])
 
   useEffect(() => {
-    gsap.from(blockRefs.current, {
-      opacity: 0, y: 30, duration: 0.8, stagger: 0.15, ease: 'power3.out',
-      scrollTrigger: { trigger: blockRefs.current[0], start: 'top 80%' }
-    })
-
-    numRefs.current.forEach((el, i) => {
-      if (!el) return
-      const { count, suffix } = STATS[i]
-      ScrollTrigger.create({
-        trigger: el, start: 'top 80%', once: true,
-        onEnter() {
-          gsap.from({ val: 0 }, {
-            val: count, duration: 2.5, ease: 'power2.out',
-            onUpdate() { el.textContent = Math.round(this.targets()[0].val) + suffix }
-          })
+    const ctx = gsap.context(() => {
+      gsap.from(".stat-item", {
+        opacity: 0,
+        y: 40,
+        duration: 1,
+        stagger: 0.2,
+        ease: "power4.out",
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top 80%",
         }
       })
-    })
+
+      numbersRef.current.forEach((el, i) => {
+        if (!el) return
+        gsap.to({ val: 0 }, {
+          val: STATS[i].count,
+          duration: 2,
+          scrollTrigger: {
+            trigger: el,
+            start: "top 90%",
+            once: true
+          },
+          onUpdate: function () {
+            el.textContent = Math.round(this.targets()[0].val) + STATS[i].suffix
+          }
+        })
+      })
+    }, sectionRef)
+
+    return () => ctx.revert()
   }, [])
 
   return (
-    <section id="stats" style={{
-      background: 'var(--stat-bg)', padding: '6rem 4rem', transition: 'background 0.4s'
-    }}>
+    <section ref={sectionRef} style={{ padding: '8rem 2rem', background: '#0a0a0a' }}>
       <div style={{
-        display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '2rem', textAlign: 'center'
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+        gap: '3rem',
+        maxWidth: '1200px',
+        margin: '0 auto'
       }}>
         {STATS.map((s, i) => (
-          <div key={i} ref={el => blockRefs.current[i] = el} className="stat-block">
-            <div ref={el => numRefs.current[i] = el} style={{
-              fontFamily: 'Cormorant Garamond, serif',
-              fontSize: 'clamp(3rem, 5vw, 4.5rem)', fontWeight: 300,
-              color: 'var(--stat-txt)', lineHeight: 1, marginBottom: '0.5rem'
-            }}>0{s.suffix}</div>
+          <div key={i} className="stat-item" style={{ textAlign: 'center' }}>
+            <div
+              ref={el => numbersRef.current[i] = el}
+              style={{
+                fontFamily: 'serif',
+                fontSize: '4rem',
+                color: '#ffffff',
+                marginBottom: '0.5rem'
+              }}
+            >
+              0{s.suffix}
+            </div>
             <p style={{
-              fontSize: '0.75rem', letterSpacing: '0.18em', textTransform: 'uppercase',
-              color: 'rgba(255,255,255,0.4)'
-            }}>{s.label}</p>
+              color: 'rgba(255,255,255,0.5)',
+              textTransform: 'uppercase',
+              letterSpacing: '2px',
+              fontSize: '0.8rem'
+            }}>
+              {s.label}
+            </p>
           </div>
         ))}
       </div>
