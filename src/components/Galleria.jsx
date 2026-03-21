@@ -107,6 +107,11 @@ export default function Galleria() {
         @keyframes lbIn { from { opacity:0; transform:scale(0.9); } to { opacity:1; transform:scale(1); } }
         .gin-dissolve { opacity: 0 !important; transition: opacity 0.28s !important; }
         .gin-show { opacity: 1 !important; transition: opacity 0.32s !important; }
+        @media (hover: hover) and (pointer: fine) {
+          .gin-wrap:hover .gin {
+            animation-play-state: paused !important;
+          }
+        }
       `}
       </style>
 
@@ -156,12 +161,10 @@ export default function Galleria() {
             willChange: 'transform'
           }}>
             {WIDTHS.map((w, si) => (
-              <div key={si} onMouseEnter={e => e.currentTarget.querySelector('.gin').style.animationPlayState = 'paused'}
-                onMouseLeave={e => e.currentTarget.querySelector('.gin').style.animationPlayState = 'running'}
-                style={{
-                  overflow: 'hidden', height: '100%', borderRadius: 8,
-                  flexShrink: 0, width: w, position: 'relative'
-                }}>
+              <div key={si} className="gin-wrap" style={{
+                overflow: 'hidden', height: '100%', borderRadius: 8,
+                flexShrink: 0, width: w, position: 'relative'
+              }}>
                 <div className={`gin ${dissolve ? 'gin-dissolve' : 'gin-show'}`} style={{
                   display: 'flex', flexDirection: 'column', gap: '20px',
                   animationName: DIRS[si],
