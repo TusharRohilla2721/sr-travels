@@ -5,7 +5,7 @@ gsap.registerPlugin(ScrollTrigger)
 
 function Card({ id, imgSrc, imgAlt, tag, title, subtitle, children }) {
   return (
-    <div id={id} style={{
+    <div id={id} className="deck-card" style={{
       position: 'absolute', left: '50%', top: '50%',
       width: 'min(860px, 86vw)', height: 'min(500px, 60vh)',
       display: 'grid', gridTemplateColumns: '1fr 1fr',
@@ -55,7 +55,7 @@ function Card({ id, imgSrc, imgAlt, tag, title, subtitle, children }) {
 }
 
 function Deck({ name, cards, outerHeight, bgIcon }) {
-  const outerRef  = useRef(null)
+  const outerRef = useRef(null)
   const stickyRef = useRef(null)
 
   useEffect(() => {
@@ -120,7 +120,7 @@ function Deck({ name, cards, outerHeight, bgIcon }) {
         position: 'sticky', top: 0, height: '100vh', overflow: 'hidden',
         background: '#181410'
       }}>
-        {}
+        { }
         <div style={{
           position: 'absolute', top: '50%', left: '50%',
           width: 420, height: 420, opacity: 0.055, pointerEvents: 'none', zIndex: 0,
@@ -130,7 +130,7 @@ function Deck({ name, cards, outerHeight, bgIcon }) {
           {bgIcon}
         </div>
 
-        {}
+        { }
         <div style={{
           position: 'absolute', inset: 0, zIndex: 1, pointerEvents: 'none',
           background: 'radial-gradient(ellipse 75% 75% at 50% 50%, transparent 45%, rgba(0,0,0,0.55))'
@@ -140,7 +140,7 @@ function Deck({ name, cards, outerHeight, bgIcon }) {
           <Card key={i} id={`${name}-c${i}`} {...card} />
         ))}
 
-        {}
+        { }
         <div style={{
           position: 'absolute', bottom: '2.5rem', left: '50%', transform: 'translateX(-50%)',
           zIndex: 30, fontSize: '0.65rem', letterSpacing: '0.25em', textTransform: 'uppercase',
@@ -155,27 +155,27 @@ function Deck({ name, cards, outerHeight, bgIcon }) {
 
 const SteeringWheel = (
   <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <circle cx="100" cy="100" r="88" stroke="white" strokeWidth="8"/>
-    <circle cx="100" cy="100" r="18" stroke="white" strokeWidth="6"/>
-    <line x1="100" y1="12" x2="100" y2="82" stroke="white" strokeWidth="5"/>
-    <line x1="100" y1="118" x2="100" y2="188" stroke="white" strokeWidth="5"/>
-    <line x1="12" y1="100" x2="82" y2="100" stroke="white" strokeWidth="5"/>
-    <line x1="118" y1="100" x2="188" y2="100" stroke="white" strokeWidth="5"/>
-    <line x1="37" y1="37" x2="87" y2="87" stroke="white" strokeWidth="4"/>
-    <line x1="113" y1="113" x2="163" y2="163" stroke="white" strokeWidth="4"/>
-    <line x1="163" y1="37" x2="113" y2="87" stroke="white" strokeWidth="4"/>
-    <line x1="87" y1="113" x2="37" y2="163" stroke="white" strokeWidth="4"/>
+    <circle cx="100" cy="100" r="88" stroke="white" strokeWidth="8" />
+    <circle cx="100" cy="100" r="18" stroke="white" strokeWidth="6" />
+    <line x1="100" y1="12" x2="100" y2="82" stroke="white" strokeWidth="5" />
+    <line x1="100" y1="118" x2="100" y2="188" stroke="white" strokeWidth="5" />
+    <line x1="12" y1="100" x2="82" y2="100" stroke="white" strokeWidth="5" />
+    <line x1="118" y1="100" x2="188" y2="100" stroke="white" strokeWidth="5" />
+    <line x1="37" y1="37" x2="87" y2="87" stroke="white" strokeWidth="4" />
+    <line x1="113" y1="113" x2="163" y2="163" stroke="white" strokeWidth="4" />
+    <line x1="163" y1="37" x2="113" y2="87" stroke="white" strokeWidth="4" />
+    <line x1="87" y1="113" x2="37" y2="163" stroke="white" strokeWidth="4" />
   </svg>
 )
 
 const Camera = (
   <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <rect x="20" y="60" width="160" height="110" rx="10" stroke="white" strokeWidth="7"/>
-    <rect x="30" y="40" width="50" height="25" rx="4" stroke="white" strokeWidth="5"/>
-    <rect x="148" y="44" width="22" height="18" rx="3" stroke="white" strokeWidth="5"/>
-    <circle cx="100" cy="118" r="38" stroke="white" strokeWidth="7"/>
-    <circle cx="100" cy="118" r="24" stroke="white" strokeWidth="5"/>
-    <circle cx="100" cy="118" r="9" stroke="white" strokeWidth="4"/>
+    <rect x="20" y="60" width="160" height="110" rx="10" stroke="white" strokeWidth="7" />
+    <rect x="30" y="40" width="50" height="25" rx="4" stroke="white" strokeWidth="5" />
+    <rect x="148" y="44" width="22" height="18" rx="3" stroke="white" strokeWidth="5" />
+    <circle cx="100" cy="118" r="38" stroke="white" strokeWidth="7" />
+    <circle cx="100" cy="118" r="24" stroke="white" strokeWidth="5" />
+    <circle cx="100" cy="118" r="9" stroke="white" strokeWidth="4" />
   </svg>
 )
 
@@ -268,7 +268,7 @@ export default function AboutDeck() {
         }
       `}</style>
 
-      {}
+      { }
       <div style={{ background: 'var(--bg-alt)', padding: '4rem 4rem 2rem', transition: 'background 0.4s' }}
         id="sunder-label">
         <span className="section-label">Meet the Founder</span>
@@ -287,7 +287,7 @@ export default function AboutDeck() {
       </div>
       <Deck name="sunder" cards={SUNDER_CARDS} outerHeight="200vh" bgIcon={SteeringWheel} />
 
-      {}
+      { }
       <div style={{ background: 'var(--bg)', padding: '4rem 4rem 2rem', transition: 'background 0.4s' }}
         id="tushar-label">
         <span className="section-label">🚌 Meet the CEO</span>

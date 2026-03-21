@@ -72,7 +72,7 @@ export default function FeedbackModal({ onClose }) {
       background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(6px)',
       display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem'
     }}>
-      <div onClick={e => e.stopPropagation()} style={{
+      <div className="feedback-modal-content" onClick={e => e.stopPropagation()} style={{
         background: 'var(--card-bg)', border: '1px solid var(--border)',
         borderRadius: 8, padding: '2.5rem', width: '100%', maxWidth: 560,
         maxHeight: '90vh', overflowY: 'auto', position: 'relative',
@@ -93,7 +93,7 @@ export default function FeedbackModal({ onClose }) {
         </p>
 
         <form onSubmit={handleSubmit}>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+          <div className="form-row" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
             <FIELD label="Your Name *">
               <input required value={form.name} onChange={e => set('name', e.target.value)}
                 placeholder="Rahul Verma" style={inputStyle} />
@@ -103,7 +103,7 @@ export default function FeedbackModal({ onClose }) {
                 placeholder="Delhi" style={inputStyle} />
             </FIELD>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+          <div className="form-row" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
             <FIELD label="State">
               <input value={form.state} onChange={e => set('state', e.target.value)}
                 placeholder="Delhi NCR" style={inputStyle} />
@@ -113,7 +113,7 @@ export default function FeedbackModal({ onClose }) {
                 onChange={e => set('journey_date', e.target.value)} style={inputStyle} />
             </FIELD>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+          <div className="form-row" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
             <FIELD label="Travelled From">
               <input value={form.from_city} onChange={e => set('from_city', e.target.value)}
                 placeholder="Gurgaon" style={inputStyle} />

@@ -2,11 +2,11 @@ import { useEffect, useRef } from 'react'
 import gsap from 'gsap'
 
 export default function Cursor() {
-  const dotRef  = useRef(null)
+  const dotRef = useRef(null)
   const ringRef = useRef(null)
 
   useEffect(() => {
-    const dot  = dotRef.current
+    const dot = dotRef.current
     const ring = ringRef.current
     if (!dot || !ring) return
 
@@ -29,11 +29,11 @@ export default function Cursor() {
 
     const grow = () => {
       gsap.to(ring, { width: 56, height: 56, duration: 0.3 })
-      gsap.to(dot,  { scale: 0.4, duration: 0.3 })
+      gsap.to(dot, { scale: 0.4, duration: 0.3 })
     }
     const shrink = () => {
       gsap.to(ring, { width: 36, height: 36, duration: 0.3 })
-      gsap.to(dot,  { scale: 1, duration: 0.3 })
+      gsap.to(dot, { scale: 1, duration: 0.3 })
     }
 
     const targets = 'a, button, .dest-card, .test-card, .why-card, .g-tag, .theme-toggle-btn, .travel-card, .g-img-v'
@@ -58,12 +58,12 @@ export default function Cursor() {
 
   return (
     <>
-      <div ref={dotRef} style={{
+      <div ref={dotRef} className="custom-dot" style={{
         width: 10, height: 10, background: 'var(--accent)', borderRadius: '50%',
         position: 'fixed', top: 0, left: 0, pointerEvents: 'none', zIndex: 9999,
         transform: 'translate(-50%,-50%)'
       }} />
-      <div ref={ringRef} style={{
+      <div ref={ringRef} className="custom-ring" style={{
         width: 36, height: 36, border: '1.5px solid var(--accent)', borderRadius: '50%',
         position: 'fixed', top: 0, left: 0, pointerEvents: 'none', zIndex: 9998,
         transition: 'width 0.3s, height 0.3s'

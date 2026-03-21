@@ -11,7 +11,7 @@ const sNav = id => document.getElementById(id)?.scrollIntoView({ behavior: 'smoo
 export default function Footer() {
   const navigate = useNavigate()
   const [form, setForm] = useState({ name: '', phone: '', message: '' })
-  const [msg, setMsg]   = useState(null)
+  const [msg, setMsg] = useState(null)
   const [loading, setLoading] = useState(false)
 
   const set = (k, v) => setForm(f => ({ ...f, [k]: v }))
@@ -61,7 +61,7 @@ export default function Footer() {
         display: 'grid', gridTemplateColumns: '1.8fr 1fr 1fr 1.5fr',
         gap: '3rem', marginBottom: '4rem'
       }}>
-        {}
+        { }
         <div>
           <div style={{
             fontFamily: 'Cormorant Garamond, serif', fontSize: '1.8rem',
@@ -78,7 +78,7 @@ export default function Footer() {
           </p>
         </div>
 
-        {}
+        { }
         <div>
           <p style={{
             fontSize: '0.68rem', letterSpacing: '0.25em', textTransform: 'uppercase',
@@ -86,22 +86,22 @@ export default function Footer() {
           }}>Explore</p>
           <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
             {[
-              ['About Us',      () => sNav('about-company')],
+              ['About Us', () => sNav('about-company')],
               ['Why Choose Us', () => sNav('why-us')],
               ['Tour Packages', () => navigate('/destinations')],
-              ['Stories',       () => sNav('stories')],
+              ['Stories', () => sNav('stories')],
             ].map(([label, action]) => (
               <li key={label}><a onClick={action} style={{
                 color: 'rgba(255,255,255,0.5)', fontSize: '0.86rem',
                 cursor: 'none', transition: 'color 0.3s'
               }}
-              onMouseEnter={e => e.currentTarget.style.color = 'var(--accent-lt)'}
-              onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.5)'}>{label}</a></li>
+                onMouseEnter={e => e.currentTarget.style.color = 'var(--accent-lt)'}
+                onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.5)'}>{label}</a></li>
             ))}
           </ul>
         </div>
 
-        {}
+        { }
         <div>
           <p style={{
             fontSize: '0.68rem', letterSpacing: '0.25em', textTransform: 'uppercase',
@@ -114,7 +114,7 @@ export default function Footer() {
           </ul>
         </div>
 
-        {}
+        { }
         <div>
           <p style={{
             fontFamily: 'Cormorant Garamond, serif', fontSize: '1.2rem',
@@ -148,9 +148,9 @@ export default function Footer() {
           </form>
 
           <div style={{ marginTop: '1.2rem', fontSize: '0.8rem', color: 'rgba(255,255,255,0.35)', lineHeight: 1.8 }}>
-            {}
-            📞 +91 XX XXXX XXXX<br />
-            ✉️ info@srtravels.com<br />
+            { }
+            📞 +91 8510062763<br />
+            ✉️ Info@Adminsrtravels4u.com<br />
             <a href={waLink('Hi SR Travels!')} target="_blank" rel="noopener"
               style={{ color: '#25D366', fontSize: '0.78rem', cursor: 'none' }}>
               💬 WhatsApp Us
@@ -159,7 +159,7 @@ export default function Footer() {
         </div>
       </div>
 
-      {}
+      { }
       <div style={{
         borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '1.5rem',
         display: 'flex', justifyContent: 'space-between', alignItems: 'center'
