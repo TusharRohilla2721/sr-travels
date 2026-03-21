@@ -211,7 +211,7 @@ const SUNDER_CARDS = [
 
 const TUSHAR_CARDS = [
   {
-    imgSrc: 'https://images.unsplash.com/photo-1556157382-97eda2f9e2bf?w=800&q=80',
+    imgSrc: 'https://res.cloudinary.com/dzadpggxn/image/upload/v1774124348/CEO_1_ygojhd.jpg',
     imgAlt: 'Tushar Rohilla',
     tag: 'Chapter 01 · Introduction',
     title: 'The Heart Behind SR Travels',
@@ -221,7 +221,7 @@ const TUSHAR_CARDS = [
     )
   },
   {
-    imgSrc: 'https://images.unsplash.com/photo-1527689368864-3a821dbccc34?w=800&q=80',
+    imgSrc: 'https://res.cloudinary.com/dzadpggxn/image/upload/v1774131690/CEO_2_a5rhr0.jpg',
     imgAlt: 'Ground Level Work',
     tag: 'Chapter 02 · Ground Up',
     title: 'Why I Started From the Ground',
@@ -231,7 +231,7 @@ const TUSHAR_CARDS = [
     )
   },
   {
-    imgSrc: 'https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=800&q=80',
+    imgSrc: 'https://res.cloudinary.com/dzadpggxn/image/upload/v1774131722/CEO_3_xzc1oa.jpg',
     imgAlt: 'Office Work',
     tag: 'Chapter 03 · The Office',
     title: 'Moving to the Office',
@@ -244,7 +244,7 @@ const TUSHAR_CARDS = [
     )
   },
   {
-    imgSrc: 'https://images.unsplash.com/photo-1524492412937-b28074a5d7da?w=800&q=80',
+    imgSrc: 'https://res.cloudinary.com/dzadpggxn/image/upload/v1774131677/CEO_4_sfaigp.jpg',
     imgAlt: 'Pan-India Vision',
     tag: 'Chapter 04 · The Vision',
     title: 'Our Goal — Pan India',
