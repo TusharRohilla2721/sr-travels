@@ -4,8 +4,19 @@ import { useNavigate } from 'react-router-dom'
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const [isDarkMode, setIsDarkMode] = useState(true) // <-- Replace with your actual theme state/context
+
+  // 1. Set to TRUE so your Dark/Green theme is the default!
+  const [isDarkMode, setIsDarkMode] = useState(true)
   const navigate = useNavigate()
+
+  // 2. THE MAGIC TOGGLE: This physically changes the CSS class on the website body
+  useEffect(() => {
+    if (isDarkMode) {
+      document.body.classList.remove('light-mode')
+    } else {
+      document.body.classList.add('light-mode')
+    }
+  }, [isDarkMode])
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 50)
@@ -72,12 +83,12 @@ export default function Navbar() {
               key={link.name}
               onClick={() => handleNav(link.id)}
               style={{
-                background: 'none', border: 'none', color: 'rgba(255,255,255,0.7)',
+                background: 'none', border: 'none', color: 'var(--text)',
                 fontSize: '0.8rem', letterSpacing: '0.15em', textTransform: 'uppercase',
-                cursor: 'pointer', transition: 'color 0.3s'
+                cursor: 'pointer', transition: 'color 0.3s', opacity: 0.7
               }}
-              onMouseEnter={e => e.currentTarget.style.color = 'var(--accent)'}
-              onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.7)'}
+              onMouseEnter={e => { e.currentTarget.style.color = 'var(--accent)'; e.currentTarget.style.opacity = 1; }}
+              onMouseLeave={e => { e.currentTarget.style.color = 'var(--text)'; e.currentTarget.style.opacity = 0.7; }}
             >
               {link.name}
             </button>
@@ -87,17 +98,17 @@ export default function Navbar() {
           </button>
         </div>
 
-        {/* RIGHT SIDE CONTROLS (Always Visible) */}
+        {/* RIGHT SIDE CONTROLS */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '1.2rem', zIndex: 10000 }}>
 
           {/* THEME TOGGLE BUTTON */}
           <button
-            onClick={() => setIsDarkMode(!isDarkMode)} // Hook your theme logic here!
+            onClick={() => setIsDarkMode(!isDarkMode)}
             style={{
-              background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)',
+              background: 'rgba(150,150,150,0.1)', border: '1px solid rgba(150,150,150,0.2)',
               width: 36, height: 36, borderRadius: '50%', display: 'flex',
               alignItems: 'center', justifyContent: 'center', cursor: 'pointer',
-              fontSize: '1.1rem', transition: 'background 0.3s'
+              fontSize: '1.1rem', transition: 'background 0.3s', color: 'var(--text)'
             }}
           >
             {isDarkMode ? '🌙' : '☀️'}
@@ -133,10 +144,8 @@ export default function Navbar() {
       {/* FULL SCREEN MOBILE OVERLAY */}
       <div style={{
         position: 'fixed', inset: 0, zIndex: 9998,
-        background: 'rgba(10, 9, 8, 0.98)', backdropFilter: 'blur(15px)',
-        WebkitBackdropFilter: 'blur(15px)',
+        background: 'var(--bg-darkest)', opacity: 0.98,
         display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center',
-        opacity: mobileMenuOpen ? 1 : 0,
         visibility: mobileMenuOpen ? 'visible' : 'hidden',
         transform: mobileMenuOpen ? 'translateY(0)' : 'translateY(-20px)',
         transition: 'all 0.4s cubic-bezier(0.16, 1, 0.3, 1)'
