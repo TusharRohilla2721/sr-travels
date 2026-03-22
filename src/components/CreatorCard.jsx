@@ -116,7 +116,7 @@ export default function CreatorCard() {
               }}>
                 { }
                 <img
-                  src="https://res.cloudinary.com/dzadpggxn/image/upload/v1774178450/IMG_20260101_132726_hncozx.jpg"
+                  src="https://res.cloudinary.com/dzadpggxn/image/upload/q_auto,f_auto,w_800/v1774178450/IMG_20260101_132726_hncozx.jpg"
                   alt="Tanishq Panwar"
                   style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                 />

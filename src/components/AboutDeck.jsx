@@ -115,7 +115,7 @@ function Deck({ name, cards, outerHeight, bgIcon }) {
       })
     }, containerRef)
     return () => ctx.revert()
-  }, []) // <--- BINGO! Changed from [isMobile] to []
+  }, [])
 
   return (
     <div ref={el => { outerRef.current = el; containerRef.current = el }} style={{ height: outerHeight, position: 'relative' }}>
@@ -181,7 +181,7 @@ const Camera = (
 
 const SUNDER_CARDS = [
   {
-    imgSrc: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=800&q=80',
+    imgSrc: 'https://res.cloudinary.com/dzadpggxn/image/upload/q_auto,f_auto,w_800/v1774181543/WhatsApp_Image_2026-03-22_at_5.37.07_PM_xdlpsj.jpg',
     imgAlt: 'Sunder Rohilla',
     tag: 'Chapter 01 · The Visionary',
     title: 'The Heart Behind the Wheel',
@@ -195,7 +195,7 @@ const SUNDER_CARDS = [
     )
   },
   {
-    imgSrc: 'https://images.unsplash.com/photo-1553484771-047a44eee27b?w=800&q=80',
+    imgSrc: 'https://res.cloudinary.com/dzadpggxn/image/upload/q_auto,f_auto,w_800/v1774181419/WhatsApp_Image_2026-03-22_at_5.37.46_PM_qs5upc.jpg',
     imgAlt: 'The Hustle',
     tag: 'Chapter 02 · The Hustle',
     title: 'Struggle, Grit & Legacy',
@@ -211,7 +211,7 @@ const SUNDER_CARDS = [
 
 const TUSHAR_CARDS = [
   {
-    imgSrc: 'https://res.cloudinary.com/dzadpggxn/image/upload/v1774124348/CEO_1_ygojhd.jpg',
+    imgSrc: 'https://res.cloudinary.com/dzadpggxn/image/upload/q_auto,f_auto,w_800/v1774124348/CEO_1_ygojhd.jpg',
     imgAlt: 'Tushar Rohilla',
     tag: 'Chapter 01 · Introduction',
     title: 'The Heart Behind SR Travels',
@@ -221,7 +221,7 @@ const TUSHAR_CARDS = [
     )
   },
   {
-    imgSrc: 'https://res.cloudinary.com/dzadpggxn/image/upload/v1774131690/CEO_2_a5rhr0.jpg',
+    imgSrc: 'https://res.cloudinary.com/dzadpggxn/image/upload/q_auto,f_auto,w_800/v1774131690/CEO_2_a5rhr0.jpg',
     imgAlt: 'Ground Level Work',
     tag: 'Chapter 02 · Ground Up',
     title: 'Why I Started From the Ground',
@@ -231,7 +231,7 @@ const TUSHAR_CARDS = [
     )
   },
   {
-    imgSrc: 'https://res.cloudinary.com/dzadpggxn/image/upload/v1774131722/CEO_3_xzc1oa.jpg',
+    imgSrc: 'https://res.cloudinary.com/dzadpggxn/image/upload/q_auto,f_auto,w_800/v1774131722/CEO_3_xzc1oa.jpg',
     imgAlt: 'Office Work',
     tag: 'Chapter 03 · The Office',
     title: 'Moving to the Office',
@@ -244,7 +244,7 @@ const TUSHAR_CARDS = [
     )
   },
   {
-    imgSrc: 'https://res.cloudinary.com/dzadpggxn/image/upload/v1774131677/CEO_4_sfaigp.jpg',
+    imgSrc: 'https://res.cloudinary.com/dzadpggxn/image/upload/q_auto,f_auto,w_800/v1774131677/CEO_4_sfaigp.jpg',
     imgAlt: 'Pan-India Vision',
     tag: 'Chapter 04 · The Vision',
     title: 'Our Goal — Pan India',

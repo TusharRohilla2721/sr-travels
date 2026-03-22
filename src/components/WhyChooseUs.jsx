@@ -65,7 +65,6 @@ function WCard({ card }) {
       transition: 'background 0.4s, border-color 0.4s',
       willChange: 'transform, opacity'
     }}>
-
       <div id={`${card.id}-scrim`} style={{
         position: 'absolute', inset: 0, zIndex: 3, borderRadius: 14,
         background: 'rgba(0,0,0,0)', pointerEvents: 'none', willChange: 'opacity'
@@ -77,6 +76,7 @@ function WCard({ card }) {
           filter: 'grayscale(1) contrast(1.1) brightness(0.9)'
         }} />
       </div>
+
       <div style={{
         padding: '2.4rem 2.8rem', display: 'flex', flexDirection: 'column',
         justifyContent: 'center', position: 'relative', overflow: 'hidden',
@@ -113,21 +113,23 @@ function WCard({ card }) {
 }
 
 export default function WhyChooseUs() {
-  const outerRef = useRef(null)
-  const innerRef = useRef(null)
+  const containerRef = useRef(null)
 
   useEffect(() => {
     const ctx = gsap.context(() => {
       const cardEls = CARDS.map(c => document.getElementById(c.id))
       const scrimEls = CARDS.map(c => document.getElementById(`${c.id}-scrim`))
+
       cardEls.forEach((c, i) => {
         if (!c) return
         c.style.transform = ''
         gsap.set(c, { y: i === 0 ? 0 : '110%', scale: 1, opacity: 1, zIndex: 100 + i })
         gsap.set(scrimEls[i], { opacity: 0 })
       })
+
       const GAP = 28
       const tl = gsap.timeline({ defaults: { ease: 'none' } })
+
       for (let i = 1; i < CARDS.length; i++) {
         const pos = i - 1
         tl.to(cardEls[i], { y: 0, duration: 1 }, pos)
@@ -146,42 +148,41 @@ export default function WhyChooseUs() {
         }
       }
       ScrollTrigger.create({
-        trigger: outerRef.current,
+        trigger: containerRef.current,
         start: 'top top',
-        end: 'bottom bottom',
+        end: '+=300%',
+        pin: true,
         scrub: 1,
         animation: tl
       })
 
-    }, outerRef)
+    }, containerRef)
     return () => ctx.revert()
   }, [])
 
   return (
-    <div ref={outerRef} id="why-us-outer" style={{ height: '400vh', position: 'relative' }}>
-      <section ref={innerRef} id="why-us" style={{
-        position: 'sticky', top: 0, height: '100vh', overflow: 'hidden',
-        background: 'var(--bg)', display: 'flex', width: '100%',
-        flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-        transition: 'background 0.4s'
+    <section ref={containerRef} id="why-us" style={{
+      height: '100vh', overflow: 'hidden', width: '100%',
+      background: 'var(--bg)', display: 'flex',
+      flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+      transition: 'background 0.4s'
+    }}>
+      <div style={{
+        position: 'absolute', top: '2.5rem', left: '50%',
+        transform: 'translateX(-50%)', zIndex: 50,
+        textAlign: 'center', pointerEvents: 'none', whiteSpace: 'nowrap'
       }}>
-        <div style={{
-          position: 'absolute', top: '2.5rem', left: '50%',
-          transform: 'translateX(-50%)', zIndex: 50,
-          textAlign: 'center', pointerEvents: 'none', whiteSpace: 'nowrap'
-        }}>
-          <span className="section-label">Our Promise</span>
-          <h2 className="section-title">Why Choose <em>SR Travels?</em></h2>
-        </div>
+        <span className="section-label">Our Promise</span>
+        <h2 className="section-title">Why Choose <em>SR Travels?</em></h2>
+      </div>
 
-        <div style={{
-          position: 'relative',
-          width: 'min(960px, 90vw)', height: 'min(480px, 58vh)',
-          clipPath: 'inset(-200px -20px 0 -20px)'
-        }}>
-          {CARDS.map(card => <WCard key={card.id} card={card} />)}
-        </div>
-      </section>
-    </div>
+      <div style={{
+        position: 'relative',
+        width: 'min(960px, 90vw)', height: 'min(480px, 58vh)',
+        clipPath: 'inset(-200px -20px 0 -20px)'
+      }}>
+        {CARDS.map(card => <WCard key={card.id} card={card} />)}
+      </div>
+    </section>
   )
 }
