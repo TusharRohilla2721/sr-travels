@@ -126,7 +126,7 @@ export default function Hero() {
           }} />
         </div>
 
-        <div ref={badgeRef} style={{
+        <div ref={badgeRef} className="hero-badge" style={{
           position: 'absolute', bottom: '3rem', left: '50%',
           transform: 'translateX(-50%) translateY(20px)',
           zIndex: 3, background: 'var(--card-bg)', backdropFilter: 'blur(8px)',

@@ -56,12 +56,14 @@ const CARDS = [
 
 function WCard({ card }) {
   return (
-    <div id={card.id} style={{
+    <div id={card.id} className="w-card" style={{
       position: 'absolute', inset: 0,
       display: 'grid', gridTemplateColumns: '340px 1fr',
       borderRadius: 14, overflow: 'hidden',
       background: 'var(--card-bg)', border: '1px solid var(--border)',
       boxShadow: '0 8px 40px rgba(0,0,0,0.1)',
+      backdropFilter: 'blur(24px)',
+      WebkitBackdropFilter: 'blur(24px)',
       transition: 'background 0.4s, border-color 0.4s',
       willChange: 'transform, opacity'
     }}>
@@ -70,19 +72,19 @@ function WCard({ card }) {
         background: 'rgba(0,0,0,0)', pointerEvents: 'none', willChange: 'opacity'
       }} />
 
-      <div style={{ position: 'relative', overflow: 'hidden', borderRadius: '14px 0 0 14px', zIndex: 1 }}>
+      <div className="w-card-img" style={{ position: 'relative', overflow: 'hidden', zIndex: 1 }}>
         <img src={card.img} alt={card.title} loading="lazy" style={{
           width: '100%', height: '100%', objectFit: 'cover', display: 'block',
           filter: 'grayscale(1) contrast(1.1) brightness(0.9)'
         }} />
       </div>
 
-      <div style={{
+      <div className="w-card-text" style={{
         padding: '2.4rem 2.8rem', display: 'flex', flexDirection: 'column',
-        justifyContent: 'center', position: 'relative', overflow: 'hidden',
-        borderRadius: '0 14px 14px 0', zIndex: 1
+        justifyContent: 'center', position: 'relative', overflowY: 'auto',
+        zIndex: 1
       }}>
-        <div style={{
+        <div className="w-card-num" style={{
           fontFamily: 'Cormorant Garamond, serif',
           fontSize: '3.2rem', fontWeight: 300, color: 'var(--border)',
           lineHeight: 1, marginBottom: '0.4rem'

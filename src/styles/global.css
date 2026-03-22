@@ -473,26 +473,6 @@ body,
   }
 }
 
-/* 5. ABOUT DECK CARDS FIX (Stop image cutting off) */
-@media (max-width: 768px) {
-  .deck-card {
-    width: 92vw !important;
-    height: 75vh !important;
-    min-height: auto !important;
-  }
-
-  .deck-card>div:first-child {
-    height: 35% !important;
-    /* Image gets top 35% of the card */
-  }
-
-  .deck-card>div:last-child {
-    height: 65% !important;
-    /* Text gets bottom 65% */
-    padding: 1.5rem !important;
-  }
-}
-
 /* 6. NAVBAR EMERGENCY FIX (Assuming standard <nav> or header) */
 @media (max-width: 850px) {
 
@@ -524,5 +504,93 @@ body,
   .custom-dot,
   .custom-ring {
     display: none !important;
+  }
+}
+
+@media (max-width: 768px) {
+
+  /* Shrink the Hero 25+ Badge */
+  .hero-badge {
+    padding: 0.6rem 1.2rem !important;
+    min-width: 140px !important;
+    bottom: 1.5rem !important;
+    /* Move it slightly lower so it doesn't block the image */
+  }
+
+  .hero-badge>div:first-child {
+    font-size: 1.4rem !important;
+    /* Smaller number */
+  }
+
+  .hero-badge>p {
+    font-size: 0.55rem !important;
+    /* Smaller text */
+  }
+
+  /* Fix the AboutDeck Cards (No more dark voids!) */
+  .deck-card {
+    width: 90vw !important;
+    height: 75vh !important;
+    grid-template-columns: 1fr !important;
+    /* Force a single column */
+    grid-template-rows: 40% 60% !important;
+    /* 40% image top, 60% text bottom */
+  }
+
+  .deck-card>div:first-child {
+    height: 100% !important;
+    width: 100% !important;
+  }
+
+  .deck-card>div:last-child {
+    height: 100% !important;
+    padding: 1.5rem !important;
+    justify-content: flex-start !important;
+    /* Forces text to start at the top, removing the void */
+  }
+
+  /* Shrink the headings inside the card slightly to fit phone screens better */
+  .deck-card h2 {
+    font-size: 1.6rem !important;
+  }
+}
+
+/*. WHY CHOOSE US CARDS MOBILE FIX */
+@media (max-width: 768px) {
+  .w-card {
+    grid-template-columns: 1fr !important;
+    grid-template-rows: 35% 65% !important;
+    /* 35% Image, 65% Text */
+    background: var(--bg) !important;
+    /* Solid fallback block */
+  }
+
+  .w-card-img {
+    border-radius: 14px 14px 0 0 !important;
+  }
+
+  .w-card-text {
+    padding: 1.5rem 1.2rem !important;
+    justify-content: flex-start !important;
+    /* Align text to top */
+    border-radius: 0 0 14px 14px !important;
+  }
+
+  .w-card-num {
+    font-size: 2.2rem !important;
+    /* Shrink giant number */
+    margin-bottom: 0.2rem !important;
+  }
+
+  .w-card-text h3 {
+    font-size: 1.3rem !important;
+    margin-bottom: 0.4rem !important;
+  }
+
+  .w-card-text p,
+  .w-card-text li {
+    font-size: 0.75rem !important;
+    /* Shrink text to fit */
+    line-height: 1.5 !important;
   }
 }
