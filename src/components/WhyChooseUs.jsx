@@ -171,7 +171,7 @@ export default function WhyChooseUs() {
       })
     }, containerRef)
     return () => ctx.revert()
-  }, [isMobile])
+  }, [])
 
   return (
     <div ref={containerRef} id="why-us-outer" style={{ height: '250vh' }}>
