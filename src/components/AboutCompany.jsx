@@ -51,7 +51,6 @@ export default function AboutCompany() {
       </div>
 
       <div ref={imgRef} style={{ position: 'relative', borderRadius: 4, overflow: 'hidden', aspectRatio: isMobile ? '3/2' : '4/5' }}>
-        {dzadpggxn}
         <img
           src="https://res.cloudinary.com/dzadpggxn/image/upload/v1774166640/WhatsApp_Image_2026-03-06_at_12.21.54_AM_zagne4.jpg"
           alt="SR Travels Luxury Bus Service"

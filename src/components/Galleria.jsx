@@ -120,7 +120,6 @@ export default function Galleria() {
         position: 'relative', display: 'flex', flexDirection: 'column',
         transition: 'background 0.4s'
       }}>
-        { }
         <div style={{
           position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10,
           display: 'flex', justifyContent: 'space-between', alignItems: 'center',
@@ -150,7 +149,6 @@ export default function Galleria() {
           </div>
         </div>
 
-        { }
         <div ref={wrapRef} style={{
           flex: 1, perspective: '900px', perspectiveOrigin: '50% 50%',
           padding: '20px', overflow: 'hidden'
@@ -193,7 +191,6 @@ export default function Galleria() {
         </div>
       </section>
 
-      { }
       {lb && (
         <div onClick={() => setLb(null)} style={{
           position: 'fixed', inset: 0, zIndex: 9990,
