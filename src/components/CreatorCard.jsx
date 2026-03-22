@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-const MY_WA = '91XXXXXXXXXX'
+const MY_WA = '919718771255'
 
 const TECH = [
   { cat: 'Frontend', items: ['React', 'HTML', 'CSS', 'JavaScript'] },
@@ -116,7 +116,7 @@ export default function CreatorCard() {
               }}>
                 { }
                 <img
-                  src="https://ui-avatars.com/api/?name=Tanishq+Panwar&background=c4622d&color=fff&size=110"
+                  src="https://res.cloudinary.com/dzadpggxn/image/upload/v1774178450/IMG_20260101_132726_hncozx.jpg"
                   alt="Tanishq Panwar"
                   style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                 />
