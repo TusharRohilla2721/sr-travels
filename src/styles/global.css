@@ -16,12 +16,12 @@
   --border: rgba(34, 197, 94, 0.2);
   --card-bg: rgba(255, 255, 255, 0.04);
   --card-bg-solid: #0b2214;
-  /* Fixes X-ray bleed */
   --gold: #86efac;
   --nav-bg: rgba(7, 26, 12, 0.85);
+  --tag-bg: rgba(34, 197, 94, 0.08);
 }
 
-/* WARM / TAN THEME */
+/* WARM / LIGHT THEME */
 [data-theme="warm"] {
   --bg: #faf8f4;
   --bg-alt: #f5f1eb;
@@ -36,6 +36,7 @@
   --card-bg-solid: #ffffff;
   --gold: #b89650;
   --nav-bg: rgba(250, 248, 244, 0.92);
+  --tag-bg: rgba(196, 98, 45, 0.1);
 }
 
 /* DARK THEME */
@@ -53,10 +54,11 @@
   --card-bg-solid: #161412;
   --gold: #c8a860;
   --nav-bg: rgba(10, 9, 8, 0.95);
+  --tag-bg: rgba(232, 132, 90, 0.15);
 }
 
 /* =========================================
-   2. GLOBAL RESET & BODY
+   2. GLOBAL RESET & CURSOR FIX
    ========================================= */
 *,
 *::before,
@@ -78,48 +80,106 @@ body {
   background: var(--bg);
   color: var(--text);
   overflow-x: hidden !important;
-  cursor: default;
-  /* FIX: Restored standard cursor */
+  cursor: auto !important;
+  /* FIXED: Cursor will now show correctly */
   transition: background 0.5s ease, color 0.5s ease;
 }
 
-/* Gradient effect for Green & Dark themes */
+a,
+button {
+  cursor: pointer !important;
+}
+
+/* Gradient backgrounds for Green/Dark */
 [data-theme="green"] body,
 [data-theme="dark"] body {
   background-image:
-    radial-gradient(ellipse 90% 55% at 15% 5%, rgba(34, 197, 94, 0.08) 0%, transparent 55%),
+    radial-gradient(ellipse 90% 55% at 15% 5%, rgba(34, 197, 94, 0.05) 0%, transparent 55%),
     radial-gradient(ellipse 70% 45% at 85% 85%, rgba(16, 185, 129, 0.05) 0%, transparent 55%);
   background-attachment: fixed;
 }
 
-/* Buttons & Interactive Elements */
-.btn-primary,
-.btn-ghost,
-.btn-outline,
-a,
-button {
-  cursor: pointer;
-  /* FIX: Restored pointer for buttons */
+/* =========================================
+   3. PREMIUM BUTTONS (Restored)
+   ========================================= */
+.btn-primary {
+  background: linear-gradient(135deg, var(--accent) 0%, var(--bg-darkest) 100%);
+  color: #fff !important;
+  padding: 1rem 2.4rem;
+  font-size: 0.8rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  border: 1px solid var(--accent);
+  border-radius: 4px;
+  font-weight: 500;
+  transition: all 0.3s;
+  box-shadow: 0 0 20px rgba(34, 197, 94, 0.2);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 30px rgba(34, 197, 94, 0.4);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--text) !important;
+  padding: 1rem 2.4rem;
+  font-size: 0.8rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  transition: all 0.3s;
+}
+
+.btn-ghost:hover {
+  border-color: var(--accent);
+  color: var(--accent-lt) !important;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.social-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.7rem 1.4rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  text-decoration: none;
+  transition: 0.3s;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.social-btn:hover {
+  border-color: var(--accent);
+  color: var(--text);
+  transform: translateY(-3px);
+  background: rgba(255, 255, 255, 0.06);
 }
 
 /* =========================================
-   3. REUSABLE COMPONENTS
+   4. COMPONENTS & TITLES
    ========================================= */
 .section-label {
   font-size: 0.7rem;
-  letter-spacing: 0.28em;
+  letter-spacing: 0.3em;
   text-transform: uppercase;
   color: var(--accent);
   margin-bottom: 0.8rem;
   display: block;
+  font-weight: 600;
 }
 
 .section-title {
   font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(2.2rem, 4vw, 3.4rem);
+  font-size: clamp(2.4rem, 5vw, 3.8rem);
   font-weight: 300;
-  line-height: 1.15;
+  line-height: 1.1;
   color: var(--text);
+  margin-bottom: 1.5rem;
 }
 
 .section-title em {
@@ -127,70 +187,52 @@ button {
   color: var(--accent);
 }
 
-/* Solid background for Flashcards to prevent text bleeding */
-.w-card {
-  background: var(--card-bg-solid) !important;
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-}
-
-/* Social Buttons for Footer */
-.social-btn {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  padding: 0.6rem 1.2rem;
-  border: 1px solid var(--border);
-  border-radius: 4px;
-  color: var(--text-muted);
-  font-size: 0.8rem;
-  text-decoration: none;
-  transition: 0.3s;
-}
-
-.social-btn:hover {
-  border-color: var(--accent);
-  color: var(--text);
-  background: rgba(255, 255, 255, 0.05);
-  transform: translateY(-2px);
-}
-
 /* =========================================
-   4. THE NUCLEAR MOBILE 60/40 RATIO
+   5. THE NUCLEAR MOBILE FIX (60/40 Split)
    ========================================= */
 @media (max-width: 768px) {
 
   section,
   footer,
   div[id*="-label"] {
-    padding: 4rem 1.2rem !important;
+    padding: 4.5rem 1.5rem !important;
   }
 
-  /* Stack all grids */
+  /* GRID STACKING */
   [style*="grid-template-columns"] {
     grid-template-columns: 1fr !important;
-    gap: 2rem !important;
+    gap: 2.5rem !important;
   }
 
-  /* Enforce 60% Image / 40% Text on Mobile */
+  /* Enforce 60% Image Top / 40% Text Bottom strictly on Mobile */
   .deck-card,
   .w-card {
     grid-template-columns: 1fr !important;
     grid-template-rows: 60% 40% !important;
     height: 82vh !important;
     width: 92vw !important;
+    position: absolute !important;
   }
 
-  /* Keep heads in frame */
+  /* HEAD-CHOPPING FIX: Forces focus on the top of the photo */
   .deck-card-img,
   .w-card-img {
-    object-position: center 10% !important;
+    object-position: center 5% !important;
+    height: 100% !important;
   }
 
+  /* Text Box Styling for Mobile */
   .deck-card-text,
   .w-card-text {
-    padding: 1.2rem !important;
+    padding: 1.5rem !important;
     background: var(--card-bg-solid) !important;
     justify-content: flex-start !important;
+    z-index: 5 !important;
+  }
+
+  /* Footer Layout Fix */
+  .footer-grid {
+    grid-template-columns: 1fr !important;
+    gap: 3rem !important;
   }
 }
