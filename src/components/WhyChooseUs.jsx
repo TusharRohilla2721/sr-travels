@@ -163,28 +163,48 @@ export default function WhyChooseUs() {
   }, [])
 
   return (
-    <section ref={containerRef} id="why-us" style={{
-      height: '100vh', overflow: 'hidden', width: '100%',
-      background: 'var(--bg)', display: 'flex',
-      flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-      transition: 'background 0.4s'
-    }}>
-      <div style={{
-        position: 'absolute', top: '2.5rem', left: '50%',
-        transform: 'translateX(-50%)', zIndex: 50,
-        textAlign: 'center', pointerEvents: 'none', whiteSpace: 'nowrap'
-      }}>
-        <span className="section-label">Our Promise</span>
-        <h2 className="section-title">Why Choose <em>SR Travels?</em></h2>
-      </div>
+    <>
+      {/* THE MISSING NUCLEAR CSS BLOCK IS BACK! */}
+      <style>{`
+        @media (max-width: 768px) {
+          .w-card {
+            grid-template-columns: 1fr !important;
+            grid-template-rows: 240px 1fr !important; 
+            background: #0f0d0b !important; 
+          }
+          .w-card-img { border-radius: 14px 14px 0 0 !important; }
+          .w-card-text { 
+            padding: 1.2rem 1.2rem !important; 
+            border-radius: 0 0 14px 14px !important;
+            justify-content: flex-start !important; 
+          }
+          .w-card-num { font-size: 2rem !important; margin-bottom: 0.2rem !important; }
+        }
+      `}</style>
 
-      <div style={{
-        position: 'relative',
-        width: 'min(960px, 90vw)', height: 'min(480px, 58vh)',
-        clipPath: 'inset(-200px -20px 0 -20px)'
+      <section ref={containerRef} id="why-us" style={{
+        height: '100vh', overflow: 'hidden', width: '100%',
+        background: 'var(--bg)', display: 'flex',
+        flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+        transition: 'background 0.4s'
       }}>
-        {CARDS.map(card => <WCard key={card.id} card={card} />)}
-      </div>
-    </section>
+        <div style={{
+          position: 'absolute', top: '2.5rem', left: '50%',
+          transform: 'translateX(-50%)', zIndex: 50,
+          textAlign: 'center', pointerEvents: 'none', whiteSpace: 'nowrap'
+        }}>
+          <span className="section-label">Our Promise</span>
+          <h2 className="section-title">Why Choose <em>SR Travels?</em></h2>
+        </div>
+
+        <div style={{
+          position: 'relative',
+          width: 'min(960px, 90vw)', height: 'min(480px, 60vh)',
+          clipPath: 'inset(-200px -20px 0 -20px)'
+        }}>
+          {CARDS.map(card => <WCard key={card.id} card={card} />)}
+        </div>
+      </section>
+    </>
   )
 }

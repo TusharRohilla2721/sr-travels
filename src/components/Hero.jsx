@@ -31,12 +31,11 @@ export default function Hero() {
   }, [])
 
   return (
-    <section id="hero" ref={containerRef} style={{
+    <section id="hero" className="hero-section" ref={containerRef} style={{
       minHeight: '100vh', display: 'grid', gridTemplateColumns: '1fr 1fr',
       position: 'relative', overflow: 'hidden'
     }}>
-      { }
-      <div style={{
+      <div className="hero-text-box" style={{
         display: 'flex', flexDirection: 'column', justifyContent: 'center',
         padding: '8rem 4rem 4rem', position: 'relative', zIndex: 2
       }}>
@@ -47,7 +46,7 @@ export default function Hero() {
           ✦ Est. 2010 · Affordable & Efficient Travel
         </p>
 
-        <h1 style={{
+        <h1 className="hero-heading" style={{
           fontFamily: 'Cormorant Garamond, serif',
           fontSize: 'clamp(3rem, 5.5vw, 5rem)', lineHeight: 1.05,
           fontWeight: 300, color: 'var(--text)', marginBottom: '1.5rem'
@@ -73,8 +72,8 @@ export default function Hero() {
           to all-India tourist journeys. Comfort you deserve. Prices you'll love.
         </p>
 
-        <div ref={actionsRef} style={{
-          display: 'flex', gap: '1rem', alignItems: 'center',
+        <div ref={actionsRef} className="hero-buttons" style={{
+          display: 'flex', gap: '1rem', alignItems: 'center', flexWrap: 'wrap', // Prevents right-shift bug!
           marginBottom: '2rem', opacity: 0, transform: 'translateY(20px)'
         }}>
           <button className="btn-primary" onClick={() => navigate('/destinations')}>
@@ -107,22 +106,47 @@ export default function Hero() {
             51%  { transform: scaleX(1); transform-origin: right; }
             100% { transform: scaleX(0); transform-origin: right; }
           }
+          
+          @media (max-width: 768px) {
+            .hero-section {
+              grid-template-columns: 1fr !important;
+              display: flex !important;
+              flex-direction: column-reverse !important; 
+            }
+            .hero-text-box {
+              padding: 4rem 1.5rem !important; 
+            }
+            .hero-heading {
+              font-size: 2.8rem !important; /* Shrunk slightly to fix right-shift */
+              line-height: 1.1 !important;
+            }
+            .hero-buttons {
+              flex-direction: column; /* Stacks buttons on tiny screens */
+              align-items: flex-start !important;
+            }
+            .hero-badge {
+              bottom: 1.5rem !important;
+              padding: 0.6rem 1.2rem !important;
+              min-width: 140px !important;
+            }
+            .hero-badge div:first-child {
+              font-size: 1.5rem !important;
+            }
+          }
         `}</style>
       </div>
 
-      { }
       <div style={{ position: 'relative', overflow: 'hidden' }}>
         <div ref={imgRef} style={{
           width: '100%', height: '100%', position: 'absolute', inset: 0, transform: 'scale(1.12)'
         }}>
-          { }
           <img src="https://res.cloudinary.com/dzadpggxn/image/upload/q_auto,f_auto,w_800/v1774172216/WhatsApp_Image_2026-03-06_at_12.21.52_AM_ixi0oh.jpg"
             alt="SR Travels fleet" style={{
               width: '100%', height: '100%', objectFit: 'cover', filter: 'brightness(0.88)'
             }} />
           <div style={{
             position: 'absolute', inset: 0,
-            background: 'linear-gradient(to right, var(--bg) 0%, transparent 35%)'
+            background: 'linear-gradient(to bottom, transparent 35%, var(--bg) 100%)'
           }} />
         </div>
 

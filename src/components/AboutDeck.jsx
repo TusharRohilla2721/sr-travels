@@ -17,14 +17,14 @@ function Card({ id, imgSrc, imgAlt, tag, title, subtitle, children }) {
       willChange: 'transform, opacity'
     }}>
       <div style={{ position: 'relative', overflow: 'hidden' }}>
-        <img src={imgSrc} alt={imgAlt}
+        <img className="deck-card-img" src={imgSrc} alt={imgAlt}
           style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
         <div style={{
           position: 'absolute', inset: 0,
           background: 'linear-gradient(to right, transparent 45%, rgba(22,18,14,0.75))'
         }} />
       </div>
-      <div style={{
+      <div className="deck-card-text" style={{
         padding: '2.6rem 2.4rem', display: 'flex',
         flexDirection: 'column', justifyContent: 'center', overflowY: 'auto'
       }}>
@@ -265,6 +265,21 @@ export default function AboutDeck() {
         @keyframes bgRotate {
           from { transform: translate(-50%,-50%) rotate(0deg); }
           to   { transform: translate(-50%,-50%) rotate(360deg); }
+        }
+        @media (max-width: 768px) {
+          .deck-card {
+            width: 90vw !important;
+            height: 82vh !important;
+            grid-template-columns: 1fr !important;
+            grid-template-rows: 45% 55% !important; /* Gave image slightly more height */
+          }
+          .deck-card-img {
+            object-position: center 15% !important; /* PERFECT face crop for Tushar/Sunder */
+          }
+          .deck-card-text {
+            padding: 1.2rem !important; 
+            justify-content: flex-start !important;
+          }
         }
       `}</style>
 
