@@ -1,9 +1,11 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 gsap.registerPlugin(ScrollTrigger)
 
 function Card({ id, imgSrc, imgAlt, tag, title, subtitle, children }) {
+  const [expanded, setExpanded] = useState(false); // Read More Toggle
+
   return (
     <div id={id} className="deck-card" style={{
       position: 'absolute', left: '50%', top: '50%',
@@ -24,30 +26,47 @@ function Card({ id, imgSrc, imgAlt, tag, title, subtitle, children }) {
           background: 'linear-gradient(to right, transparent 45%, rgba(22,18,14,0.75))'
         }} />
       </div>
-      <div className="deck-card-text" style={{
+
+      {/* Dynamic is-expanded class applied here */}
+      <div className={`deck-card-text ${expanded ? 'is-expanded' : ''}`} style={{
         padding: '2.6rem 2.4rem', display: 'flex',
-        flexDirection: 'column', justifyContent: 'center', overflowY: 'auto'
+        flexDirection: 'column', justifyContent: 'center', overflowY: 'hidden',
+        transition: 'all 0.4s cubic-bezier(0.16, 1, 0.3, 1)'
       }}>
         <span style={{
-          display: 'inline-block', padding: '0.22rem 0.65rem',
+          display: 'inline-flex', padding: '0.22rem 0.65rem', alignSelf: 'flex-start',
           background: 'rgba(196,98,45,0.18)', color: 'var(--accent)',
           fontSize: '0.6rem', letterSpacing: '0.2em', textTransform: 'uppercase',
           borderRadius: 2, marginBottom: '0.9rem', fontWeight: 500,
           border: '1px solid rgba(196,98,45,0.3)'
         }}>{tag}</span>
+
         <h2 style={{
           fontFamily: 'Cormorant Garamond, serif',
           fontSize: 'clamp(1.4rem, 2.3vw, 2rem)', fontWeight: 300,
           color: 'rgba(255,255,255,0.9)', lineHeight: 1.15, marginBottom: '0.35rem'
         }}>{title}</h2>
+
         {subtitle && (
           <p style={{
             fontFamily: 'Cormorant Garamond, serif', fontSize: '0.92rem',
             fontStyle: 'italic', color: 'var(--accent-lt)', marginBottom: '1.1rem'
           }}>{subtitle}</p>
         )}
-        <div style={{ fontSize: '0.84rem', lineHeight: 1.85, color: 'rgba(255,255,255,0.58)' }}>
+
+        {/* Paragraphs are wrapped in this div so we can hide them on mobile */}
+        <div className="deck-card-content" style={{ fontSize: '0.84rem', lineHeight: 1.85, color: 'rgba(255,255,255,0.58)' }}>
           {children}
+        </div>
+
+        {/* Mobile-only Read More Button */}
+        <div className="read-more-wrapper">
+          <button
+            className="read-more-btn"
+            onClick={() => setExpanded(!expanded)}
+          >
+            {expanded ? 'Show Less ↑' : 'Read More ↓'}
+          </button>
         </div>
       </div>
     </div>
@@ -266,19 +285,64 @@ export default function AboutDeck() {
           from { transform: translate(-50%,-50%) rotate(0deg); }
           to   { transform: translate(-50%,-50%) rotate(360deg); }
         }
+        
+        /* Hide Read More on Desktop */
+        @media (min-width: 769px) {
+          .read-more-wrapper { display: none !important; }
+        }
+        
         @media (max-width: 768px) {
           .deck-card {
             width: 90vw !important;
             height: 82vh !important;
             grid-template-columns: 1fr !important;
-            grid-template-rows: 45% 55% !important; /* Gave image slightly more height */
+            grid-template-rows: 45% 55% !important;
           }
           .deck-card-img {
-            object-position: center 15% !important; /* PERFECT face crop for Tushar/Sunder */
+            object-position: center 15% !important;
           }
           .deck-card-text {
-            padding: 1.2rem !important; 
+            padding: 1.5rem 1.2rem !important; 
             justify-content: flex-start !important;
+          }
+          
+          /* READ MORE LOGIC */
+          .deck-card-content { display: none; } /* Hide paragraphs initially */
+          
+          .read-more-btn {
+            margin-top: 1rem;
+            padding: 0.4rem 1rem;
+            background: rgba(196,98,45,0.1);
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            border-radius: 20px;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            cursor: pointer;
+            transition: all 0.3s;
+            align-self: flex-start;
+          }
+          
+          /* The Expanding Blur Overlay */
+          .deck-card-text.is-expanded {
+            position: absolute !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100% !important;
+            height: 100% !important;
+            border-radius: 14px !important;
+            background: rgba(22, 18, 14, 0.96) !important;
+            backdrop-filter: blur(16px) !important;
+            -webkit-backdrop-filter: blur(16px) !important;
+            justify-content: center !important;
+            z-index: 10 !important;
+          }
+          
+          /* Show text when expanded */
+          .deck-card-text.is-expanded .deck-card-content {
+            display: block;
+            margin-bottom: 1rem;
           }
         }
       `}</style>

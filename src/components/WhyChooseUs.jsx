@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 gsap.registerPlugin(ScrollTrigger)
@@ -55,6 +55,8 @@ const CARDS = [
 ]
 
 function WCard({ card }) {
+  const [expanded, setExpanded] = useState(false); // Mobile Read More Toggle
+
   return (
     <div id={card.id} className="w-card" style={{
       position: 'absolute', inset: 0,
@@ -79,23 +81,28 @@ function WCard({ card }) {
         }} />
       </div>
 
-      <div className="w-card-text" style={{
+      {/* Added the dynamic 'is-expanded' class */}
+      <div className={`w-card-text ${expanded ? 'is-expanded' : ''}`} style={{
         padding: '2.4rem 2.8rem', display: 'flex', flexDirection: 'column',
-        justifyContent: 'center', position: 'relative', overflowY: 'auto',
-        zIndex: 1
+        justifyContent: 'center', position: 'relative', overflowY: 'hidden',
+        zIndex: 2, transition: 'all 0.4s cubic-bezier(0.16, 1, 0.3, 1)'
       }}>
         <div className="w-card-num" style={{
           fontFamily: 'Cormorant Garamond, serif',
           fontSize: '3.2rem', fontWeight: 300, color: 'var(--border)',
           lineHeight: 1, marginBottom: '0.4rem'
         }}>{card.num}</div>
+
         <h3 style={{
           fontFamily: 'Cormorant Garamond, serif',
           fontSize: 'clamp(1.3rem, 2vw, 1.55rem)', fontWeight: 400,
           color: 'var(--text)', marginBottom: '0.8rem'
         }}>{card.emoji} {card.title}</h3>
+
         <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', lineHeight: 1.82 }}>{card.desc}</p>
-        <ul style={{ listStyle: 'none', marginTop: '0.7rem' }}>
+
+        {/* Bullet points are hidden on mobile by default */}
+        <ul className="w-card-list" style={{ listStyle: 'none', marginTop: '0.7rem' }}>
           {card.points.map((p, i) => (
             <li key={i} style={{
               fontSize: '0.83rem', color: 'var(--text-muted)', lineHeight: 1.72,
@@ -109,6 +116,16 @@ function WCard({ card }) {
             </li>
           ))}
         </ul>
+
+        {/* Read More Button (Only visible on Mobile) */}
+        <div className="read-more-wrapper">
+          <button
+            className="read-more-btn"
+            onClick={() => setExpanded(!expanded)}
+          >
+            {expanded ? 'Show Less ↑' : 'Read More ↓'}
+          </button>
+        </div>
       </div>
     </div>
   )
@@ -164,8 +181,12 @@ export default function WhyChooseUs() {
 
   return (
     <>
-      {/* THE MISSING NUCLEAR CSS BLOCK IS BACK! */}
       <style>{`
+        /* Hide the button on desktop */
+        @media (min-width: 769px) {
+          .read-more-wrapper { display: none !important; }
+        }
+        
         @media (max-width: 768px) {
           .w-card {
             grid-template-columns: 1fr !important;
@@ -179,6 +200,43 @@ export default function WhyChooseUs() {
             justify-content: flex-start !important; 
           }
           .w-card-num { font-size: 2rem !important; margin-bottom: 0.2rem !important; }
+          
+          /* READ MORE LOGIC */
+          .w-card-list { display: none; } /* Hide list initially */
+          
+          /* The button styling */
+          .read-more-btn {
+            margin-top: 0.8rem;
+            padding: 0.4rem 1rem;
+            background: rgba(196,98,45,0.1);
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            border-radius: 20px;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            cursor: pointer;
+            transition: all 0.3s;
+          }
+          
+          /* When user clicks "Read More", the box expands to cover the image */
+          .w-card-text.is-expanded {
+            position: absolute !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100% !important;
+            height: 100% !important;
+            border-radius: 14px !important;
+            background: rgba(15, 13, 11, 0.96) !important;
+            backdrop-filter: blur(12px) !important;
+            -webkit-backdrop-filter: blur(12px) !important;
+            justify-content: center !important;
+          }
+          /* Show the list when expanded */
+          .w-card-text.is-expanded .w-card-list {
+            display: block;
+            margin-bottom: 1rem;
+          }
         }
       `}</style>
 
