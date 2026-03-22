@@ -116,7 +116,7 @@ export default function Hero() {
           width: '100%', height: '100%', position: 'absolute', inset: 0, transform: 'scale(1.12)'
         }}>
           { }
-          <img src="https://images.unsplash.com/photo-1544636331-e26879cd4d9b?w=1400&q=80"
+          <img src="https://res.cloudinary.com/dzadpggxn/image/upload/v1774172216/WhatsApp_Image_2026-03-06_at_12.21.52_AM_ixi0oh.jpg"
             alt="SR Travels fleet" style={{
               width: '100%', height: '100%', objectFit: 'cover', filter: 'brightness(0.88)'
             }} />
