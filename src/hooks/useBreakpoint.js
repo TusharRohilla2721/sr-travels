@@ -12,10 +12,23 @@ export function useBreakpoint() {
 
     const handleResize = () => {
       const width = window.innerWidth;
-      setBreakpoints({
-        isMobile: width <= 768,
-        isTablet: width > 768 && width <= 1024,
-        isDesktop: width > 1024,
+      setBreakpoints((prev) => {
+        const newIsMobile = width <= 768;
+        const newIsTablet = width > 768 && width <= 1024;
+        const newIsDesktop = width > 1024;
+        if (
+          prev.isMobile === newIsMobile &&
+          prev.isTablet === newIsTablet &&
+          prev.isDesktop === newIsDesktop
+        ) {
+          return prev;
+        }
+
+        return {
+          isMobile: newIsMobile,
+          isTablet: newIsTablet,
+          isDesktop: newIsDesktop,
+        };
       });
     };
 
