@@ -533,7 +533,7 @@ body,
     height: 75vh !important;
     grid-template-columns: 1fr !important;
     /* Force a single column */
-    grid-template-rows: 40% 60% !important;
+    grid-template-rows: 60% 40% !important;
     /* 40% image top, 60% text bottom */
   }
 
@@ -560,9 +560,7 @@ body,
   .w-card {
     grid-template-columns: 1fr !important;
     grid-template-rows: 35% 65% !important;
-    /* 35% Image, 65% Text */
     background: var(--bg) !important;
-    /* Solid fallback block */
   }
 
   .w-card-img {

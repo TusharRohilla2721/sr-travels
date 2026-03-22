@@ -4,18 +4,15 @@ import { useNavigate } from 'react-router-dom'
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [isDarkMode, setIsDarkMode] = useState(true) // <-- Replace with your actual theme state/context
   const navigate = useNavigate()
 
-  // Detect scroll to give the navbar a solid background when scrolling down
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50)
-    }
+    const handleScroll = () => setIsScrolled(window.scrollY > 50)
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  // Prevent background scrolling when mobile menu is open
   useEffect(() => {
     if (mobileMenuOpen) {
       document.body.style.overflow = 'hidden'
@@ -25,7 +22,6 @@ export default function Navbar() {
     return () => { document.body.style.overflow = 'unset' }
   }, [mobileMenuOpen])
 
-  // Helper to close menu and navigate/scroll
   const handleNav = (targetId, path = '/') => {
     setMobileMenuOpen(false)
     navigate(path)
@@ -91,29 +87,46 @@ export default function Navbar() {
           </button>
         </div>
 
-        {/* MOBILE HAMBURGER BUTTON */}
-        <div className="mobile-toggle" style={{ zIndex: 10000 }}>
+        {/* RIGHT SIDE CONTROLS (Always Visible) */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1.2rem', zIndex: 10000 }}>
+
+          {/* THEME TOGGLE BUTTON */}
           <button
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            onClick={() => setIsDarkMode(!isDarkMode)} // Hook your theme logic here!
             style={{
-              background: 'none', border: 'none', cursor: 'pointer',
-              display: 'flex', flexDirection: 'column', gap: '5px',
-              padding: '0.5rem'
+              background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)',
+              width: 36, height: 36, borderRadius: '50%', display: 'flex',
+              alignItems: 'center', justifyContent: 'center', cursor: 'pointer',
+              fontSize: '1.1rem', transition: 'background 0.3s'
             }}
           >
-            <div style={{
-              width: '24px', height: '2px', background: 'var(--text)', transition: 'all 0.3s',
-              transform: mobileMenuOpen ? 'rotate(45deg) translate(5px, 5px)' : 'none'
-            }} />
-            <div style={{
-              width: '24px', height: '2px', background: 'var(--text)', transition: 'all 0.3s',
-              opacity: mobileMenuOpen ? 0 : 1
-            }} />
-            <div style={{
-              width: '24px', height: '2px', background: 'var(--text)', transition: 'all 0.3s',
-              transform: mobileMenuOpen ? 'rotate(-45deg) translate(5px, -5px)' : 'none'
-            }} />
+            {isDarkMode ? '🌙' : '☀️'}
           </button>
+
+          {/* MOBILE HAMBURGER BUTTON */}
+          <div className="mobile-toggle">
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              style={{
+                background: 'none', border: 'none', cursor: 'pointer',
+                display: 'flex', flexDirection: 'column', gap: '5px',
+                padding: '0.5rem'
+              }}
+            >
+              <div style={{
+                width: '24px', height: '2px', background: 'var(--text)', transition: 'all 0.3s',
+                transform: mobileMenuOpen ? 'rotate(45deg) translate(5px, 5px)' : 'none'
+              }} />
+              <div style={{
+                width: '24px', height: '2px', background: 'var(--text)', transition: 'all 0.3s',
+                opacity: mobileMenuOpen ? 0 : 1
+              }} />
+              <div style={{
+                width: '24px', height: '2px', background: 'var(--text)', transition: 'all 0.3s',
+                transform: mobileMenuOpen ? 'rotate(-45deg) translate(5px, -5px)' : 'none'
+              }} />
+            </button>
+          </div>
         </div>
       </nav>
 
@@ -159,7 +172,6 @@ export default function Navbar() {
       </div>
 
       <style>{`
-        /* Hide mobile toggle on desktop, Hide desktop links on mobile */
         @media (min-width: 769px) {
           .mobile-toggle { display: none !important; }
         }
