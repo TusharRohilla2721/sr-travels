@@ -5,16 +5,14 @@ export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
-  // Set default to 'green' as requested
+  // theme cycle: 'green' -> 'warm' -> 'dark'
   const [theme, setTheme] = useState('green')
   const navigate = useNavigate()
 
-  // Apply the data-theme attribute to the root HTML tag
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme)
   }, [theme])
 
-  // Cycle: green -> warm -> dark
   const toggleTheme = () => {
     if (theme === 'green') setTheme('warm')
     else if (theme === 'warm') setTheme('dark')
@@ -22,9 +20,9 @@ export default function Navbar() {
   }
 
   const getThemeIcon = () => {
-    if (theme === 'green') return '🌲' // Green icon
-    if (theme === 'warm') return '☀️'  // Light/Warm icon
-    return '🌙'                       // Dark icon
+    if (theme === 'green') return '🌲'
+    if (theme === 'warm') return '☀️'
+    return '🌙'
   }
 
   useEffect(() => {
@@ -34,32 +32,14 @@ export default function Navbar() {
   }, [])
 
   useEffect(() => {
-    if (mobileMenuOpen) {
-      document.body.style.overflow = 'hidden'
-    } else {
-      document.body.style.overflow = 'unset'
-    }
-    return () => { document.body.style.overflow = 'unset' }
+    if (mobileMenuOpen) document.body.style.overflow = 'hidden'
+    else document.body.style.overflow = 'unset'
   }, [mobileMenuOpen])
 
-  const handleNav = (targetId, path = '/') => {
+  const handleNav = (id) => {
     setMobileMenuOpen(false)
-    navigate(path)
-    setTimeout(() => {
-      if (targetId) {
-        document.getElementById(targetId)?.scrollIntoView({ behavior: 'smooth' })
-      } else {
-        window.scrollTo({ top: 0, behavior: 'smooth' })
-      }
-    }, 100)
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
   }
-
-  const NAV_LINKS = [
-    { name: 'About', id: 'about-company' },
-    { name: 'Galleria', id: 'galleria' },
-    { name: 'Why Us', id: 'why-us' },
-    { name: 'Stories', id: 'stories' },
-  ]
 
   return (
     <>
@@ -68,54 +48,50 @@ export default function Navbar() {
         padding: isScrolled ? '1rem 2rem' : '1.5rem 2.5rem',
         background: isScrolled ? 'var(--nav-bg)' : 'transparent',
         backdropFilter: isScrolled ? 'blur(12px)' : 'none',
-        WebkitBackdropFilter: isScrolled ? 'blur(12px)' : 'none',
         borderBottom: isScrolled ? '1px solid var(--border)' : '1px solid transparent',
-        display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-        transition: 'all 0.3s ease'
+        display: 'flex', justifyContent: 'space-between', alignItems: 'center', transition: '0.3s'
       }}>
-        <div onClick={() => handleNav(null)} style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: '1.8rem', fontWeight: 600, color: 'var(--text)', cursor: 'pointer', zIndex: 10000 }}>
+        {/* LOGO */}
+        <div onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} style={{
+          fontFamily: 'Cormorant Garamond, serif', fontSize: '1.8rem',
+          fontWeight: 600, color: 'var(--text)', cursor: 'pointer'
+        }}>
           SR <span style={{ color: 'var(--accent)', fontStyle: 'italic' }}>Travels</span>
         </div>
 
-        <div className="desktop-links" style={{ display: 'flex', gap: '2.5rem', alignItems: 'center' }}>
-          {NAV_LINKS.map(link => (
-            <button key={link.name} onClick={() => handleNav(link.id)} style={{ background: 'none', border: 'none', color: 'var(--text)', fontSize: '0.8rem', letterSpacing: '0.15em', textTransform: 'uppercase', cursor: 'pointer', transition: 'color 0.3s', opacity: 0.7 }}>
-              {link.name}
-            </button>
-          ))}
-          <button className="btn-primary" onClick={() => handleNav(null, '/destinations')} style={{ padding: '0.6rem 1.5rem', fontSize: '0.75rem' }}>Book Now</button>
-        </div>
-
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1.2rem', zIndex: 10000 }}>
-          <button onClick={toggleTheme} style={{ background: 'rgba(150,150,150,0.1)', border: '1px solid var(--border)', width: 40, height: 40, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', fontSize: '1.2rem', transition: 'all 0.3s' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+          {/* THEME TOGGLE */}
+          <button onClick={toggleTheme} style={{
+            background: 'rgba(150,150,150,0.1)', border: '1px solid var(--border)',
+            width: 42, height: 42, borderRadius: '50%', cursor: 'pointer', fontSize: '1.2rem'
+          }}>
             {getThemeIcon()}
           </button>
 
-          <div className="mobile-toggle">
-            <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', flexDirection: 'column', gap: '5px', padding: '0.5rem' }}>
-              <div style={{ width: '24px', height: '2px', background: 'var(--text)', transition: 'all 0.3s', transform: mobileMenuOpen ? 'rotate(45deg) translate(5px, 5px)' : 'none' }} />
-              <div style={{ width: '24px', height: '2px', background: 'var(--text)', transition: 'all 0.3s', opacity: mobileMenuOpen ? 0 : 1 }} />
-              <div style={{ width: '24px', height: '2px', background: 'var(--text)', transition: 'all 0.3s', transform: mobileMenuOpen ? 'rotate(-45deg) translate(5px, -5px)' : 'none' }} />
-            </button>
+          {/* MOBILE HAMBURGER */}
+          <div className="mobile-toggle" onClick={() => setMobileMenuOpen(!mobileMenuOpen)} style={{ cursor: 'pointer', display: 'flex', flexDirection: 'column', gap: '5px' }}>
+            <div style={{ width: '24px', height: '2px', background: 'var(--text)', transition: '0.3s', transform: mobileMenuOpen ? 'rotate(45deg) translate(5px, 5px)' : '' }} />
+            <div style={{ width: '24px', height: '2px', background: 'var(--text)', transition: '0.3s', opacity: mobileMenuOpen ? 0 : 1 }} />
+            <div style={{ width: '24px', height: '2px', background: 'var(--text)', transition: '0.3s', transform: mobileMenuOpen ? 'rotate(-45deg) translate(5px, -5px)' : '' }} />
           </div>
         </div>
       </nav>
 
-      <div style={{ position: 'fixed', inset: 0, zIndex: 9998, background: 'var(--bg-darkest)', opacity: 0.98, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', visibility: mobileMenuOpen ? 'visible' : 'hidden', transform: mobileMenuOpen ? 'translateY(0)' : 'translateY(-20px)', transition: 'all 0.4s cubic-bezier(0.16, 1, 0.3, 1)' }}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem', textAlign: 'center' }}>
-          {NAV_LINKS.map((link, i) => (
-            <button key={link.name} onClick={() => handleNav(link.id)} style={{ background: 'none', border: 'none', color: 'var(--text)', fontFamily: 'Cormorant Garamond, serif', fontSize: '2.5rem', fontStyle: 'italic', cursor: 'pointer', transform: mobileMenuOpen ? 'translateY(0)' : 'translateY(20px)', opacity: mobileMenuOpen ? 1 : 0, transition: `all 0.4s cubic-bezier(0.16, 1, 0.3, 1) ${0.1 * i}s` }}>
-              {link.name}
-            </button>
-          ))}
-          <button className="btn-primary" onClick={() => handleNav(null, '/destinations')} style={{ fontSize: '1rem', padding: '1rem 2.5rem', marginTop: '1rem' }}>Explore Destinations</button>
-        </div>
+      {/* FULL SCREEN MOBILE OVERLAY */}
+      <div style={{
+        position: 'fixed', inset: 0, zIndex: 9998, background: 'var(--bg-darkest)',
+        visibility: mobileMenuOpen ? 'visible' : 'hidden', opacity: mobileMenuOpen ? 0.98 : 0,
+        display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', transition: '0.4s'
+      }}>
+        {['about-company', 'galleria', 'why-us', 'stories'].map((id) => (
+          <button key={id} onClick={() => handleNav(id)} style={{
+            background: 'none', border: 'none', color: 'var(--text)',
+            fontFamily: 'Cormorant Garamond, serif', fontSize: '2.5rem', fontStyle: 'italic', margin: '1rem 0', cursor: 'pointer'
+          }}>
+            {id.replace('-', ' ')}
+          </button>
+        ))}
       </div>
-
-      <style>{`
-        @media (min-width: 769px) { .mobile-toggle { display: none !important; } }
-        @media (max-width: 768px) { .desktop-links { display: none !important; } }
-      `}</style>
     </>
   )
 }

@@ -4,8 +4,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 gsap.registerPlugin(ScrollTrigger)
 
 function Card({ id, imgSrc, imgAlt, tag, title, subtitle, children }) {
-  const [expanded, setExpanded] = useState(false); // Read More Toggle
-
+  const [expanded, setExpanded] = useState(false);
   return (
     <div id={id} className="deck-card" style={{
       position: 'absolute', left: '50%', top: '50%',
