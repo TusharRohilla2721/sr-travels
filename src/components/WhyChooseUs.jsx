@@ -65,13 +65,13 @@ function WCard({ card }) {
       transition: 'background 0.4s, border-color 0.4s',
       willChange: 'transform, opacity'
     }}>
-      {}
+      { }
       <div id={`${card.id}-scrim`} style={{
         position: 'absolute', inset: 0, zIndex: 3, borderRadius: 14,
         background: 'rgba(0,0,0,0)', pointerEvents: 'none', willChange: 'opacity'
       }} />
 
-      {}
+      { }
       <div style={{ position: 'relative', overflow: 'hidden', borderRadius: '14px 0 0 14px', zIndex: 1 }}>
         <img src={card.img} alt={card.title} style={{
           width: '100%', height: '100%', objectFit: 'cover', display: 'block',
@@ -79,7 +79,7 @@ function WCard({ card }) {
         }} />
       </div>
 
-      {}
+      { }
       <div style={{
         padding: '2.4rem 2.8rem', display: 'flex', flexDirection: 'column',
         justifyContent: 'center', position: 'relative', overflow: 'hidden',
@@ -118,59 +118,63 @@ function WCard({ card }) {
 export default function WhyChooseUs() {
   const outerRef = useRef(null)
   const innerRef = useRef(null)
+  const containerRef = useRef(null)
 
   useEffect(() => {
-    const cardEls = CARDS.map(c => document.getElementById(c.id))
-    const scrimEls = CARDS.map(c => document.getElementById(`${c.id}-scrim`))
+    const ctx = gsap.context(() => {
+      const cardEls = CARDS.map(c => document.getElementById(c.id))
+      const scrimEls = CARDS.map(c => document.getElementById(`${c.id}-scrim`))
 
 
-    cardEls.forEach((c, i) => {
-      if (!c) return
-      c.style.transform = ''
-      gsap.set(c, { y: i === 0 ? 0 : '110%', scale: 1, opacity: 1, zIndex: 100 + i })
-      gsap.set(scrimEls[i], { opacity: 0 })
-    })
+      cardEls.forEach((c, i) => {
+        if (!c) return
+        c.style.transform = ''
+        gsap.set(c, { y: i === 0 ? 0 : '110%', scale: 1, opacity: 1, zIndex: 100 + i })
+        gsap.set(scrimEls[i], { opacity: 0 })
+      })
 
-    const GAP = 28
-    const tl = gsap.timeline({ defaults: { ease: 'none' } })
+      const GAP = 28
+      const tl = gsap.timeline({ defaults: { ease: 'none' } })
 
-    for (let i = 1; i < CARDS.length; i++) {
-      const pos = i - 1
+      for (let i = 1; i < CARDS.length; i++) {
+        const pos = i - 1
 
-      tl.to(cardEls[i], { y: 0, duration: 1 }, pos)
+        tl.to(cardEls[i], { y: 0, duration: 1 }, pos)
 
-      tl.to(cardEls[i - 1], { scale: 0.94, y: -GAP, duration: 1 }, pos)
-      tl.to(scrimEls[i - 1], { opacity: 0.42, duration: 1 }, pos)
+        tl.to(cardEls[i - 1], { scale: 0.94, y: -GAP, duration: 1 }, pos)
+        tl.to(scrimEls[i - 1], { opacity: 0.42, duration: 1 }, pos)
 
-      for (let j = 0; j < i - 1; j++) {
-        const depth = i - j
-        tl.to(cardEls[j], {
-          scale: Math.max(0.80, 0.94 - (depth - 1) * 0.05),
-          y: -(GAP * depth), duration: 1
-        }, pos)
-        tl.to(scrimEls[j], {
-          opacity: Math.min(0.75, 0.42 + (depth - 1) * 0.15), duration: 1
-        }, pos)
+        for (let j = 0; j < i - 1; j++) {
+          const depth = i - j
+          tl.to(cardEls[j], {
+            scale: Math.max(0.80, 0.94 - (depth - 1) * 0.05),
+            y: -(GAP * depth), duration: 1
+          }, pos)
+          tl.to(scrimEls[j], {
+            opacity: Math.min(0.75, 0.42 + (depth - 1) * 0.15), duration: 1
+          }, pos)
+        }
       }
-    }
 
-    ScrollTrigger.create({
-      trigger: outerRef.current,
-      start: 'top top',
-      end: 'bottom bottom',
-      pin: innerRef.current,
-      pinSpacing: false,
-      scrub: 0.5,
-      animation: tl
-    })
+      ScrollTrigger.create({
+        trigger: outerRef.current,
+        start: 'top top',
+        end: 'bottom bottom',
+        pin: innerRef.current,
+        pinSpacing: false,
+        scrub: 0.5,
+        animation: tl
+      })
 
-    return () => ScrollTrigger.getAll().forEach(t => {
-      if (t.vars.trigger === outerRef.current) t.kill()
-    })
-  }, [])
+      return () => ScrollTrigger.getAll().forEach(t => {
+        if (t.vars.trigger === outerRef.current) t.kill()
+      })
+    }, containerRef)
+    return () => ctx.revert()
+  }, [isMobile])
 
   return (
-    <div ref={outerRef} id="why-us-outer" style={{ height: '250vh' }}>
+    <div ref={containerRef} id="why-us-outer" style={{ height: '250vh' }}>
       <section ref={innerRef} id="why-us" style={{
         position: 'sticky', top: 0, height: '100vh', overflow: 'hidden',
         background: 'var(--bg)', display: 'flex',

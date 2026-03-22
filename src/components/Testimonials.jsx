@@ -6,9 +6,9 @@ import FeedbackModal from './FeedbackModal'
 gsap.registerPlugin(ScrollTrigger)
 
 const PLACEHOLDERS = [
-  { name: 'Priya Mehta',  city: 'Mumbai',    state: 'Maharashtra', from_city: 'Delhi',   to_city: 'Jaipur', feedback: 'SR Travels turned our anniversary trip into an absolute fairytale. Every detail was perfect — from pickup to drop-off.' },
-  { name: 'Rajesh Kumar', city: 'Bangalore', state: 'Karnataka',   from_city: 'Gurgaon', to_city: 'Goa',    feedback: 'Booked a family trip. The itinerary was impeccably planned and our driver incredibly professional. Highly recommend!' },
-  { name: 'Arjun Sharma', city: 'Delhi',     state: 'NCR',         from_city: 'Delhi',   to_city: 'Ladakh', feedback: 'Our Ladakh adventure was beyond words. SR Travels handled everything flawlessly. A bucket-list trip done right.' },
+  { name: 'Priya Mehta', city: 'Mumbai', state: 'Maharashtra', from_city: 'Delhi', to_city: 'Jaipur', feedback: 'SR Travels turned our anniversary trip into an absolute fairytale. Every detail was perfect — from pickup to drop-off.' },
+  { name: 'Rajesh Kumar', city: 'Bangalore', state: 'Karnataka', from_city: 'Gurgaon', to_city: 'Goa', feedback: 'Booked a family trip. The itinerary was impeccably planned and our driver incredibly professional. Highly recommend!' },
+  { name: 'Arjun Sharma', city: 'Delhi', state: 'NCR', from_city: 'Delhi', to_city: 'Ladakh', feedback: 'Our Ladakh adventure was beyond words. SR Travels handled everything flawlessly. A bucket-list trip done right.' },
 ]
 
 function TestCard({ r }) {
@@ -18,8 +18,8 @@ function TestCard({ r }) {
       borderRadius: 4, padding: '2rem', cursor: 'none',
       transition: 'transform 0.35s, box-shadow 0.35s, background 0.4s, border-color 0.4s'
     }}
-    onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-5px)'; e.currentTarget.style.boxShadow = '0 14px 40px rgba(0,0,0,0.07)' }}
-    onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none' }}>
+      onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-5px)'; e.currentTarget.style.boxShadow = '0 14px 40px rgba(0,0,0,0.07)' }}
+      onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none' }}>
       <div style={{ color: 'var(--gold)', fontSize: '0.85rem', letterSpacing: '0.1em', marginBottom: '1rem' }}>★★★★★</div>
       <p style={{
         fontFamily: 'Cormorant Garamond, serif', fontSize: '1.05rem',
@@ -47,8 +47,8 @@ function TestCard({ r }) {
 }
 
 export default function Testimonials() {
-  const [reviews, setReviews]   = useState([])
-  const [loading, setLoading]   = useState(true)
+  const [reviews, setReviews] = useState([])
+  const [loading, setLoading] = useState(true)
   const [showModal, setShowModal] = useState(false)
   const gridRef = useRef(null)
 
@@ -68,10 +68,13 @@ export default function Testimonials() {
 
   useEffect(() => {
     if (!loading && gridRef.current) {
-      gsap.from(gridRef.current.children, {
-        opacity: 0, y: 30, duration: 0.7, stagger: 0.1, ease: 'power3.out',
-        scrollTrigger: { trigger: gridRef.current, start: 'top 85%' }
-      })
+      const ctx = gsap.context(() => {
+        gsap.from(gridRef.current.children, {
+          opacity: 0, y: 30, duration: 0.7, stagger: 0.1, ease: 'power3.out',
+          scrollTrigger: { trigger: gridRef.current, start: 'top 85%' }
+        })
+      }, gridRef)
+      return () => ctx.revert()
     }
   }, [loading])
 
@@ -92,7 +95,7 @@ export default function Testimonials() {
 
         {loading ? (
           <div style={{ display: 'flex', gap: 6, justifyContent: 'center', padding: '3rem' }}>
-            {[0,1,2].map(i => (
+            {[0, 1, 2].map(i => (
               <div key={i} style={{
                 width: 8, height: 8, background: 'var(--accent)', borderRadius: '50%',
                 animation: `ldBounce 1.1s ${i * 0.18}s infinite`

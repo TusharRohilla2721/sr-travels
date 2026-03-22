@@ -14,6 +14,7 @@ const STATS = [
 export default function Stats() {
   const sectionRef = useRef(null)
   const numbersRef = useRef([])
+  const containerRef = useRef(null)
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -44,13 +45,13 @@ export default function Stats() {
           }
         })
       })
-    }, sectionRef)
+    }, containerRef)
 
     return () => ctx.revert()
   }, [])
 
   return (
-    <section ref={sectionRef} style={{ padding: '8rem 2rem', background: '#0a0a0a' }}>
+    <section ref={containerRef} style={{ padding: '8rem 2rem', background: '#0a0a0a' }}>
       <div style={{
         display: 'grid',
         gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',

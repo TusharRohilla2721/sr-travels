@@ -3,36 +3,39 @@ import { useNavigate } from 'react-router-dom'
 import gsap from 'gsap'
 
 export default function Hero() {
-  const tagRef     = useRef(null)
-  const l1Ref      = useRef(null)
-  const l2Ref      = useRef(null)
-  const l3Ref      = useRef(null)
-  const subRef     = useRef(null)
+  const tagRef = useRef(null)
+  const l1Ref = useRef(null)
+  const l2Ref = useRef(null)
+  const l3Ref = useRef(null)
+  const subRef = useRef(null)
   const actionsRef = useRef(null)
-  const imgRef     = useRef(null)
-  const badgeRef   = useRef(null)
-  const hintRef    = useRef(null)
-  const navigate   = useNavigate()
+  const imgRef = useRef(null)
+  const badgeRef = useRef(null)
+  const hintRef = useRef(null)
+  const navigate = useNavigate()
+  const containerRef = useRef(null)
 
   useEffect(() => {
-    const tl = gsap.timeline({ delay: 0.2 })
-    tl
-      .to(tagRef.current,     { opacity: 1, duration: 0.6, ease: 'power2.out' })
-      .to([l1Ref.current, l2Ref.current, l3Ref.current],
-                              { y: 0, duration: 1, ease: 'power4.out', stagger: 0.12 }, '-=0.3')
-      .to(subRef.current,     { opacity: 1, y: 0, duration: 0.7, ease: 'power2.out' }, '-=0.5')
-      .to(actionsRef.current, { opacity: 1, y: 0, duration: 0.6, ease: 'power2.out' }, '-=0.4')
-      .to(imgRef.current,     { scale: 1, duration: 1.4, ease: 'power3.out' }, 0.3)
-      .to(badgeRef.current,   { opacity: 1, y: 0, duration: 0.6, ease: 'back.out(1.7)' }, '-=0.3')
-      .to(hintRef.current,    { opacity: 1, duration: 0.5 }, '-=0.2')
+    const ctx = gsap.context(() => {
+      const tl = gsap.timeline({ delay: 0.2 })
+      tl.to(tagRef.current, { opacity: 1, duration: 0.6, ease: 'power2.out' })
+        .to([l1Ref.current, l2Ref.current, l3Ref.current],
+          { y: 0, duration: 1, ease: 'power4.out', stagger: 0.12 }, '-=0.3')
+        .to(subRef.current, { opacity: 1, y: 0, duration: 0.7, ease: 'power2.out' }, '-=0.5')
+        .to(actionsRef.current, { opacity: 1, y: 0, duration: 0.6, ease: 'power2.out' }, '-=0.4')
+        .to(imgRef.current, { scale: 1, duration: 1.4, ease: 'power3.out' }, 0.3)
+        .to(badgeRef.current, { opacity: 1, y: 0, duration: 0.6, ease: 'back.out(1.7)' }, '-=0.3')
+        .to(hintRef.current, { opacity: 1, duration: 0.5 }, '-=0.2')
+    }, containerRef)
+    return () => ctx.revert()
   }, [])
 
   return (
-    <section id="hero" style={{
+    <section id="hero" ref={containerRef} style={{
       minHeight: '100vh', display: 'grid', gridTemplateColumns: '1fr 1fr',
       position: 'relative', overflow: 'hidden'
     }}>
-      {}
+      { }
       <div style={{
         display: 'flex', flexDirection: 'column', justifyContent: 'center',
         padding: '8rem 4rem 4rem', position: 'relative', zIndex: 2
@@ -52,7 +55,7 @@ export default function Hero() {
           {[
             ['Travel Smart,', l1Ref],
             ['Explore More,', l2Ref],
-            ['Spend Less.',   l3Ref],
+            ['Spend Less.', l3Ref],
           ].map(([text, ref]) => (
             <span key={text} style={{ overflow: 'hidden', display: 'block' }}>
               <span ref={ref} style={{ display: 'block', transform: 'translateY(110%)' }}>
@@ -107,12 +110,12 @@ export default function Hero() {
         `}</style>
       </div>
 
-      {}
+      { }
       <div style={{ position: 'relative', overflow: 'hidden' }}>
         <div ref={imgRef} style={{
           width: '100%', height: '100%', position: 'absolute', inset: 0, transform: 'scale(1.12)'
         }}>
-          {}
+          { }
           <img src="https://images.unsplash.com/photo-1544636331-e26879cd4d9b?w=1400&q=80"
             alt="SR Travels fleet" style={{
               width: '100%', height: '100%', objectFit: 'cover', filter: 'brightness(0.88)'

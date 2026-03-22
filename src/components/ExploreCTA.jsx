@@ -6,13 +6,16 @@ gsap.registerPlugin(ScrollTrigger)
 
 export default function ExploreCTA() {
   const sectionRef = useRef(null)
-  const navigate   = useNavigate()
+  const navigate = useNavigate()
 
   useEffect(() => {
-    gsap.from(sectionRef.current.children, {
-      opacity: 0, y: 30, duration: 0.8, stagger: 0.15, ease: 'power3.out',
-      scrollTrigger: { trigger: sectionRef.current, start: 'top 80%' }
-    })
+    const ctx = gsap.context(() => {
+      gsap.from(sectionRef.current.children, {
+        opacity: 0, y: 30, duration: 0.8, stagger: 0.15, ease: 'power3.out',
+        scrollTrigger: { trigger: sectionRef.current, start: 'top 80%' }
+      })
+    }, sectionRef)
+    return () => ctx.revert()
   }, [])
 
   return (
