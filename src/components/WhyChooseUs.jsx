@@ -7,7 +7,7 @@ const CARDS = [
   {
     id: 'wc0', num: '01', emoji: '🌟',
     title: 'The SR Travels Promise',
-    img: 'https://res.cloudinary.com/dzadpggxn/image/upload/v1774173717/WhatsApp_Image_2026-03-06_at_12.22.39_AM_1_cmrksy.jpg',
+    img: 'https://res.cloudinary.com/dzadpggxn/image/upload/q_auto,f_auto,w_800/v1774173717/WhatsApp_Image_2026-03-06_at_12.22.39_AM_1_cmrksy.jpg',
     desc: 'Trust and ground-level experience from Sunder and Tushar in every booking.',
     points: [
       { b: 'Experience that Counts:', t: '25 years of field knowledge — roads, rhythms, shortcuts of India.' },
@@ -19,7 +19,7 @@ const CARDS = [
   {
     id: 'wc1', num: '02', emoji: '🚐',
     title: 'Our Fleet',
-    img: 'https://res.cloudinary.com/dzadpggxn/image/upload/v1774174233/WhatsApp_Image_2026-03-06_at_12.21.55_AM_lq4eqa.jpg',
+    img: 'https://res.cloudinary.com/dzadpggxn/image/upload/q_auto,f_auto,w_800/v1774174233/WhatsApp_Image_2026-03-06_at_12.21.55_AM_lq4eqa.jpg',
     desc: '100+ vehicles ready for any group size — intimate family trips to large corporate retreats.',
     points: [
       { b: 'Small Squad (7-Seaters):', t: 'Perfect for family airport runs or quick city trips.' },
@@ -31,7 +31,7 @@ const CARDS = [
   {
     id: 'wc2', num: '03', emoji: '✨',
     title: 'Premium Comfort',
-    img: 'https://res.cloudinary.com/dzadpggxn/image/upload/v1774173391/WhatsApp_Image_2026-03-06_at_12.25.32_AM_lxdk0u.jpg',
+    img: 'https://res.cloudinary.com/dzadpggxn/image/upload/q_auto,f_auto,w_800/v1774173391/WhatsApp_Image_2026-03-06_at_12.25.32_AM_lxdk0u.jpg',
     desc: 'Aesthetic interiors and real comfort features that make every mile enjoyable.',
     points: [
       { b: 'Aesthetic Lighting:', t: 'Custom ambience that starts the vacation before you arrive.' },
@@ -43,7 +43,7 @@ const CARDS = [
   {
     id: 'wc3', num: '04', emoji: '🌍',
     title: 'Specialized Packages',
-    img: 'https://res.cloudinary.com/dzadpggxn/image/upload/v1774173689/WhatsApp_Image_2026-03-06_at_12.21.58_AM_xw5des.jpg',
+    img: 'https://res.cloudinary.com/dzadpggxn/image/upload/q_auto,f_auto,w_800/v1774173689/WhatsApp_Image_2026-03-06_at_12.21.58_AM_xw5des.jpg',
     desc: 'End-to-end travel planning beyond just the bus — we handle everything.',
     points: [
       { b: 'Custom Itineraries:', t: 'Dream destination, perfect plan — budget to ultra-luxury.' },
@@ -65,21 +65,18 @@ function WCard({ card }) {
       transition: 'background 0.4s, border-color 0.4s',
       willChange: 'transform, opacity'
     }}>
-      { }
+
       <div id={`${card.id}-scrim`} style={{
         position: 'absolute', inset: 0, zIndex: 3, borderRadius: 14,
         background: 'rgba(0,0,0,0)', pointerEvents: 'none', willChange: 'opacity'
       }} />
 
-      { }
       <div style={{ position: 'relative', overflow: 'hidden', borderRadius: '14px 0 0 14px', zIndex: 1 }}>
-        <img src={card.img} alt={card.title} style={{
+        <img src={card.img} alt={card.title} loading="lazy" style={{
           width: '100%', height: '100%', objectFit: 'cover', display: 'block',
           filter: 'grayscale(1) contrast(1.1) brightness(0.9)'
         }} />
       </div>
-
-      { }
       <div style={{
         padding: '2.4rem 2.8rem', display: 'flex', flexDirection: 'column',
         justifyContent: 'center', position: 'relative', overflow: 'hidden',
@@ -118,29 +115,22 @@ function WCard({ card }) {
 export default function WhyChooseUs() {
   const outerRef = useRef(null)
   const innerRef = useRef(null)
-  const containerRef = useRef(null)
 
   useEffect(() => {
     const ctx = gsap.context(() => {
       const cardEls = CARDS.map(c => document.getElementById(c.id))
       const scrimEls = CARDS.map(c => document.getElementById(`${c.id}-scrim`))
-
-
       cardEls.forEach((c, i) => {
         if (!c) return
         c.style.transform = ''
         gsap.set(c, { y: i === 0 ? 0 : '110%', scale: 1, opacity: 1, zIndex: 100 + i })
         gsap.set(scrimEls[i], { opacity: 0 })
       })
-
       const GAP = 28
       const tl = gsap.timeline({ defaults: { ease: 'none' } })
-
       for (let i = 1; i < CARDS.length; i++) {
         const pos = i - 1
-
         tl.to(cardEls[i], { y: 0, duration: 1 }, pos)
-
         tl.to(cardEls[i - 1], { scale: 0.94, y: -GAP, duration: 1 }, pos)
         tl.to(scrimEls[i - 1], { opacity: 0.42, duration: 1 }, pos)
 
@@ -155,29 +145,23 @@ export default function WhyChooseUs() {
           }, pos)
         }
       }
-
       ScrollTrigger.create({
         trigger: outerRef.current,
         start: 'top top',
         end: 'bottom bottom',
-        pin: innerRef.current,
-        pinSpacing: false,
-        scrub: 0.5,
+        scrub: 1,
         animation: tl
       })
 
-      return () => ScrollTrigger.getAll().forEach(t => {
-        if (t.vars.trigger === outerRef.current) t.kill()
-      })
-    }, containerRef)
+    }, outerRef)
     return () => ctx.revert()
   }, [])
 
   return (
-    <div ref={containerRef} id="why-us-outer" style={{ height: '250vh' }}>
+    <div ref={outerRef} id="why-us-outer" style={{ height: '400vh', position: 'relative' }}>
       <section ref={innerRef} id="why-us" style={{
-        position: 'relative', height: '100vh', overflow: 'hidden',
-        background: 'var(--bg)', display: 'flex',
+        position: 'sticky', top: 0, height: '100vh', overflow: 'hidden',
+        background: 'var(--bg)', display: 'flex', width: '100%',
         flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
         transition: 'background 0.4s'
       }}>
