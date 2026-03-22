@@ -64,7 +64,6 @@ function Deck({ name, cards, outerHeight, bgIcon }) {
       const cardEls = cards.map((_, i) => document.getElementById(`${name}-c${i}`))
       const n = cardEls.length
 
-
       cardEls.forEach((c, i) => {
         if (!c) return
         c.style.transform = ''
@@ -116,14 +115,14 @@ function Deck({ name, cards, outerHeight, bgIcon }) {
       })
     }, containerRef)
     return () => ctx.revert()
-  }, [isMobile])
+  }, []) // <--- BINGO! Changed from [isMobile] to []
+
   return (
     <div ref={el => { outerRef.current = el; containerRef.current = el }} style={{ height: outerHeight, position: 'relative' }}>
       <div ref={stickyRef} style={{
         position: 'sticky', top: 0, height: '100vh', overflow: 'hidden',
         background: '#181410'
       }}>
-        { }
         <div style={{
           position: 'absolute', top: '50%', left: '50%',
           width: 420, height: 420, opacity: 0.055, pointerEvents: 'none', zIndex: 0,
@@ -133,7 +132,6 @@ function Deck({ name, cards, outerHeight, bgIcon }) {
           {bgIcon}
         </div>
 
-        { }
         <div style={{
           position: 'absolute', inset: 0, zIndex: 1, pointerEvents: 'none',
           background: 'radial-gradient(ellipse 75% 75% at 50% 50%, transparent 45%, rgba(0,0,0,0.55))'
@@ -143,7 +141,6 @@ function Deck({ name, cards, outerHeight, bgIcon }) {
           <Card key={i} id={`${name}-c${i}`} {...card} />
         ))}
 
-        { }
         <div style={{
           position: 'absolute', bottom: '2.5rem', left: '50%', transform: 'translateX(-50%)',
           zIndex: 30, fontSize: '0.65rem', letterSpacing: '0.25em', textTransform: 'uppercase',
@@ -271,7 +268,6 @@ export default function AboutDeck() {
         }
       `}</style>
 
-      { }
       <div style={{ background: 'var(--bg-alt)', padding: '4rem 4rem 2rem', transition: 'background 0.4s' }}
         id="sunder-label">
         <span className="section-label">Meet the Founder</span>
@@ -290,7 +286,6 @@ export default function AboutDeck() {
       </div>
       <Deck name="sunder" cards={SUNDER_CARDS} outerHeight="200vh" bgIcon={SteeringWheel} />
 
-      { }
       <div style={{ background: 'var(--bg)', padding: '4rem 4rem 2rem', transition: 'background 0.4s' }}
         id="tushar-label">
         <span className="section-label">🚌 Meet the CEO</span>
