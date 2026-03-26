@@ -172,98 +172,20 @@ export default function OurServices() {
   const navigate = useNavigate()
 
   return (
-    <>
-      <style>{`
-        .services-scroll::-webkit-scrollbar { display: none; }
-        .services-scroll { 
-          -ms-overflow-style: none; scrollbar-width: none; 
-          display: flex; gap: 1.5rem; overflow-x: auto;
-          scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch;
-        }
-        
-        .fleet-header {
-          padding: 0 4rem;
-          margin-bottom: 1.5rem;
-          border-left: 4px solid var(--accent);
-          margin-left: 4rem;
-        }
+    <section id="our-services" style={{
+      padding: '6rem 0', background: 'var(--bg-alt)', transition: 'background 0.4s',
+      display: 'flex', flexDirection: 'column'
+    }}>
+      <div style={{ padding: '0 4rem', marginBottom: '4rem', textAlign: 'center' }}>
+        <span className="section-label">Travel In Style</span>
+        <h2 className="section-title">Our <em>Fleet</em> & Services</h2>
+      </div>
 
-        .cards-scroll-container { padding: 1rem 4rem 3rem 4rem; }
-        
-        .service-card {
-          flex: 0 0 320px;
-          height: 480px;
-          border-radius: 12px;
-          overflow: hidden;
-          position: relative;
-          background: var(--card-bg);
-          border: 1px solid var(--border);
-          scroll-snap-align: start;
-          transition: transform 0.3s, box-shadow 0.3s;
-          cursor: grab;
-          display: flex;
-          flex-direction: column;
-        }
-        
-        .service-card:active { cursor: grabbing; }
-        .service-card:hover {
-          transform: translateY(-8px);
-          box-shadow: 0 15px 35px rgba(0,0,0,0.15);
-        }
+      {/* Map through each fleet type and render a dedicated row */}
+      {FLEET_DATA.map(fleet => (
+        <FleetRow key={fleet.id} fleet={fleet} navigate={navigate} />
+      ))}
 
-        .service-card img {
-          width: 100%; height: 55%; object-fit: cover;
-          border-bottom: 1px solid var(--border);
-        }
-
-        .service-card-content {
-          padding: 1.5rem;
-          height: 45%;
-          display: flex;
-          flex-direction: column;
-          justify-content: flex-start;
-        }
-
-        /* 6th CTA Card Styling */
-        .cta-card {
-          background: var(--accent);
-          justify-content: center;
-          align-items: center;
-          text-align: center;
-          cursor: pointer;
-          border: none;
-        }
-        .cta-card:hover { background: var(--accent-lt); }
-        .cta-btn {
-          padding: 0.8rem 1.5rem; border: 1px solid #fff; border-radius: 25px;
-          color: #fff; font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase;
-        }
-
-        @media (max-width: 768px) {
-          .fleet-header { padding: 0 1.5rem; margin-left: 1.5rem; }
-          .cards-scroll-container { padding: 1rem 1.5rem 3rem 1.5rem; gap: 1rem; }
-          .service-card {
-            flex: 0 0 85vw;
-            height: 420px;
-          }
-        }
-      `}</style>
-
-      <section id="our-services" style={{
-        padding: '6rem 0', background: 'var(--bg-alt)', transition: 'background 0.4s',
-        display: 'flex', flexDirection: 'column'
-      }}>
-        <div style={{ padding: '0 4rem', marginBottom: '4rem', textAlign: 'center' }}>
-          <span className="section-label">Travel In Style</span>
-          <h2 className="section-title">Our <em>Fleet</em> & Services</h2>
-        </div>
-
-        {/* Map through each fleet type and render a dedicated row */}
-        {FLEET_DATA.map(fleet => (
-          <FleetRow key={fleet.id} fleet={fleet} navigate={navigate} />
-        ))}
-
-      </section>
-    </>
+    </section>
   )
 }
