@@ -255,14 +255,18 @@ body {
 }
 
 .fleet-header {
-  padding: 0 4rem;
+  /* FIXED: Reduced padding so text isn't miles away from the accent line */
+  padding: 0 0 0 1.5rem;
   margin-bottom: 1.5rem;
   border-left: 4px solid var(--accent);
   margin-left: 4rem;
 }
 
 .cards-scroll-container {
-  padding: 1rem 4rem 3rem 4rem;
+  /* FIXED: 4rem (margin) + 1.5rem (padding) = 5.5rem left padding */
+  /* This guarantees the first card perfectly aligns with the header text */
+  padding: 1rem 4rem 3rem 5.5rem;
+  box-sizing: border-box;
 }
 
 .service-card {
@@ -331,12 +335,14 @@ body {
 
 @media (max-width: 768px) {
   .fleet-header {
-    padding: 0 1.5rem;
+    /* Mobile header alignment */
     margin-left: 1.5rem;
+    padding: 0 0 0 1rem;
   }
 
   .cards-scroll-container {
-    padding: 1rem 1.5rem 3rem 1.5rem;
+    /* Mobile card alignment: 1.5rem margin + 1rem padding = 2.5rem left padding */
+    padding: 1rem 1.5rem 3rem 2.5rem;
     gap: 1rem;
   }
 
