@@ -255,15 +255,15 @@ body {
 }
 
 .fleet-header {
-  /* PERFECT CENTERING */
+  /* 1. PERFECTLY CENTERED SUBHEADINGS */
   text-align: center;
   margin-bottom: 2.5rem;
   padding: 0 2rem;
-  /* (Removed the border-left and margin-left entirely) */
 }
 
 .cards-scroll-container {
-  /* BALANCED SCROLL START: 4rem exactly matches your main layout margins */
+  /* 2. ELEGANT SCROLL PADDING */
+  /* This 4rem left/right padding aligns the cards beautifully with your main page margins */
   padding: 1rem 4rem 3rem 4rem;
   box-sizing: border-box;
 }
@@ -300,10 +300,9 @@ body {
 }
 
 .service-card-content {
-  /* FIXED INTERNAL PADDING */
+  /* 3. FIXED INTERNAL CARD PADDING */
   padding: 1.8rem 1.5rem;
   flex: 1;
-  /* Allows text box to naturally fill space */
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -318,7 +317,7 @@ body {
   cursor: pointer;
   border: none;
   padding: 2.5rem 1.5rem;
-  /* Keeps text from hugging the edges */
+  /* Heavy padding to keep text centered and off edges */
 }
 
 .cta-card:hover {
@@ -335,6 +334,7 @@ body {
   text-transform: uppercase;
 }
 
+/* Mobile Responsiveness */
 @media (max-width: 768px) {
   .fleet-header {
     margin-bottom: 2rem;
