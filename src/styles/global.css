@@ -255,17 +255,16 @@ body {
 }
 
 .fleet-header {
-  /* FIXED: Reduced padding so text isn't miles away from the accent line */
-  padding: 0 0 0 1.5rem;
-  margin-bottom: 1.5rem;
-  border-left: 4px solid var(--accent);
-  margin-left: 4rem;
+  /* PERFECT CENTERING */
+  text-align: center;
+  margin-bottom: 2.5rem;
+  padding: 0 2rem;
+  /* (Removed the border-left and margin-left entirely) */
 }
 
 .cards-scroll-container {
-  /* FIXED: 4rem (margin) + 1.5rem (padding) = 5.5rem left padding */
-  /* This guarantees the first card perfectly aligns with the header text */
-  padding: 1rem 4rem 3rem 5.5rem;
+  /* BALANCED SCROLL START: 4rem exactly matches your main layout margins */
+  padding: 1rem 4rem 3rem 4rem;
   box-sizing: border-box;
 }
 
@@ -301,8 +300,10 @@ body {
 }
 
 .service-card-content {
+  /* FIXED INTERNAL PADDING */
   padding: 1.8rem 1.5rem;
   flex: 1;
+  /* Allows text box to naturally fill space */
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -317,6 +318,7 @@ body {
   cursor: pointer;
   border: none;
   padding: 2.5rem 1.5rem;
+  /* Keeps text from hugging the edges */
 }
 
 .cta-card:hover {
@@ -335,14 +337,12 @@ body {
 
 @media (max-width: 768px) {
   .fleet-header {
-    /* Mobile header alignment */
-    margin-left: 1.5rem;
-    padding: 0 0 0 1rem;
+    margin-bottom: 2rem;
+    padding: 0 1.5rem;
   }
 
   .cards-scroll-container {
-    /* Mobile card alignment: 1.5rem margin + 1rem padding = 2.5rem left padding */
-    padding: 1rem 1.5rem 3rem 2.5rem;
+    padding: 1rem 1.5rem 3rem 1.5rem;
     gap: 1rem;
   }
 

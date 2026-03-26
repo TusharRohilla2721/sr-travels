@@ -1,7 +1,6 @@
 import { useRef, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-// 1. Fully Customized Data with Your Cloudinary Images
 const FLEET_DATA = [
   {
     id: '7s',
@@ -77,11 +76,9 @@ const FLEET_DATA = [
   }
 ]
 
-// 2. Component for the individual scrolling rows
 function FleetRow({ fleet, navigate }) {
   const scrollRef = useRef(null)
 
-  // Drag-to-scroll functionality scoped to this specific row
   useEffect(() => {
     const el = scrollRef.current
     if (!el) return
@@ -120,7 +117,6 @@ function FleetRow({ fleet, navigate }) {
 
   return (
     <div style={{ marginBottom: '5rem' }}>
-      {/* Subheading & Tagline */}
       <div className="fleet-header">
         <h3 style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: '2.2rem', color: 'var(--text)', marginBottom: '0.2rem', lineHeight: 1.2 }}>
           {fleet.name}
@@ -130,10 +126,7 @@ function FleetRow({ fleet, navigate }) {
         </p>
       </div>
 
-      {/* Horizontal Deck (5 Cards + 1 CTA) */}
       <div className="services-scroll cards-scroll-container" ref={scrollRef}>
-
-        {/* The 5 Flashcards */}
         {fleet.features.map(card => (
           <div key={card.id} className="service-card">
             <img src={card.img} alt={card.title} loading="lazy" />
@@ -149,7 +142,6 @@ function FleetRow({ fleet, navigate }) {
           </div>
         ))}
 
-        {/* The 6th CTA Card linking to destinations */}
         <div className="service-card cta-card" onClick={() => navigate('/destinations')}>
           <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🗺️</div>
           <h4 style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: '1.8rem', color: '#fff', marginBottom: '1rem', lineHeight: 1.2 }}>
@@ -162,7 +154,6 @@ function FleetRow({ fleet, navigate }) {
             Connect With Us →
           </div>
         </div>
-
       </div>
     </div>
   )
@@ -181,11 +172,9 @@ export default function OurServices() {
         <h2 className="section-title">Our <em>Fleet</em> & Services</h2>
       </div>
 
-      {/* Map through each fleet type and render a dedicated row */}
       {FLEET_DATA.map(fleet => (
         <FleetRow key={fleet.id} fleet={fleet} navigate={navigate} />
       ))}
-
     </section>
   )
 }
