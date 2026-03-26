@@ -1,6 +1,9 @@
 import { useEffect, useRef } from 'react'
 import gsap from 'gsap'
 
+// Module-level variable survives route navigation but resets on page reload 
+let hasPlayedThisSession = false;
+
 export default function Loader({ onComplete }) {
   const srRef     = useRef(null)
   const lettersRef = useRef([])
@@ -8,9 +11,16 @@ export default function Loader({ onComplete }) {
   const wrapRef   = useRef(null)
 
   useEffect(() => {
+    if (hasPlayedThisSession) {
+      gsap.set(wrapRef.current, { display: 'none' })
+      onComplete?.()
+      return
+    }
+
     const tl = gsap.timeline({
       onComplete: () => {
         gsap.set(wrapRef.current, { display: 'none' })
+        hasPlayedThisSession = true
         onComplete?.()
       }
     })

@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react'
 
-const THEMES  = ['warm', 'dark', 'light']
-const ICONS   = { warm: '🌤', dark: '🌙', light: '☀️' }
+const THEMES  = ['green', 'warm', 'dark']
+const ICONS   = { green: '🌲', warm: '☀️', dark: '🌙' }
 
 export function useTheme() {
   const saved = () => {
-    try { return localStorage.getItem('sr-theme') || 'warm' } catch { return 'warm' }
+    try { return localStorage.getItem('sr-theme') || 'green' } catch { return 'green' }
   }
 
   const [theme, setTheme] = useState(saved)
@@ -15,9 +15,9 @@ export function useTheme() {
     try { localStorage.setItem('sr-theme', theme) } catch {}
   }, [theme])
 
-  const cycle = () => {
+  const toggleTheme = () => {
     setTheme(t => THEMES[(THEMES.indexOf(t) + 1) % THEMES.length])
   }
 
-  return { theme, cycle, icon: ICONS[theme] }
+  return { theme, toggleTheme, icon: ICONS[theme] }
 }

@@ -55,25 +55,23 @@ const CARDS = [
 ]
 
 function WCard({ card }) {
-  const [expanded, setExpanded] = useState(false); // Mobile Read More Toggle
+  const [expanded, setExpanded] = useState(false);
 
   return (
     <div id={card.id} className="w-card" style={{
-      position: 'absolute', inset: 0,
-      display: 'grid', gridTemplateColumns: '340px 1fr',
+      position: 'relative', width: '100%', height: '100%',
+      display: 'grid', gridTemplateColumns: '300px 1fr',
       borderRadius: 14, overflow: 'hidden',
       background: 'var(--card-bg)', border: '1px solid var(--border)',
       boxShadow: '0 8px 40px rgba(0,0,0,0.1)',
       backdropFilter: 'blur(24px)',
       WebkitBackdropFilter: 'blur(24px)',
-      transition: 'background 0.4s, border-color 0.4s',
-      willChange: 'transform, opacity'
-    }}>
-      <div id={`${card.id}-scrim`} style={{
-        position: 'absolute', inset: 0, zIndex: 3, borderRadius: 14,
-        background: 'rgba(0,0,0,0)', pointerEvents: 'none', willChange: 'opacity'
-      }} />
-
+      transition: 'background 0.4s, border-color 0.4s, transform 0.3s',
+      cursor: 'grab'
+    }}
+      onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-5px)'}
+      onMouseLeave={e => e.currentTarget.style.transform = 'translateY(0)'}
+    >
       <div className="w-card-img" style={{ position: 'relative', overflow: 'hidden', zIndex: 1 }}>
         <img src={card.img} alt={card.title} loading="lazy" style={{
           width: '100%', height: '100%', objectFit: 'cover', display: 'block',
@@ -81,7 +79,6 @@ function WCard({ card }) {
         }} />
       </div>
 
-      {/* Added the dynamic 'is-expanded' class */}
       <div className={`w-card-text ${expanded ? 'is-expanded' : ''}`} style={{
         padding: '2.4rem 2.8rem', display: 'flex', flexDirection: 'column',
         justifyContent: 'center', position: 'relative', overflowY: 'hidden',
@@ -101,7 +98,6 @@ function WCard({ card }) {
 
         <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', lineHeight: 1.82 }}>{card.desc}</p>
 
-        {/* Bullet points are hidden on mobile by default */}
         <ul className="w-card-list" style={{ listStyle: 'none', marginTop: '0.7rem' }}>
           {card.points.map((p, i) => (
             <li key={i} style={{
@@ -117,12 +113,8 @@ function WCard({ card }) {
           ))}
         </ul>
 
-        {/* Read More Button (Only visible on Mobile) */}
         <div className="read-more-wrapper">
-          <button
-            className="read-more-btn"
-            onClick={() => setExpanded(!expanded)}
-          >
+          <button className="read-more-btn" onClick={() => setExpanded(!expanded)}>
             {expanded ? 'Show Less ↑' : 'Read More ↓'}
           </button>
         </div>
@@ -135,132 +127,132 @@ export default function WhyChooseUs() {
   const containerRef = useRef(null)
 
   useEffect(() => {
-    const ctx = gsap.context(() => {
-      const cardEls = CARDS.map(c => document.getElementById(c.id))
-      const scrimEls = CARDS.map(c => document.getElementById(`${c.id}-scrim`))
+    const el = containerRef.current
+    if (!el) return
+    let isDown = false
+    let startX
+    let scrollLeft
 
-      cardEls.forEach((c, i) => {
-        if (!c) return
-        c.style.transform = ''
-        gsap.set(c, { y: i === 0 ? 0 : '110%', scale: 1, opacity: 1, zIndex: 100 + i })
-        gsap.set(scrimEls[i], { opacity: 0 })
-      })
+    const onDown = (e) => {
+      isDown = true
+      el.style.cursor = 'grabbing'
+      startX = e.pageX - el.offsetLeft
+      scrollLeft = el.scrollLeft
+    }
+    const onLeave = () => { isDown = false; el.style.cursor = 'grab' }
+    const onUp = () => { isDown = false; el.style.cursor = 'grab' }
+    const onMove = (e) => {
+      if (!isDown) return
+      e.preventDefault()
+      const x = e.pageX - el.offsetLeft
+      const walk = (x - startX) * 2
+      el.scrollLeft = scrollLeft - walk
+    }
 
-      const GAP = 28
-      const tl = gsap.timeline({ defaults: { ease: 'none' } })
+    el.addEventListener('mousedown', onDown)
+    el.addEventListener('mouseleave', onLeave)
+    el.addEventListener('mouseup', onUp)
+    el.addEventListener('mousemove', onMove)
 
-      for (let i = 1; i < CARDS.length; i++) {
-        const pos = i - 1
-        tl.to(cardEls[i], { y: 0, duration: 1 }, pos)
-        tl.to(cardEls[i - 1], { scale: 0.94, y: -GAP, duration: 1 }, pos)
-        tl.to(scrimEls[i - 1], { opacity: 0.42, duration: 1 }, pos)
-
-        for (let j = 0; j < i - 1; j++) {
-          const depth = i - j
-          tl.to(cardEls[j], {
-            scale: Math.max(0.80, 0.94 - (depth - 1) * 0.05),
-            y: -(GAP * depth), duration: 1
-          }, pos)
-          tl.to(scrimEls[j], {
-            opacity: Math.min(0.75, 0.42 + (depth - 1) * 0.15), duration: 1
-          }, pos)
-        }
-      }
-      ScrollTrigger.create({
-        trigger: containerRef.current,
-        start: 'top top',
-        end: '+=300%',
-        pin: true,
-        scrub: 1,
-        animation: tl
-      })
-
-    }, containerRef)
-    return () => ctx.revert()
+    return () => {
+      el.removeEventListener('mousedown', onDown)
+      el.removeEventListener('mouseleave', onLeave)
+      el.removeEventListener('mouseup', onUp)
+      el.removeEventListener('mousemove', onMove)
+    }
   }, [])
 
   return (
     <>
       <style>{`
-        /* Hide the button on desktop */
+        .whyus-scroll::-webkit-scrollbar { display: none; }
+        .whyus-scroll { -ms-overflow-style: none; scrollbar-width: none; }
+        .whyus-card-wrapper {
+          flex: 0 0 760px;
+          height: 400px;
+          scroll-snap-align: center;
+        }
+
+        .section-header { padding: 0 4rem; }
+        .cards-scroll-container { padding: 1rem 4rem 3rem 4rem; }
+
         @media (min-width: 769px) {
           .read-more-wrapper { display: none !important; }
         }
         
         @media (max-width: 768px) {
+          .section-header { padding: 0 1.5rem; }
+          .cards-scroll-container { padding: 1rem 1.5rem 3rem 1.5rem; gap: 1rem !important; }
+          .whyus-card-wrapper {
+            flex: 0 0 85vw;
+            height: 580px;
+          }
           .w-card {
-            grid-template-columns: 1fr !important;
-            grid-template-rows: 240px 1fr !important; 
+            display: flex !important;
+            flex-direction: column !important;
             background: #0f0d0b !important; 
           }
-          .w-card-img { border-radius: 14px 14px 0 0 !important; }
-          .w-card-text { 
-            padding: 1.2rem 1.2rem !important; 
-            border-radius: 0 0 14px 14px !important;
-            justify-content: flex-start !important; 
-          }
-          .w-card-num { font-size: 2rem !important; margin-bottom: 0.2rem !important; }
-          
-          /* READ MORE LOGIC */
-          .w-card-list { display: none; } /* Hide list initially */
-          
-          /* The button styling */
-          .read-more-btn {
-            margin-top: 0.8rem;
-            padding: 0.4rem 1rem;
-            background: rgba(196,98,45,0.1);
-            border: 1px solid var(--accent);
-            color: var(--accent);
-            border-radius: 20px;
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            cursor: pointer;
-            transition: all 0.3s;
-          }
-          
-          /* When user clicks "Read More", the box expands to cover the image */
-          .w-card-text.is-expanded {
-            position: absolute !important;
-            top: 0 !important;
-            left: 0 !important;
+          .w-card-img { 
+            height: 70% !important; 
             width: 100% !important;
-            height: 100% !important;
-            border-radius: 14px !important;
-            background: rgba(15, 13, 11, 0.96) !important;
-            backdrop-filter: blur(12px) !important;
-            -webkit-backdrop-filter: blur(12px) !important;
-            justify-content: center !important;
+            border-radius: 14px 14px 0 0 !important; 
+            flex-shrink: 0;
+            display: flex;
           }
-          /* Show the list when expanded */
+          .w-card-text { 
+            height: 30% !important;
+            padding: 0rem 1.5rem 1.2rem 1.5rem !important;
+            border-radius: 0 0 14px 14px !important;
+            justify-content: flex-start !important;
+            align-items: flex-start !important;
+            text-align: left !important; 
+            overflow-y: auto;
+            position: relative;
+          }
+          .w-card-num { 
+            position: absolute !important; top: 1rem !important; right: 1.2rem !important;
+            font-size: 2.2rem !important; margin: 0 !important; opacity: 0.15 !important;
+          }
+          .w-card-text h3 { font-size: 1.15rem !important; margin-bottom: 0.4rem !important; padding-right: 2rem !important; justify-content: flex-start !important; }
+          .w-card-text p { font-size: 0.85rem !important; margin-bottom: 0.6rem !important; line-height: 1.4 !important; }
+          .w-card-list { display: none; }
+          .read-more-btn {
+            margin-top: auto !important; padding: 0.4rem 1rem !important;
+            background: rgba(196,98,45,0.1) !important; border: 1px solid var(--accent) !important;
+            color: var(--accent) !important; border-radius: 20px !important; font-size: 0.7rem !important; text-transform: uppercase !important;
+            align-self: flex-start !important;
+          }
+          .w-card-text.is-expanded {
+            position: absolute !important; top: 0 !important; left: 0 !important;
+            width: 100% !important; height: 100% !important; border-radius: 14px !important;
+            background: rgba(15, 13, 11, 0.96) !important; backdrop-filter: blur(12px) !important;
+            -webkit-backdrop-filter: blur(12px) !important; justify-content: center !important;
+            z-index: 10;
+          }
           .w-card-text.is-expanded .w-card-list {
-            display: block;
-            margin-bottom: 1rem;
+            display: block; margin-bottom: 1rem;
           }
         }
       `}</style>
 
-      <section ref={containerRef} id="why-us" style={{
-        height: '100vh', overflow: 'hidden', width: '100%',
-        background: 'var(--bg)', display: 'flex',
-        flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-        transition: 'background 0.4s'
+      <section id="why-us" style={{
+        padding: '6rem 0', background: 'var(--bg)', transition: 'background 0.4s',
+        display: 'flex', flexDirection: 'column'
       }}>
-        <div style={{
-          position: 'absolute', top: '2.5rem', left: '50%',
-          transform: 'translateX(-50%)', zIndex: 50,
-          textAlign: 'center', pointerEvents: 'none', whiteSpace: 'nowrap'
-        }}>
+        <div className="section-header" style={{ textAlign: 'center', marginBottom: '3rem' }}>
           <span className="section-label">Our Promise</span>
           <h2 className="section-title">Why Choose <em>SR Travels?</em></h2>
         </div>
 
-        <div style={{
-          position: 'relative',
-          width: 'min(960px, 90vw)', height: 'min(480px, 60vh)',
-          clipPath: 'inset(-200px -20px 0 -20px)'
+        <div className="whyus-scroll cards-scroll-container" ref={containerRef} style={{
+          display: 'flex', gap: '2rem', overflowX: 'auto',
+          scrollSnapType: 'x mandatory', WebkitOverflowScrolling: 'touch', cursor: 'grab'
         }}>
-          {CARDS.map(card => <WCard key={card.id} card={card} />)}
+          {CARDS.map(card => (
+            <div key={card.id} className="whyus-card-wrapper">
+              <WCard card={card} />
+            </div>
+          ))}
         </div>
       </section>
     </>

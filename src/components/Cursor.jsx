@@ -58,14 +58,19 @@ export default function Cursor() {
 
   return (
     <>
+      <style>{`
+        @media (max-width: 768px) {
+          .custom-dot, .custom-ring { display: none !important; }
+        }
+      `}</style>
       <div ref={dotRef} className="custom-dot" style={{
         width: 10, height: 10, background: 'var(--accent)', borderRadius: '50%',
-        position: 'fixed', top: 0, left: 0, pointerEvents: 'none', zIndex: 9999,
+        position: 'fixed', top: 0, left: 0, pointerEvents: 'none', zIndex: 999999,
         transform: 'translate(-50%,-50%)'
       }} />
       <div ref={ringRef} className="custom-ring" style={{
         width: 36, height: 36, border: '1.5px solid var(--accent)', borderRadius: '50%',
-        position: 'fixed', top: 0, left: 0, pointerEvents: 'none', zIndex: 9998,
+        position: 'fixed', top: 0, left: 0, pointerEvents: 'none', zIndex: 999998,
         transition: 'width 0.3s, height 0.3s'
       }} />
     </>

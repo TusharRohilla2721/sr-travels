@@ -80,14 +80,13 @@ body {
   background: var(--bg);
   color: var(--text);
   overflow-x: hidden !important;
-  cursor: auto !important;
-  /* FIXED: Cursor will now show correctly */
   transition: background 0.5s ease, color 0.5s ease;
 }
 
-a,
-button {
-  cursor: pointer !important;
+@media (min-width: 769px) {
+  *, body, a, button {
+    cursor: none !important;
+  }
 }
 
 /* Gradient backgrounds for Green/Dark */
@@ -204,9 +203,8 @@ button {
     gap: 2.5rem !important;
   }
 
-  /* Enforce 60% Image Top / 40% Text Bottom strictly on Mobile */
-  .deck-card,
-  .w-card {
+  /* Enforce 60% Image Top / 40% Text Bottom strictly on Mobile for Deck */
+  .deck-card {
     grid-template-columns: 1fr !important;
     grid-template-rows: 60% 40% !important;
     height: 82vh !important;
@@ -215,15 +213,13 @@ button {
   }
 
   /* HEAD-CHOPPING FIX: Forces focus on the top of the photo */
-  .deck-card-img,
-  .w-card-img {
+  .deck-card-img {
     object-position: center 5% !important;
     height: 100% !important;
   }
 
   /* Text Box Styling for Mobile */
-  .deck-card-text,
-  .w-card-text {
+  .deck-card-text {
     padding: 1.5rem !important;
     background: var(--card-bg-solid) !important;
     justify-content: flex-start !important;
