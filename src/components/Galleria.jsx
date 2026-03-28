@@ -150,8 +150,7 @@ function buildStrip(imgs) {
   return [...set, ...set]
 }
 
-const IS_TOUCH = typeof window !== 'undefined' &&
-  ('ontouchstart' in window || navigator.maxTouchPoints > 0)
+
 
 // ─── Mobile marquee — pure JS rAF so the loop distance is always exact ─────
 // WHY NOT CSS animation?
@@ -261,8 +260,16 @@ export default function Galleria() {
   const [dissolve, setDissolve] = useState(false)
   const [imgs, setImgs] = useState(() => buildStrip(GALLERY_DATA.all))
   const [lb, setLb] = useState(null)
+  const [isMobile, setIsMobile] = useState(() => window.innerWidth <= 768)
   const stripsRef = useRef(null)
   const wrapRef = useRef(null)
+
+  // Reactive width check — responds correctly to window resize
+  useEffect(() => {
+    const update = () => setIsMobile(window.innerWidth <= 768)
+    window.addEventListener('resize', update)
+    return () => window.removeEventListener('resize', update)
+  }, [])
 
   const changeCat = (next) => {
     if (next === cat) return
@@ -274,9 +281,9 @@ export default function Galleria() {
     }, 280)
   }
 
-  // Desktop tilt — skip on touch
+  // Desktop tilt — skip on mobile
   useEffect(() => {
-    if (IS_TOUCH) return
+    if (isMobile) return
     const wrap = wrapRef.current
     const strips = stripsRef.current
     if (!wrap || !strips) return
@@ -382,7 +389,7 @@ export default function Galleria() {
             flex: 1, minHeight: 0,
             perspective: '900px', perspectiveOrigin: '50% 50%',
             padding: '20px', overflow: 'hidden',
-            display: IS_TOUCH ? 'none' : 'flex',   // hide on touch, show on desktop
+            display: isMobile ? 'none' : 'flex',   // hide on mobile, show on desktop
           }}
         >
           <div
@@ -438,7 +445,7 @@ export default function Galleria() {
         {/* ═══ MOBILE — JS rAF marquee ════════════════════════════════════
             key={cat} forces a full remount (and rAF restart) on category change
         ═══════════════════════════════════════════════════════════════════ */}
-        {IS_TOUCH && <MobileMarquee imgs={flatImgs} key={cat} />}
+        {isMobile && <MobileMarquee imgs={flatImgs} key={cat} />}
       </section>
 
       {/* ── Lightbox ── */}
