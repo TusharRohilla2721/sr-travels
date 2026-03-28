@@ -398,7 +398,7 @@ body {
     padding: 0 1.5rem;
   }
 
-  /* ✅ Mobile gap — same single mechanism */
+  /* ── Scroll-snap offsets (unchanged) ── */
   .services-scroll {
     scroll-padding-left: 1.5rem;
     gap: 1rem;
@@ -413,13 +413,57 @@ body {
     min-width: 1.5rem;
   }
 
+  /* ── Card shell: mirrors WhyChooseUs .whyus-card-wrapper geometry ── */
   .service-card {
     flex: 0 0 85vw;
-    height: 420px;
+    height: 520px;
+    /* taller than the old 420 — gives image room */
+    display: flex;
+    flex-direction: column;
+    border-radius: 14px;
+    overflow: hidden;
+    background: var(--card-bg-solid);
+    border: 1px solid var(--border);
   }
 
+  /* ── Image: 68 % of height (≈ WhyChooseUs 70 %) ── */
+  .service-card img {
+    width: 100% !important;
+    height: 68% !important;
+    /* was 55% of 420px — now matches WhyChooseUs proportion */
+    object-fit: cover;
+    object-position: center 20%;
+    /* keeps faces/subjects in frame */
+    border-bottom: 1px solid var(--border);
+    border-radius: 14px 14px 0 0;
+    flex-shrink: 0;
+  }
+
+  /* ── Content area: 32 % — badge + title + short desc ── */
   .service-card-content {
-    padding: 1.2rem;
+    flex: 1;
+    /* fills remaining 32 % */
+    padding: 0.9rem 1.1rem !important;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border-radius: 0 0 14px 14px;
+    overflow: hidden;
+  }
+
+  .service-card-content h4 {
+    font-size: 1.2rem !important;
+    margin-bottom: 0.3rem !important;
+  }
+
+  .service-card-content p {
+    font-size: 0.78rem !important;
+    line-height: 1.5 !important;
+    /* clamp lines so content never overflows the 32 % box */
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
 }
 

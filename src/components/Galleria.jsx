@@ -111,7 +111,6 @@ const GALLERY_DATA = {
     'https://res.cloudinary.com/dzadpggxn/image/upload/q_auto,f_auto,w_800/v1774178427/IMG_20260308_140020_kgjtlb.jpg',
     'https://res.cloudinary.com/dzadpggxn/image/upload/q_auto,f_auto,w_800/v1774178408/IMG_20260307_150400_szvpsf.jpg',
     'https://res.cloudinary.com/dzadpggxn/image/upload/q_auto,f_auto,w_800/v1774178399/IMG_20260307_174752_fojf2g.jpg',
-    'https://res.cloudinary.com/dzadpggxn/image/upload/q_auto,f_auto,w_800/v1774178367/IMG_2329_fozngq.heic',
     'https://res.cloudinary.com/dzadpggxn/image/upload/q_auto,f_auto,w_800/v1774178362/IMG_20260307_130636_vt2the.jpg',
     'https://res.cloudinary.com/dzadpggxn/image/upload/q_auto,f_auto,w_800/v1774178359/IMG_20260307_181955_nv6i4a.jpg',
     'https://res.cloudinary.com/dzadpggxn/image/upload/q_auto,f_auto,w_800/v1774178349/IMG_20260307_152157_rrq0te.jpg',
@@ -147,14 +146,12 @@ const RATIOS = ['2/3', '4/5', '1/1', '3/4', '4/5', '2/3']
 const SPEEDS = [24, 19, 22, 17, 25, 20]
 const DIRS = ['gdn', 'gup', 'gdn', 'gup', 'gdn', 'gup']
 
-// ✅ Deduped first, THEN doubled — avoids wasted iterations on already-duplicate src arrays
 function buildStrip(imgs) {
   const unique = [...new Set(imgs)].slice(0, 20)
   const set = Array.from({ length: 20 }, (_, j) => unique[j % unique.length])
   return [...set, ...set]
 }
 
-// ✅ Evaluated once at module level — cheaper than querying inside every render
 const IS_TOUCH = typeof window !== 'undefined' &&
   ('ontouchstart' in window || navigator.maxTouchPoints > 0)
 
@@ -176,7 +173,6 @@ export default function Galleria() {
     }, 280)
   }
 
-  // ✅ 3D tilt — desktop only; also guarded against IS_TOUCH at runtime
   useEffect(() => {
     if (IS_TOUCH) return
     const wrap = wrapRef.current
@@ -199,14 +195,12 @@ export default function Galleria() {
     }
   }, [])
 
-  // Escape key to close lightbox
   useEffect(() => {
     const onKey = e => { if (e.key === 'Escape') setLb(null) }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
   }, [])
 
-  // Mobile flat image list — same source, no category filtering needed
   const flatImgs = GALLERY_DATA[cat] || GALLERY_DATA.all
 
   return (
@@ -215,43 +209,64 @@ export default function Galleria() {
         @keyframes gdn { from { transform: translateY(-50%); } to { transform: translateY(0%); } }
         @keyframes gup { from { transform: translateY(0%); }  to { transform: translateY(-50%); } }
         @keyframes lbIn { from { opacity:0; transform:scale(0.9); } to { opacity:1; transform:scale(1); } }
-        @keyframes slideXG { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+        /* ── Unique keyframe name to avoid conflicts ── */
+        @keyframes galleriaSlideX {
+          from { transform: translateX(0); }
+          to   { transform: translateX(-50%); }
+        }
 
         .gin-dissolve { opacity: 0 !important; transition: opacity 0.28s !important; }
         .gin-show     { opacity: 1 !important; transition: opacity 0.32s !important; }
 
-        /* Pause animation on hover — desktop only */
         @media (hover: hover) and (pointer: fine) {
           .gin-wrap:hover .gin { animation-play-state: paused !important; }
         }
 
-        /* ── Mobile gallery ── */
+        /* ── Desktop / Mobile gallery visibility ── */
         .galleria-desktop { display: flex; }
         .galleria-mobile  { display: none; }
 
         @media (max-width: 768px) {
           .galleria-desktop { display: none !important; }
-          .galleria-mobile  {
+
+          .galleria-mobile {
             display: flex !important;
             flex: 1;
+            min-height: 0;
             align-items: center;
             overflow: hidden;
             position: relative;
+            width: 100%;
           }
+
+          /* ── Track: sized to exactly 2× content so -50% loops perfectly ── */
           .galleria-mobile-track {
             display: flex;
-            gap: 1rem;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 0 0.6rem;
+            /* width is intrinsic (max-content) — JS does NOT need to set it */
             width: max-content;
-            animation: slideXG 22s linear infinite;
-          }
-          .galleria-mobile-track img {
-            height: 55vh;
-            width: auto;
-            border-radius: 12px;
-            object-fit: cover;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            border: 1px solid rgba(255,255,255,0.08);
             flex-shrink: 0;
+            /* Compositing on GPU avoids layout-triggered jank */
+            will-change: transform;
+            animation: galleriaSlideX 30s linear infinite;
+          }
+
+          /* ── Each image: fixed portrait-ish ratio, height relative to viewport ── */
+          .galleria-mobile-track img {
+            /* clamp keeps cards visible on all phone heights */
+            height: clamp(180px, 38vh, 300px);
+            /* fixed width keeps aspect ratio predictable */
+            width: clamp(130px, 26vw, 210px);
+            object-fit: cover;
+            object-position: center top;
+            border-radius: 10px;
+            flex-shrink: 0;
+            display: block;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.55);
+            border: 1px solid rgba(255,255,255,0.08);
           }
         }
       `}</style>
@@ -300,7 +315,6 @@ export default function Galleria() {
           <div ref={stripsRef} style={{
             display: 'flex', width: '100%', height: '100%', gap: '20px',
             transformStyle: 'preserve-3d', transition: 'transform 0.14s ease-out',
-            // ✅ NO will-change or translateZ here — that resets running CSS keyframe transforms
           }}>
             {WIDTHS.map((w, si) => (
               <div key={si} className="gin-wrap" style={{
@@ -340,13 +354,9 @@ export default function Galleria() {
           </div>
         </div>
 
-        {/* ── Mobile horizontal auto-scroll ─────────────────────────────────
-             Uses a flat duplicated array for seamless loop.
-             Responds to category changes via `flatImgs`.
-        ── */}
+        {/* ── Mobile horizontal auto-scroll ── */}
         <div className="galleria-mobile">
           <div className="galleria-mobile-track">
-            {/* Duplicate for seamless infinite loop */}
             {[...flatImgs, ...flatImgs].map((src, i) => (
               <img
                 key={i}
