@@ -12,62 +12,68 @@ const STATS = [
 ]
 
 export default function Stats() {
+  // ✅ One ref for everything — sectionRef was declared but never attached to DOM (null trigger bug)
   const sectionRef = useRef(null)
   const numbersRef = useRef([])
-  const containerRef = useRef(null)
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      gsap.from(".stat-item", {
+      // Stat items fade-in
+      gsap.from('.stat-item', {
         opacity: 0,
         y: 40,
         duration: 1,
         stagger: 0.2,
-        ease: "power4.out",
+        ease: 'power4.out',
         scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top 80%",
-        }
+          trigger: sectionRef.current, // ✅ now correctly attached
+          start: 'top 80%',
+        },
       })
 
+      // Animated number counters
       numbersRef.current.forEach((el, i) => {
         if (!el) return
         gsap.to({ val: 0 }, {
           val: STATS[i].count,
           duration: 2,
+          ease: 'power2.out',
           scrollTrigger: {
             trigger: el,
-            start: "top 90%",
-            once: true
+            start: 'top 90%',
+            once: true,
           },
           onUpdate: function () {
             el.textContent = Math.round(this.targets()[0].val) + STATS[i].suffix
-          }
+          },
         })
       })
-    }, containerRef)
+    }, sectionRef)
 
     return () => ctx.revert()
   }, [])
 
   return (
-    <section ref={containerRef} style={{ padding: '8rem 2rem', background: '#0a0a0a' }}>
+    <section
+      ref={sectionRef}              // ✅ attached — was missing before
+      style={{ padding: '8rem 2rem', background: '#0a0a0a' }}
+    >
       <div style={{
         display: 'grid',
         gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
         gap: '3rem',
         maxWidth: '1200px',
-        margin: '0 auto'
+        margin: '0 auto',
       }}>
         {STATS.map((s, i) => (
           <div key={i} className="stat-item" style={{ textAlign: 'center' }}>
             <div
-              ref={el => numbersRef.current[i] = el}
+              ref={el => { numbersRef.current[i] = el }}
               style={{
-                fontFamily: 'serif',
+                fontFamily: 'Cormorant Garamond, serif',
                 fontSize: '4rem',
                 color: '#ffffff',
-                marginBottom: '0.5rem'
+                marginBottom: '0.5rem',
               }}
             >
               0{s.suffix}
@@ -76,7 +82,7 @@ export default function Stats() {
               color: 'rgba(255,255,255,0.5)',
               textTransform: 'uppercase',
               letterSpacing: '2px',
-              fontSize: '0.8rem'
+              fontSize: '0.8rem',
             }}>
               {s.label}
             </p>
