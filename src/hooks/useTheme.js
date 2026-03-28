@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 
-const THEMES  = ['green', 'warm', 'dark']
-const ICONS   = { green: '🌲', warm: '☀️', dark: '🌙' }
+const THEMES = ['green', 'warm', 'dark']
+const ICONS = { green: '🌲', warm: '☀️', dark: '🌙' }
 
 export function useTheme() {
   const saved = () => {
@@ -12,7 +12,7 @@ export function useTheme() {
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme)
-    try { localStorage.setItem('sr-theme', theme) } catch {}
+    try { localStorage.setItem('sr-theme', theme) } catch { }
   }, [theme])
 
   const toggleTheme = () => {

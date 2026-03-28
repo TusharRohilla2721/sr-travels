@@ -138,169 +138,67 @@ const GALLERY_DATA = {
   ],
 }
 
-const TABS = ['all', 'fleet', 'services', 'festivals', 'destination', 'staff']
-const WIDTHS = ['12%', '19%', '15%', '22%', '16%', '16%']
-const RATIOS = ['2/3', '4/5', '1/1', '3/4', '4/5', '2/3']
-const SPEEDS = [24, 19, 22, 17, 25, 20]
-const DIRS = ['gdn', 'gup', 'gdn', 'gup', 'gdn', 'gup']
+const SECTIONS = [
+  { key: 'all',         label: '✦ All Memories' },
+  { key: 'fleet',       label: '🚌 Fleet' },
+  { key: 'services',    label: '🗺 Services' },
+  { key: 'destination', label: '📍 Destinations' },
+  { key: 'staff',       label: '👥 Team' },
+]
 
-function buildStrip(imgs) {
-  const unique = [...new Set(imgs)].slice(0, 20)
-  const set = Array.from({ length: 20 }, (_, j) => unique[j % unique.length])
-  return [...set, ...set]
-}
-
-
-
-// ─── Mobile marquee — pure JS rAF so the loop distance is always exact ─────
-// WHY NOT CSS animation?
-//   translateX(-50%) resolves against the element's OWN width.
-//   Inside a flex/overflow:hidden parent, mobile WebKit frequently resolves
-//   that width as the parent's width (or 0), making -50% the wrong shift.
-//   loading="lazy" also makes scrollWidth wrong at animation-start time.
-//   rAF reads scrollWidth AFTER real layout — always correct on every device.
-function MobileMarquee({ imgs }) {
-  const trackRef = useRef(null)
-  const rafRef = useRef(null)
-  const offsetRef = useRef(0)
-  const halfRef = useRef(0)
-  const pausedRef = useRef(false)
-
-  useEffect(() => {
-    const el = trackRef.current
-    if (!el) return
-
-    // Cancel any existing loop before starting a new one
-    if (rafRef.current) cancelAnimationFrame(rafRef.current)
-    offsetRef.current = 0
-
-    const loop = () => {
-      if (!pausedRef.current) {
-        offsetRef.current += 0.55           // ~33 px/s at 60 fps — readable pace
-        if (halfRef.current > 0 && offsetRef.current >= halfRef.current) {
-          offsetRef.current = 0             // snap back — second copy = first copy
-        }
-        if (el) el.style.transform = `translateX(-${offsetRef.current}px)`
-      }
-      rafRef.current = requestAnimationFrame(loop)
-    }
-
-    // Wait one rAF after mount so the browser has laid out all images
-    // (even without lazy, first rAF is safer than measuring synchronously)
-    rafRef.current = requestAnimationFrame(() => {
-      halfRef.current = el.scrollWidth / 2  // true half width after layout
-      loop()
-    })
-
-    return () => {
-      if (rafRef.current) cancelAnimationFrame(rafRef.current)
-    }
-  }, [imgs])   // restart when category changes (key prop on MobileMarquee handles remount)
-
+function MasonryGrid({ imgs, onImgClick }) {
   return (
-    // Clip container: plain block — NOT display:flex on this element
-    // so the inner track's inline-flex width is not constrained by flex logic
-    <div
-      style={{
-        flex: 1,
-        minHeight: 0,
-        overflow: 'hidden',
-        position: 'relative',
-        display: 'block',         // ← block, not flex
-      }}
-    >
-      {/* Vertical centering wrapper */}
-      <div style={{
-        position: 'absolute',
-        top: 0, bottom: 0, left: 0,
-        display: 'flex',
-        alignItems: 'center',
-      }}>
-        {/* Animated track — inline-flex so scrollWidth = true content width */}
+    <div style={{
+      columnCount: 'auto',
+      columnWidth: '280px',
+      columnGap: '12px',
+      padding: '0 12px',
+    }}>
+      {imgs.map((src, i) => (
         <div
-          ref={trackRef}
+          key={i}
+          onClick={() => onImgClick({ thumb: src, full: src.replace('w_800', 'w_1600') })}
           style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '0.65rem',
-            padding: '0 0.5rem',
-            willChange: 'transform',  // hint GPU compositing; safe on the leaf element
-            flexShrink: 0,
+            breakInside: 'avoid',
+            marginBottom: '12px',
+            borderRadius: '10px',
+            overflow: 'hidden',
+            cursor: 'pointer',
+            position: 'relative',
           }}
+          className="g-masonry-img"
         >
-          {/* Double the array — when offset reaches halfRef, reset to 0 seamlessly */}
-          {[...imgs, ...imgs].map((src, i) => (
-            <img
-              key={i}
-              src={src}
-              alt="SR Travels Gallery"
-              // ✅ No loading="lazy" — we need real dimensions immediately for scrollWidth
-              style={{
-                height: '42vh',
-                width: 'auto',
-                aspectRatio: '3/4',
-                objectFit: 'cover',
-                objectPosition: 'center top',
-                borderRadius: 10,
-                flexShrink: 0,
-                display: 'block',
-                boxShadow: '0 6px 20px rgba(0,0,0,0.5)',
-                border: '1px solid rgba(255,255,255,0.08)',
-              }}
-            />
-          ))}
+          <img
+            src={src}
+            alt="SR Travels Gallery"
+            loading="lazy"
+            style={{
+              width: '100%',
+              display: 'block',
+              borderRadius: '10px',
+              objectFit: 'cover',
+              transition: 'transform 0.4s ease',
+            }}
+          />
         </div>
-      </div>
+      ))}
     </div>
   )
 }
 
 export default function Galleria() {
-  const [cat, setCat] = useState('all')
-  const [dissolve, setDissolve] = useState(false)
-  const [imgs, setImgs] = useState(() => buildStrip(GALLERY_DATA.all))
+  const [activeSection, setActiveSection] = useState('all')
   const [lb, setLb] = useState(null)
-  const [isMobile, setIsMobile] = useState(() => window.innerWidth <= 768)
-  const stripsRef = useRef(null)
-  const wrapRef = useRef(null)
+  const [lbLoaded, setLbLoaded] = useState(false)
 
-  // Reactive width check — responds correctly to window resize
+  const visibleSections = activeSection === 'all'
+    ? SECTIONS.filter(s => s.key !== 'all')
+    : SECTIONS.filter(s => s.key === activeSection)
+
+  // Reset loaded status when image changes
   useEffect(() => {
-    const update = () => setIsMobile(window.innerWidth <= 768)
-    window.addEventListener('resize', update)
-    return () => window.removeEventListener('resize', update)
-  }, [])
-
-  const changeCat = (next) => {
-    if (next === cat) return
-    setDissolve(true)
-    setTimeout(() => {
-      setImgs(buildStrip(GALLERY_DATA[next] || GALLERY_DATA.all))
-      setCat(next)
-      setTimeout(() => setDissolve(false), 50)
-    }, 280)
-  }
-
-  // Desktop tilt — skip on mobile
-  useEffect(() => {
-    if (isMobile) return
-    const wrap = wrapRef.current
-    const strips = stripsRef.current
-    if (!wrap || !strips) return
-    const onMove = e => {
-      const r = wrap.getBoundingClientRect()
-      const nx = (e.clientX - r.left) / r.width - 0.5
-      const ny = (e.clientY - r.top) / r.height - 0.5
-      strips.style.transform = `rotateX(${ny * -6}deg) rotateY(${nx * 6}deg)`
-    }
-    const onLeave = () => { strips.style.transform = 'rotateX(0deg) rotateY(0deg)' }
-    wrap.addEventListener('mousemove', onMove)
-    wrap.addEventListener('mouseleave', onLeave)
-    return () => {
-      wrap.removeEventListener('mousemove', onMove)
-      wrap.removeEventListener('mouseleave', onLeave)
-    }
-  }, [])
+    if (lb) setLbLoaded(false)
+  }, [lb])
 
   useEffect(() => {
     const onKey = e => { if (e.key === 'Escape') setLb(null) }
@@ -308,177 +206,140 @@ export default function Galleria() {
     return () => window.removeEventListener('keydown', onKey)
   }, [])
 
-  // Flat list for mobile (MobileMarquee doubles it internally)
-  const flatImgs = GALLERY_DATA[cat] || GALLERY_DATA.all
-
   return (
     <>
-      {/*
-        Keyframes for DESKTOP strips.
-        gdn/gup are also in global.css — duplicate is harmless,
-        ensures they're parsed before the component's animation starts.
-        DO NOT add @keyframes to CSS that also sets will-change on the
-        same element — keep them separate.
-      */}
       <style>{`
-        @keyframes gdn  { from { transform: translateY(-50%); } to { transform: translateY(0%);   } }
-        @keyframes gup  { from { transform: translateY(0%);   } to { transform: translateY(-50%); } }
-        @keyframes lbIn { from { opacity:0; transform:scale(0.9); } to { opacity:1; transform:scale(1); } }
-
-        .gin-dissolve { opacity:0 !important; transition: opacity 0.28s !important; }
-        .gin-show     { opacity:1 !important; transition: opacity 0.32s !important; }
-
-        @media (hover: hover) and (pointer: fine) {
-          .gin-wrap:hover .gin { animation-play-state: paused !important; }
+        .g-masonry-img:hover img { transform: scale(1.04); }
+        .g-sticky-tabs {
+          position: sticky; top: 0; z-index: 100; background: var(--bg-darkest);
+          padding: 0 2rem;
+          display: flex; gap: 0.5rem; overflow-x: auto;
+          scrollbar-width: none; border-bottom: 1px solid rgba(255,255,255,0.06);
+          align-items: center;
         }
+        .g-sticky-tabs::-webkit-scrollbar { display: none; }
+        .g-section-tab {
+          padding: 1rem 1.2rem; font-size: 0.7rem; text-transform: uppercase;
+          letter-spacing: 0.12em; border: none; background: transparent;
+          color: rgba(255,255,255,0.45); cursor: pointer; white-space: nowrap;
+          border-bottom: 2px solid transparent; transition: all 0.3s;
+          font-family: 'DM Sans', sans-serif; flex-shrink: 0;
+        }
+        .g-section-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+        .g-section-tab:hover { color: rgba(255,255,255,0.8); }
+        .g-section-label {
+          font-family: 'Cormorant Garamond', serif; font-size: clamp(1.6rem, 3vw, 2.4rem);
+          font-weight: 300; color: var(--text); margin: 3rem 0 1.5rem 2rem;
+          padding-bottom: 0.8rem; border-bottom: 1px solid var(--border);
+        }
+        @media (max-width: 768px) {
+          .g-close-btn { 
+            right: auto !important;
+            left: 1.4rem !important;
+          }
+        }
+        @keyframes lbIn { from { opacity:0; transform:scale(0.9); } to { opacity:1; transform:scale(1); } }
+        @keyframes g-spin { from { transform:rotate(0deg); } to { transform:rotate(360deg); } }
       `}</style>
 
-      <section
-        id="galleria"
-        style={{
-          height: '100vh',
-          background: 'var(--bg-darkest)',
-          position: 'relative',
-          display: 'flex',
-          flexDirection: 'column',
-          overflow: 'hidden',
-          transition: 'background 0.4s',
-        }}
-      >
-        {/* ── Header / tabs ── */}
-        <div style={{
-          position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10,
-          display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-          padding: '1.6rem 3rem',
-          background: 'linear-gradient(to bottom, rgba(10,9,8,0.88) 0%, transparent 100%)',
-          pointerEvents: 'none',
-        }}>
-          <h2 style={{
-            fontFamily: 'Cormorant Garamond, serif',
-            fontSize: 'clamp(1.4rem,2vw,1.9rem)',
-            fontWeight: 300, color: 'rgba(255,255,255,0.9)',
-            letterSpacing: '0.02em', pointerEvents: 'auto',
-          }}>
-            <em>Galleria</em> — SR Travels
-          </h2>
-          <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', pointerEvents: 'auto' }}>
-            {TABS.map(t => (
-              <button key={t} onClick={() => changeCat(t)} style={{
-                padding: '0.32rem 0.85rem',
-                border: `1px solid ${t === cat ? 'var(--accent)' : 'rgba(255,255,255,0.15)'}`,
-                background: t === cat ? 'var(--accent)' : 'rgba(0,0,0,0.35)',
-                color: t === cat ? '#fff' : 'rgba(255,255,255,0.5)',
-                fontSize: '0.63rem', letterSpacing: '0.12em', textTransform: 'uppercase',
-                cursor: 'none', borderRadius: 20, backdropFilter: 'blur(8px)',
-                transition: 'all 0.3s', fontFamily: 'DM Sans, sans-serif',
-              }}>{t}</button>
-            ))}
+      <div id="galleria" style={{ minHeight: '100vh', background: 'var(--bg-darkest)', paddingBottom: '4rem' }}>
+
+        {/* Page Header */}
+        <div style={{ padding: '5rem 2rem 1.5rem', display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
+          <div>
+            <span className="section-label" style={{ color: 'rgba(255,255,255,0.5)' }}>Our Memories</span>
+            <h1 style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: 'clamp(2.5rem,5vw,4rem)', fontWeight: 300, color: '#fff', letterSpacing: '0.01em' }}>
+              <em>Galleria</em>
+            </h1>
           </div>
+          <p style={{ fontSize: '0.9rem', color: 'rgba(255,255,255,0.45)', maxWidth: '340px', textAlign: 'right', lineHeight: 1.7 }}>
+            Moments captured across trips, our fleet, team, and destination highlights.
+          </p>
         </div>
 
-        {/* ═══ DESKTOP — 6 vertical CSS-animated strips ════════════════════
-            KEY RULE: the wrapRef and stripsRef divs must NOT have
-            will-change:transform or translateZ() on them — those properties
-            create a new GPU compositing layer that BREAKS child CSS keyframe
-            animations (they reset mid-loop on layer promotion).
-            Only the .gin leaf elements (the animated ones) carry transform.
-        ═══════════════════════════════════════════════════════════════════ */}
-        <div
-          ref={wrapRef}
-          style={{
-            flex: 1, minHeight: 0,
-            perspective: '900px', perspectiveOrigin: '50% 50%',
-            padding: '20px', overflow: 'hidden',
-            display: isMobile ? 'none' : 'flex',   // hide on mobile, show on desktop
-          }}
-        >
-          <div
-            ref={stripsRef}
-            style={{
-              display: 'flex', width: '100%', height: '100%', gap: '20px',
-              transformStyle: 'preserve-3d',
-              transition: 'transform 0.14s ease-out',
-              // ✅ NO will-change here — it breaks child keyframe animations
-            }}
-          >
-            {WIDTHS.map((w, si) => (
-              <div key={si} className="gin-wrap" style={{
-                overflow: 'hidden', height: '100%', borderRadius: 8,
-                flexShrink: 0, width: w, position: 'relative',
-              }}>
-                <div
-                  className={`gin ${dissolve ? 'gin-dissolve' : 'gin-show'}`}
-                  style={{
-                    display: 'flex', flexDirection: 'column', gap: '20px',
-                    animationName: DIRS[si],
-                    animationDuration: `${SPEEDS[si]}s`,
-                    animationTimingFunction: 'linear',
-                    animationIterationCount: 'infinite',
-                    // ✅ translateZ on the LEAF animated element is fine — promotes
-                    //    only this element, not the parent layer
-                    transform: 'translateZ(0)',
-                  }}
-                >
-                  {imgs.map((src, ii) => (
-                    <img
-                      key={ii}
-                      src={src}
-                      alt="SR Travels Gallery"
-                      loading="lazy"
-                      onClick={() => setLb(src.replace('w_800', 'w_1600'))}
-                      style={{
-                        width: '100%', objectFit: 'cover', borderRadius: 6,
-                        flexShrink: 0, display: 'block', aspectRatio: RATIOS[si],
-                        border: '1px solid rgba(255,255,255,0.04)',
-                        cursor: 'none', transition: 'opacity 0.2s',
-                      }}
-                      onMouseEnter={e => { e.currentTarget.style.opacity = '0.8' }}
-                      onMouseLeave={e => { e.currentTarget.style.opacity = '1' }}
-                    />
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
+        {/* Sticky Tab Bar */}
+        <div className="g-sticky-tabs">
+          {SECTIONS.map(s => (
+            <button
+              key={s.key}
+              className={`g-section-tab ${activeSection === s.key ? 'active' : ''}`}
+              onClick={() => setActiveSection(s.key)}
+            >
+              {s.label}
+            </button>
+          ))}
         </div>
 
-        {/* ═══ MOBILE — JS rAF marquee ════════════════════════════════════
-            key={cat} forces a full remount (and rAF restart) on category change
-        ═══════════════════════════════════════════════════════════════════ */}
-        {isMobile && <MobileMarquee imgs={flatImgs} key={cat} />}
-      </section>
+        {/* Dynamic Sections */}
+        {visibleSections.map(section => {
+          const imgs = GALLERY_DATA[section.key] || []
+          if (!imgs.length) return null
+          return (
+            <div key={section.key}>
+              <h2 className="g-section-label">{section.label}</h2>
+              <MasonryGrid imgs={imgs} onImgClick={setLb} />
+            </div>
+          )
+        })}
+      </div>
 
-      {/* ── Lightbox ── */}
+      {/* Lightbox */}
       {lb && (
         <div
           onClick={() => setLb(null)}
           style={{
-            position: 'fixed', inset: 0, zIndex: 9990,
+            position: 'fixed', inset: 0, zIndex: 10001,
             background: 'rgba(0,0,0,0.92)', backdropFilter: 'blur(8px)',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             padding: '1.5rem',
           }}
         >
-          <button onClick={() => setLb(null)} style={{
-            position: 'fixed', top: '1.2rem', right: '1.4rem', zIndex: 3,
+          {/* Close Button */}
+          <button className="g-close-btn" onClick={() => setLb(null)} style={{
+            position: 'fixed', top: '1.2rem', right: '1.4rem', zIndex: 20,
             width: 40, height: 40, borderRadius: '50%',
             background: 'rgba(255,255,255,0.12)', backdropFilter: 'blur(6px)',
             border: '1px solid rgba(255,255,255,0.2)',
             color: 'rgba(255,255,255,0.9)', fontSize: '1.1rem',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
-            cursor: 'none',
+            cursor: 'pointer',
           }}>✕</button>
-          <img
-            src={lb}
-            alt="Gallery fullscreen"
-            onClick={e => e.stopPropagation()}
-            style={{
-              maxWidth: '90vw', maxHeight: '88vh', borderRadius: 8,
-              objectFit: 'contain', boxShadow: '0 24px 80px rgba(0,0,0,0.7)',
-              position: 'relative', zIndex: 2,
-              animation: 'lbIn 0.28s cubic-bezier(0.22,1,0.36,1)',
-            }}
-          />
+
+          <div style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }} onClick={e => e.stopPropagation()}>
+            {/* 1. Low-res placeholder (immediate) */}
+            <img
+              src={lb.thumb}
+              alt=""
+              style={{
+                maxWidth: '90vw', maxHeight: '88vh', borderRadius: 8,
+                objectFit: 'contain', filter: 'blur(10px)', opacity: lbLoaded ? 0 : 0.6,
+                position: 'absolute', transition: 'opacity 0.4s ease'
+              }}
+            />
+
+            {/* 2. Loading Spinner (while full-res is in-flight) */}
+            {!lbLoaded && (
+               <div style={{
+                 position: 'absolute', width: 32, height: 32,
+                 border: '2px solid rgba(255,255,255,0.1)', borderTopColor: 'var(--accent)',
+                 borderRadius: '50%', animation: 'g-spin 0.8s linear infinite'
+               }} />
+            )}
+
+            {/* 3. Full-res High Quality (fades in) */}
+            <img
+              src={lb.full}
+              onLoad={() => setLbLoaded(true)}
+              alt="Gallery fullscreen"
+              style={{
+                maxWidth: '90vw', maxHeight: '88vh', borderRadius: 8,
+                objectFit: 'contain', boxShadow: '0 24px 80px rgba(0,0,0,0.7)',
+                position: 'relative', zIndex: 2, opacity: lbLoaded ? 1 : 0,
+                transition: 'opacity 0.4s ease',
+                animation: 'lbIn 0.28s cubic-bezier(0.22,1,0.36,1)',
+              }}
+            />
+          </div>
         </div>
       )}
     </>

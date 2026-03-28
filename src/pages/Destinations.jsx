@@ -213,11 +213,7 @@ export default function Destinations() {
         </div>
       </nav>
 
-      <div style={{
-        background: 'var(--tag-bg)', borderBottom: '1px solid var(--border)',
-        padding: '0.8rem 3.5rem', display: 'flex', alignItems: 'center',
-        gap: '1rem', transition: 'background 0.4s'
-      }}>
+      <div className="dest-banner">
         <span style={{ fontSize: '1.1rem' }}>💬</span>
         <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', lineHeight: 1.5, flex: 1 }}>
           <strong style={{ color: 'var(--accent)' }}>Heads up!</strong> Prices shown are <strong style={{ color: 'var(--accent)' }}>estimates</strong> — think of them as a starting point. Final pricing depends on dates, route specifics, and vehicle availability. Everything's negotiable!
@@ -295,7 +291,21 @@ export default function Destinations() {
         )}
       </section>
 
-      <style>{`@keyframes ldBounce { 0%,80%,100%{transform:translateY(0)} 40%{transform:translateY(-8px)} }`}</style>
+      <style>{`
+        .dest-banner {
+          background: var(--tag-bg); border-bottom: 1px solid var(--border);
+          padding: 0.8rem 3.5rem; display: flex; alignItems: center;
+          gap: 1rem; transition: background 0.4s;
+        }
+        @media (max-width: 768px) {
+          .dest-banner {
+            flex-direction: column;
+            padding: 1.5rem !important;
+            align-items: flex-start;
+          }
+        }
+        @keyframes ldBounce { 0%,80%,100%{transform:translateY(0)} 40%{transform:translateY(-8px)} }
+      `}</style>
     </>
   )
 }

@@ -89,13 +89,12 @@ body {
   transition: background 0.5s ease, color 0.5s ease;
 }
 
-/* Hide native cursor on desktop — custom cursor handles it */
+/* 
+ * Hide native cursor on desktop (> 768px) — custom cursor handles it.
+ * This covers all elements including links, buttons, inputs and the root itself.
+ */
 @media (min-width: 769px) {
-
-  *,
-  body,
-  a,
-  button {
+  html, body, #root, * {
     cursor: none !important;
   }
 }
@@ -239,7 +238,7 @@ body {
    ========================================= */
 @media (max-width: 768px) {
 
-  section,
+  section:not(#galleria):not(#galleria-preview),
   footer,
   div[id*="-label"] {
     padding: 4.5rem 1.5rem !important;
