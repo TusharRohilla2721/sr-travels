@@ -94,7 +94,11 @@ body {
  * This covers all elements including links, buttons, inputs and the root itself.
  */
 @media (min-width: 769px) {
-  html, body, #root, * {
+
+  html,
+  body,
+  #root,
+  * {
     cursor: none !important;
   }
 }
@@ -470,6 +474,7 @@ body {
     display: -webkit-box;
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
+    line-clamp: 3;
     overflow: hidden;
   }
 }

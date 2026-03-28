@@ -187,8 +187,6 @@ export default function Destinations() {
 
   return (
     <>
-      {/* ✅ No <Cursor /> here — App.jsx renders it globally */}
-
       <nav style={{
         position: 'sticky', top: 0, zIndex: 100,
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',

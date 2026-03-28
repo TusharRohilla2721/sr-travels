@@ -4,8 +4,14 @@ const WA_PATH = 'M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.
 
 export default function WaFloat() {
   return (
-    <a href={waLink('Hello SR Travels, I\'d like to enquire about your services.')}
-      target="_blank" rel="noopener"
+    <a
+      href={waLink("Hello SR Travels, I'd like to enquire about your services.")}
+      target="_blank"
+      // OPTIMIZATION: noopener prevents tabnapping; noreferrer adds privacy
+      rel="noopener noreferrer"
+      // OPTIMIZATION: Screen readers need a label — the SVG alone gives nothing
+      aria-label="Chat with SR Travels on WhatsApp"
+      title="Chat on WhatsApp"
       style={{
         position: 'fixed', bottom: '2rem', right: '2rem', zIndex: 900,
         width: 54, height: 54, borderRadius: '50%', background: '#25D366',
@@ -14,8 +20,16 @@ export default function WaFloat() {
         cursor: 'none', transition: 'transform 0.3s, box-shadow 0.3s'
       }}
       onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.1)'; e.currentTarget.style.boxShadow = '0 8px 30px rgba(37,211,102,0.5)' }}
-      onMouseLeave={e => { e.currentTarget.style.transform = 'scale(1)'; e.currentTarget.style.boxShadow = '0 4px 20px rgba(37,211,102,0.35)' }}>
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="white">
+      onMouseLeave={e => { e.currentTarget.style.transform = 'scale(1)'; e.currentTarget.style.boxShadow = '0 4px 20px rgba(37,211,102,0.35)' }}
+    >
+      <svg
+        width="28"
+        height="28"
+        viewBox="0 0 24 24"
+        fill="white"
+        aria-hidden="true"
+        focusable="false"
+      >
         <path d={WA_PATH} />
       </svg>
     </a>

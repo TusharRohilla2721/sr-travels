@@ -22,6 +22,17 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
+  // OPTIMIZATION: Close mobile menu on route change
+  useEffect(() => {
+    setMobileMenuOpen(false)
+  }, [location.pathname])
+
+  // OPTIMIZATION: Lock body scroll when mobile menu is open
+  useEffect(() => {
+    document.body.style.overflow = mobileMenuOpen ? 'hidden' : ''
+    return () => { document.body.style.overflow = '' }
+  }, [mobileMenuOpen])
+
   const handleNav = (path, hashId) => {
     setMobileMenuOpen(false)
     if (location.pathname !== path) {
@@ -40,6 +51,8 @@ export default function Navbar() {
     }
   }
 
+  const THEME_LABELS = { green: 'Switch to warm theme', warm: 'Switch to dark theme', dark: 'Switch to green theme' }
+
   return (
     <>
       <style>{`
@@ -52,10 +65,14 @@ export default function Navbar() {
           transition: color 0.3s;
         }
         .desktop-nav-link:hover { color: var(--accent); }
+        .desktop-nav-link:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 2px; }
 
         .nav-container { padding: 1.5rem 2.5rem; }
         .nav-container.scrolled { padding: 1rem 2rem; border-bottom: 1px solid var(--border); }
         .nav-logo { font-size: 1.8rem; }
+        
+        /* OPTIMIZATION: Focus styles for keyboard accessibility */
+        .nav-icon-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
         
         @media (max-width: 960px) {
           .desktop-nav { display: none; }
@@ -67,51 +84,106 @@ export default function Navbar() {
           .nav-logo { font-size: 1.4rem; }
         }
       `}</style>
-      <nav className={`nav-container ${isScrolled ? 'scrolled' : ''}`} style={{
-        position: 'fixed', top: 0, left: 0, right: 0, zIndex: 9999,
-        background: isScrolled ? 'var(--nav-bg)' : 'transparent',
-        backdropFilter: isScrolled ? 'blur(12px)' : 'none',
-        borderBottom: isScrolled ? '1px solid var(--border)' : '1px solid transparent',
-        display: 'flex', justifyContent: 'space-between', alignItems: 'center', transition: '0.3s'
-      }}>
-        <div className="nav-logo" onClick={() => handleNav('/', null)} style={{ fontFamily: 'Cormorant Garamond, serif', fontWeight: 600, color: 'var(--text)', cursor: 'pointer', zIndex: 2 }}>
+
+      <nav
+        className={`nav-container ${isScrolled ? 'scrolled' : ''}`}
+        role="navigation"
+        aria-label="Main navigation"
+        style={{
+          position: 'fixed', top: 0, left: 0, right: 0, zIndex: 9999,
+          background: isScrolled ? 'var(--nav-bg)' : 'transparent',
+          backdropFilter: isScrolled ? 'blur(12px)' : 'none',
+          borderBottom: isScrolled ? '1px solid var(--border)' : '1px solid transparent',
+          display: 'flex', justifyContent: 'space-between', alignItems: 'center', transition: '0.3s'
+        }}
+      >
+        {/* Logo — landmark link to home */}
+        <a
+          href="/"
+          className="nav-logo"
+          onClick={e => { e.preventDefault(); handleNav('/', null) }}
+          aria-label="SR Travels — go to homepage"
+          style={{
+            fontFamily: 'Cormorant Garamond, serif', fontWeight: 600,
+            color: 'var(--text)', textDecoration: 'none', zIndex: 2
+          }}
+        >
           SR <span style={{ color: 'var(--accent)', fontStyle: 'italic' }}>Travels</span>
-        </div>
+        </a>
 
         {/* DESKTOP NAV */}
-        <div className="desktop-nav">
+        <div className="desktop-nav" role="list">
           {NAV_LINKS.map(link => (
-            <button key={link.label} className="desktop-nav-link" onClick={() => handleNav(link.path, link.hash)}>
+            <button
+              key={link.label}
+              className="desktop-nav-link"
+              role="listitem"
+              onClick={() => handleNav(link.path, link.hash)}
+              aria-current={location.pathname === link.path ? 'page' : undefined}
+            >
               {link.label}
             </button>
           ))}
         </div>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', zIndex: 2 }}>
-          <button onClick={toggleTheme} style={{ background: 'rgba(150,150,150,0.1)', border: '1px solid var(--border)', width: 42, height: 42, borderRadius: '50%', cursor: 'pointer', fontSize: '1.2rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          {/* OPTIMIZATION: aria-label describes the action, not just the icon */}
+          <button
+            className="nav-icon-btn"
+            onClick={toggleTheme}
+            aria-label={THEME_LABELS[theme]}
+            title={THEME_LABELS[theme]}
+            style={{
+              background: 'rgba(150,150,150,0.1)', border: '1px solid var(--border)',
+              width: 42, height: 42, borderRadius: '50%', cursor: 'pointer',
+              fontSize: '1.2rem', display: 'flex', alignItems: 'center', justifyContent: 'center'
+            }}
+          >
             {icon}
           </button>
 
-          <div className="mobile-toggle" onClick={() => setMobileMenuOpen(!mobileMenuOpen)} style={{ cursor: 'pointer', flexDirection: 'column', gap: '5px' }}>
-            <div style={{ width: '24px', height: '2px', background: 'var(--text)', transition: '0.3s', transform: mobileMenuOpen ? 'rotate(45deg) translate(5px, 5px)' : '' }} />
-            <div style={{ width: '24px', height: '2px', background: 'var(--text)', transition: '0.3s', opacity: mobileMenuOpen ? 0 : 1 }} />
-            <div style={{ width: '24px', height: '2px', background: 'var(--text)', transition: '0.3s', transform: mobileMenuOpen ? 'rotate(-45deg) translate(5px, -5px)' : '' }} />
-          </div>
+          {/* OPTIMIZATION: aria-expanded + aria-controls on hamburger */}
+          <button
+            className="mobile-toggle nav-icon-btn"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            aria-label={mobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
+            aria-expanded={mobileMenuOpen}
+            aria-controls="mobile-nav-overlay"
+            style={{ cursor: 'pointer', flexDirection: 'column', gap: '5px', background: 'none', border: 'none', padding: '4px' }}
+          >
+            <span style={{ display: 'block', width: '24px', height: '2px', background: 'var(--text)', transition: '0.3s', transform: mobileMenuOpen ? 'rotate(45deg) translate(5px, 5px)' : '' }} />
+            <span style={{ display: 'block', width: '24px', height: '2px', background: 'var(--text)', transition: '0.3s', opacity: mobileMenuOpen ? 0 : 1 }} />
+            <span style={{ display: 'block', width: '24px', height: '2px', background: 'var(--text)', transition: '0.3s', transform: mobileMenuOpen ? 'rotate(-45deg) translate(5px, -5px)' : '' }} />
+          </button>
         </div>
       </nav>
 
-      {/* FULL SCREEN OVERLAY */}
-      <div style={{
-        position: 'fixed', inset: 0, zIndex: 9998, background: 'var(--bg-darkest)',
-        visibility: mobileMenuOpen ? 'visible' : 'hidden', opacity: mobileMenuOpen ? 0.98 : 0,
-        display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', transition: '0.4s'
-      }}>
+      {/* FULL SCREEN OVERLAY — OPTIMIZATION: id + role + aria-hidden when closed */}
+      <div
+        id="mobile-nav-overlay"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Navigation menu"
+        aria-hidden={!mobileMenuOpen}
+        style={{
+          position: 'fixed', inset: 0, zIndex: 9998, background: 'var(--bg-darkest)',
+          visibility: mobileMenuOpen ? 'visible' : 'hidden', opacity: mobileMenuOpen ? 0.98 : 0,
+          display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', transition: '0.4s'
+        }}
+      >
         {NAV_LINKS.map((link) => (
-          <button key={link.label} onClick={() => handleNav(link.path, link.hash)} style={{
-            background: 'none', border: 'none', color: 'var(--text)',
-            fontFamily: 'Cormorant Garamond, serif', fontSize: '2.5rem', fontStyle: 'italic',
-            margin: '1rem 0', cursor: 'pointer'
-          }}>
+          <button
+            key={link.label}
+            onClick={() => handleNav(link.path, link.hash)}
+            aria-current={location.pathname === link.path ? 'page' : undefined}
+            style={{
+              background: 'none', border: 'none', color: 'var(--text)',
+              fontFamily: 'Cormorant Garamond, serif', fontSize: '2.5rem', fontStyle: 'italic',
+              margin: '1rem 0', cursor: 'pointer',
+              textDecoration: location.pathname === link.path ? 'underline' : 'none',
+              textUnderlineOffset: '4px'
+            }}
+          >
             {link.label}
           </button>
         ))}

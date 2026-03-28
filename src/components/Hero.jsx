@@ -73,7 +73,7 @@ export default function Hero() {
         </p>
 
         <div ref={actionsRef} className="hero-buttons" style={{
-          display: 'flex', gap: '1rem', alignItems: 'center', flexWrap: 'wrap', // Prevents right-shift bug!
+          display: 'flex', gap: '1rem', alignItems: 'center', flexWrap: 'wrap',
           marginBottom: '2rem', opacity: 0, transform: 'translateY(20px)'
         }}>
           <button className="btn-primary" onClick={() => navigate('/destinations')}>
@@ -117,11 +117,11 @@ export default function Hero() {
               padding: 4rem 1.5rem !important; 
             }
             .hero-heading {
-              font-size: 2.8rem !important; /* Shrunk slightly to fix right-shift */
+              font-size: 2.8rem !important;
               line-height: 1.1 !important;
             }
             .hero-buttons {
-              flex-direction: column; /* Stacks buttons on tiny screens */
+              flex-direction: column;
               align-items: flex-start !important;
             }
             .hero-badge {
@@ -140,10 +140,25 @@ export default function Hero() {
         <div ref={imgRef} style={{
           width: '100%', height: '100%', position: 'absolute', inset: 0, transform: 'scale(1.12)'
         }}>
-          <img src="https://res.cloudinary.com/dzadpggxn/image/upload/q_auto,f_auto,w_800/v1774172216/WhatsApp_Image_2026-03-06_at_12.21.52_AM_ixi0oh.jpg"
-            alt="SR Travels fleet" style={{
+          {/*
+            OPTIMIZATION:
+            - fetchpriority="high" tells browser this is the LCP element — fetch ASAP
+            - loading="eager" (default) — do NOT lazy-load the hero
+            - width/height prevent layout shift (CLS)
+            - Use a wider Cloudinary transform (w_1200) for retina displays
+          */}
+          <img
+            src="https://res.cloudinary.com/dzadpggxn/image/upload/q_auto,f_auto,w_1200/v1774172216/WhatsApp_Image_2026-03-06_at_12.21.52_AM_ixi0oh.jpg"
+            alt="SR Travels luxury bus fleet parked at depot"
+            fetchpriority="high"
+            loading="eager"
+            decoding="async"
+            width="800"
+            height="600"
+            style={{
               width: '100%', height: '100%', objectFit: 'cover', filter: 'brightness(0.88)'
-            }} />
+            }}
+          />
           <div style={{
             position: 'absolute', inset: 0,
             background: 'linear-gradient(to bottom, transparent 35%, var(--bg) 100%)'
