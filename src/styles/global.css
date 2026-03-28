@@ -252,20 +252,27 @@ body {
   overflow-x: auto;
   scroll-snap-type: x mandatory;
   -webkit-overflow-scrolling: touch;
+  /* Removed standard horizontal padding to fix the CSS flex-gap bug */
+  padding: 1rem 0 3rem 0;
+}
+
+/* THE BULLETPROOF GAP FIX */
+.services-scroll::before {
+  content: '';
+  flex: 0 0 8vw;
+  /* Forces a perfect, uncollapsible left indent */
+}
+
+.services-scroll::after {
+  content: '';
+  flex: 0 0 4rem;
+  /* Forces a perfect, uncollapsible right indent */
 }
 
 .fleet-header {
-  /* 1. PERFECTLY CENTERED SUBHEADINGS */
   text-align: center;
   margin-bottom: 2.5rem;
   padding: 0 2rem;
-}
-
-.cards-scroll-container {
-  /* 2. ELEGANT SCROLL PADDING */
-  /* This 4rem left/right padding aligns the cards beautifully with your main page margins */
-  padding: 1rem 4rem 3rem 4rem;
-  box-sizing: border-box;
 }
 
 .service-card {
@@ -294,21 +301,21 @@ body {
 
 .service-card img {
   width: 100%;
-  height: 52%;
+  height: 60%;
+  /* INCREASED to give images much more showcase space */
   object-fit: cover;
   border-bottom: 1px solid var(--border);
 }
 
 .service-card-content {
-  /* 3. FIXED INTERNAL CARD PADDING */
-  padding: 1.8rem 1.5rem;
+  padding: 1.2rem 1.5rem;
+  /* Reduced slightly to balance the larger image */
   flex: 1;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
 }
 
-/* 6th CTA Card Styling */
 .cta-card {
   background: var(--accent);
   justify-content: center;
@@ -317,7 +324,6 @@ body {
   cursor: pointer;
   border: none;
   padding: 2.5rem 1.5rem;
-  /* Heavy padding to keep text centered and off edges */
 }
 
 .cta-card:hover {
@@ -334,15 +340,23 @@ body {
   text-transform: uppercase;
 }
 
-/* Mobile Responsiveness */
 @media (max-width: 768px) {
   .fleet-header {
     margin-bottom: 2rem;
     padding: 0 1.5rem;
   }
 
-  .cards-scroll-container {
-    padding: 1rem 1.5rem 3rem 1.5rem;
+  .services-scroll::before {
+    flex: 0 0 1.5rem;
+  }
+
+  /* Mobile left gap */
+  .services-scroll::after {
+    flex: 0 0 1.5rem;
+  }
+
+  /* Mobile right gap */
+  .services-scroll {
     gap: 1rem;
   }
 
@@ -352,6 +366,259 @@ body {
   }
 
   .service-card-content {
-    padding: 1.5rem 1.2rem;
+    padding: 1.2rem 1.2rem;
+  }
+}
+
+@media (max-width: 768px) {
+
+  /* 1. Hide the extra columns, keep only the first master column */
+  .gin-wrap:not(:first-child) {
+    display: none !important;
+  }
+
+  /* 2. Reshape the master column to fit the screen */
+  .gin-wrap:first-child {
+    width: 100vw !important;
+    height: 60vh !important;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-40%) !important;
+    /* Centers it */
+  }
+
+  /* 3. Convert the vertical animation into a horizontal snap-scroll */
+  .gin {
+    animation: none !important;
+    flex-direction: row !important;
+    overflow-x: auto !important;
+    scroll-snap-type: x mandatory !important;
+    gap: 1.5rem !important;
+    padding: 0 10vw !important;
+    /* Space on the sides */
+    height: 100% !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* 4. Apply the 3D Perspective Tilt to the Images */
+  .gin img {
+    width: 75vw !important;
+    height: 100% !important;
+    scroll-snap-align: center !important;
+    /* 3D TILT EFFECT */
+    transform: perspective(1000px) rotateY(-12deg) scale(0.92);
+    transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+    border-radius: 12px !important;
+    box-shadow: -10px 10px 30px rgba(0, 0, 0, 0.5);
+  }
+
+  /* 5. When the user taps/holds an image, it pops forward to 0 degrees */
+  .gin img:active {
+    transform: perspective(1000px) rotateY(0deg) scale(1);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8);
+  }
+
+  /* Hide custom scrollbar for the 3D track */
+  .gin::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* =========================================
+   PATCH — append these rules to global.css
+   ========================================= */
+
+/* ── WHY THE PADDING FIX IS NEEDED ─────────────────────────────────────────
+   overflow-x:auto containers honour padding-left at the START of the scroll
+   in most browsers, but Safari and older Chrome collapse it when the flex
+   container's content width already fills the scroll viewport.
+   The guaranteed fix: margin on the first child + a ::before spacer for
+   scroll-snap alignment, plus scroll-padding-left to tell the browser
+   where snap points start.
+   ────────────────────────────────────────────────────────────────────────── */
+
+/* ── OUR SERVICES — first-card left gap ─────────────────────────────────── */
+.services-scroll {
+  /* Tells browser: snap points start 4rem from the left edge */
+  scroll-padding-left: 4rem;
+  /* Remove left padding from the container itself — we move it to the child */
+  padding-left: 0 !important;
+}
+
+/* Push the FIRST card away from the left edge reliably */
+.services-scroll>.service-card:first-child,
+.services-scroll>*:first-child {
+  margin-left: 4rem;
+}
+
+/* Add breathing room after the LAST card (right-side padding is also lost in
+   scroll containers — a ::after pseudo solves it without DOM changes) */
+.services-scroll::after {
+  content: '';
+  display: block;
+  min-width: 3rem;
+  /* visual breathing room */
+  flex-shrink: 0;
+}
+
+/* Mobile overrides — match the reduced 1.5rem padding */
+@media (max-width: 768px) {
+  .services-scroll {
+    scroll-padding-left: 1.5rem;
+  }
+
+  .services-scroll>.service-card:first-child,
+  .services-scroll>*:first-child {
+    margin-left: 1.5rem;
+  }
+
+  .services-scroll::after {
+    min-width: 1.5rem;
+  }
+}
+
+/* ── SAME FIX for WhyChooseUs horizontal scroll ─────────────────────────── */
+.whyus-scroll {
+  scroll-padding-left: 4rem;
+  padding-left: 0 !important;
+}
+
+.whyus-scroll>*:first-child {
+  margin-left: 4rem;
+}
+
+.whyus-scroll::after {
+  content: '';
+  display: block;
+  min-width: 3rem;
+  flex-shrink: 0;
+}
+
+@media (max-width: 768px) {
+  .whyus-scroll {
+    scroll-padding-left: 1.5rem;
+  }
+
+  .whyus-scroll>*:first-child {
+    margin-left: 1.5rem;
+  }
+
+  .whyus-scroll::after {
+    min-width: 1.5rem;
+  }
+}
+
+/* ── SAME FIX for AboutPreview horizontal scroll ────────────────────────── */
+.about-scroll {
+  scroll-padding-left: 4rem;
+  padding-left: 0 !important;
+}
+
+.about-scroll>*:first-child {
+  margin-left: 4rem;
+}
+
+.about-scroll::after {
+  content: '';
+  display: block;
+  min-width: 3rem;
+  flex-shrink: 0;
+}
+
+@media (max-width: 768px) {
+  .about-scroll {
+    scroll-padding-left: 1.5rem;
+  }
+
+  .about-scroll>*:first-child {
+    margin-left: 1.5rem;
+  }
+}
+
+/* ── PERFORMANCE — promote animating elements to their own compositor layer */
+/* Prevents the gallery strips from repainting the whole page on each frame  */
+.gin,
+.slider-track {
+  will-change: transform;
+  transform: translateZ(0);
+  /* force GPU layer */
+}
+
+/* Galleria strips: pause animation when tab is hidden — saves battery        */
+@media (prefers-reduced-motion: reduce) {
+
+  .gin,
+  .slider-track,
+  [style*="animation"] {
+    animation-play-state: paused !important;
+  }
+}
+
+/* ── LOADER BG variable (missing from original — caused flash on dark theme) */
+:root,
+[data-theme="green"] {
+  --loader-bg: #020705;
+  --loader-txt: rgba(255, 255, 255, 0.92);
+}
+
+[data-theme="warm"] {
+  --loader-bg: #faf8f4;
+  --loader-txt: #2a2520;
+}
+
+[data-theme="dark"] {
+  --loader-bg: #050403;
+  --loader-txt: rgba(255, 255, 255, 0.92);
+}
+
+/* ── BTN-OUTLINE (referenced in components but never defined in global.css) */
+.btn-outline {
+  background: transparent;
+  color: var(--accent);
+  padding: 0.75rem 1.8rem;
+  font-size: 0.78rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  border: 1.5px solid var(--accent);
+  border-radius: 4px;
+  font-weight: 500;
+  transition: background 0.3s, color 0.3s;
+  white-space: nowrap;
+}
+
+.btn-outline:hover {
+  background: var(--accent);
+  color: #fff;
+}
+
+/* ── BTN-WHITE (used in ExploreCTA but not defined) ─────────────────────── */
+.btn-white {
+  background: #fff;
+  color: var(--accent);
+  padding: 1rem 2.4rem;
+  font-size: 0.8rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  border: none;
+  border-radius: 4px;
+  font-weight: 600;
+  transition: opacity 0.3s, transform 0.3s;
+}
+
+.btn-white:hover {
+  opacity: 0.88;
+  transform: translateY(-2px);
+}
+
+/* ── Testimonials grid — responsive without the nuclear override ─────────── */
+@media (max-width: 900px) {
+  #stories>div[style*="grid-template-columns"] {
+    grid-template-columns: 1fr 1fr !important;
+  }
+}
+
+@media (max-width: 600px) {
+  #stories>div[style*="grid-template-columns"] {
+    grid-template-columns: 1fr !important;
   }
 }

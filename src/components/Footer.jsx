@@ -1,3 +1,4 @@
+import CreatorCard from './CreatorCard'
 export default function Footer() {
   const CONTACT = {
     whatsapp: '919289694400',
@@ -48,6 +49,8 @@ export default function Footer() {
               </a>
             </div>
           </div>
+          <br />
+          <CreatorCard />
         </div>
       </div>
 

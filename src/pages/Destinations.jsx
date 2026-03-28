@@ -1,29 +1,29 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase, waLink } from '../lib/supabase'
-import Cursor from '../components/Cursor'
+// ✅ Cursor removed — App.jsx already renders one globally for all routes
 import { useTheme } from '../hooks/useTheme'
 
 const VEHICLES = [
-  { key: 'price_7seater',     label: '7 Seater' },
-  { key: 'price_12seater',    label: '12 Seater' },
-  { key: 'price_16_urbania',  label: '16 Seater (Premium Urbania)' },
-  { key: 'price_20seater',    label: '20 Seater' },
-  { key: 'price_26seater',    label: '26 Seater' },
-  { key: 'price_42seater',    label: '42 Seater' },
+  { key: 'price_7seater', label: '7 Seater' },
+  { key: 'price_12seater', label: '12 Seater' },
+  { key: 'price_16_urbania', label: '16 Seater (Premium Urbania)' },
+  { key: 'price_20seater', label: '20 Seater' },
+  { key: 'price_26seater', label: '26 Seater' },
+  { key: 'price_42seater', label: '42 Seater' },
 ]
 
 const SAMPLE_ROUTES = [
-  { id:1, from_city:'Delhi', to_city:'Jaipur', kilometers:280, price_7seater:3500, price_12seater:5500, price_16_urbania:7500, price_20seater:9000, price_26seater:12000, price_42seater:18000 },
-  { id:2, from_city:'Delhi', to_city:'Agra', kilometers:200, price_7seater:2800, price_12seater:4200, price_16_urbania:5800, price_20seater:7200, price_26seater:9500, price_42seater:14000 },
-  { id:3, from_city:'Gurgaon', to_city:'Chandigarh', kilometers:250, price_7seater:3200, price_12seater:4800, price_16_urbania:6800, price_20seater:8200, price_26seater:11000, price_42seater:16500 },
-  { id:4, from_city:'Delhi', to_city:'Haridwar', kilometers:220, price_7seater:3000, price_12seater:4500, price_16_urbania:6200, price_20seater:7800, price_26seater:10200, price_42seater:15500 },
-  { id:5, from_city:'Delhi', to_city:'Shimla', kilometers:360, price_7seater:4500, price_12seater:7000, price_16_urbania:9500, price_20seater:12000, price_26seater:15500, price_42seater:23000 },
-  { id:6, from_city:'Gurgaon', to_city:'Rishikesh', kilometers:280, price_7seater:3800, price_12seater:5800, price_16_urbania:8000, price_20seater:9800, price_26seater:13000, price_42seater:19500 },
+  { id: 1, from_city: 'Delhi', to_city: 'Jaipur', kilometers: 280, price_7seater: 3500, price_12seater: 5500, price_16_urbania: 7500, price_20seater: 9000, price_26seater: 12000, price_42seater: 18000 },
+  { id: 2, from_city: 'Delhi', to_city: 'Agra', kilometers: 200, price_7seater: 2800, price_12seater: 4200, price_16_urbania: 5800, price_20seater: 7200, price_26seater: 9500, price_42seater: 14000 },
+  { id: 3, from_city: 'Gurgaon', to_city: 'Chandigarh', kilometers: 250, price_7seater: 3200, price_12seater: 4800, price_16_urbania: 6800, price_20seater: 8200, price_26seater: 11000, price_42seater: 16500 },
+  { id: 4, from_city: 'Delhi', to_city: 'Haridwar', kilometers: 220, price_7seater: 3000, price_12seater: 4500, price_16_urbania: 6200, price_20seater: 7800, price_26seater: 10200, price_42seater: 15500 },
+  { id: 5, from_city: 'Delhi', to_city: 'Shimla', kilometers: 360, price_7seater: 4500, price_12seater: 7000, price_16_urbania: 9500, price_20seater: 12000, price_26seater: 15500, price_42seater: 23000 },
+  { id: 6, from_city: 'Gurgaon', to_city: 'Rishikesh', kilometers: 280, price_7seater: 3800, price_12seater: 5800, price_16_urbania: 8000, price_20seater: 9800, price_26seater: 13000, price_42seater: 19500 },
 ]
 
 function RouteCard({ route }) {
-  const [vehicle,  setVehicle]  = useState('')
+  const [vehicle, setVehicle] = useState('')
   const [estimate, setEstimate] = useState(null)
 
   const findEstimate = () => {
@@ -43,10 +43,9 @@ function RouteCard({ route }) {
       borderRadius: 6, overflow: 'hidden',
       transition: 'transform 0.3s, box-shadow 0.3s, background 0.4s, border-color 0.4s'
     }}
-    onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-4px)'; e.currentTarget.style.boxShadow = '0 16px 40px rgba(0,0,0,0.08)' }}
-    onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none' }}>
+      onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-4px)'; e.currentTarget.style.boxShadow = '0 16px 40px rgba(0,0,0,0.08)' }}
+      onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none' }}>
 
-      {}
       <div style={{ padding: '1.5rem 1.5rem 1rem', borderBottom: '1px solid var(--border)' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.8rem' }}>
           <span style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: '1.25rem', fontWeight: 400, color: 'var(--text)' }}>
@@ -68,7 +67,6 @@ function RouteCard({ route }) {
         )}
       </div>
 
-      {}
       <div style={{ padding: '1.2rem 1.5rem 1.5rem' }}>
         <label style={{
           display: 'block', fontSize: '0.68rem', letterSpacing: '0.15em',
@@ -85,14 +83,12 @@ function RouteCard({ route }) {
           }}>
           <option value="">— Choose a vehicle —</option>
           {VEHICLES.map(v => (
-            <option key={v.key} value={v.key}
-              disabled={route[v.key] == null}>
+            <option key={v.key} value={v.key} disabled={route[v.key] == null}>
               {v.label}{route[v.key] == null ? ' (on request)' : ''}
             </option>
           ))}
         </select>
 
-        {}
         <button onClick={findEstimate} style={{
           position: 'relative', width: '100%', padding: '0.85rem',
           border: '1.5px solid var(--accent)', borderRadius: 3,
@@ -100,12 +96,11 @@ function RouteCard({ route }) {
           fontSize: '0.78rem', letterSpacing: '0.1em', textTransform: 'uppercase',
           fontWeight: 500, cursor: 'none', overflow: 'hidden', transition: 'color 0.3s'
         }}
-        onMouseEnter={e => { e.currentTarget.style.background = 'var(--accent)'; e.currentTarget.style.color = '#fff' }}
-        onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--accent)' }}>
+          onMouseEnter={e => { e.currentTarget.style.background = 'var(--accent)'; e.currentTarget.style.color = '#fff' }}
+          onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--accent)' }}>
           Find an Estimate →
         </button>
 
-        {}
         {estimate && (
           <div style={{
             marginTop: '1rem', padding: '1rem 1.2rem',
@@ -138,7 +133,7 @@ function RouteCard({ route }) {
                 borderRadius: 25, fontSize: '0.75rem', fontWeight: 500, cursor: 'none'
               }}>
               <svg width="14" height="14" viewBox="0 0 24 24" fill="white">
-                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.885 3.488"/>
+                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.885 3.488" />
               </svg>
               {estimate === 'onrequest' ? 'Ask for quote' : 'Confirm on WhatsApp'}
             </a>
@@ -152,14 +147,14 @@ function RouteCard({ route }) {
 }
 
 export default function Destinations() {
-  const [all,      setAll]      = useState([])
+  const [all, setAll] = useState([])
   const [filtered, setFiltered] = useState([])
-  const [fromQ,    setFromQ]    = useState('')
-  const [toQ,      setToQ]      = useState('')
-  const [loading,  setLoading]  = useState(true)
-  const [isDemo,   setIsDemo]   = useState(false)
+  const [fromQ, setFromQ] = useState('')
+  const [toQ, setToQ] = useState('')
+  const [loading, setLoading] = useState(true)
+  const [isDemo, setIsDemo] = useState(false)
   const navigate = useNavigate()
-  const { icon, cycle } = useTheme()
+  const { icon, toggleTheme } = useTheme()
 
   useEffect(() => {
     (async () => {
@@ -192,9 +187,8 @@ export default function Destinations() {
 
   return (
     <>
-      <Cursor />
+      {/* ✅ No <Cursor /> here — App.jsx renders it globally */}
 
-      {}
       <nav style={{
         position: 'sticky', top: 0, zIndex: 100,
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
@@ -215,11 +209,10 @@ export default function Destinations() {
             width: 34, height: 34, borderRadius: '50%', border: '1.5px solid var(--border)',
             background: 'var(--bg-alt)', fontSize: '0.95rem', cursor: 'none',
             display: 'flex', alignItems: 'center', justifyContent: 'center'
-          }} onClick={cycle}>{icon}</button>
+          }} onClick={toggleTheme}>{icon}</button>
         </div>
       </nav>
 
-      {}
       <div style={{
         background: 'var(--tag-bg)', borderBottom: '1px solid var(--border)',
         padding: '0.8rem 3.5rem', display: 'flex', alignItems: 'center',
@@ -235,12 +228,11 @@ export default function Destinations() {
             background: '#25D366', color: '#fff', padding: '0.55rem 1.2rem',
             borderRadius: 25, fontSize: '0.75rem', fontWeight: 500, cursor: 'none', whiteSpace: 'nowrap'
           }}>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.885 3.488"/></svg>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.885 3.488" /></svg>
           Chat on WhatsApp
         </a>
       </div>
 
-      {}
       <div style={{
         padding: '4rem 3.5rem 3rem', background: 'var(--bg-dark)',
         position: 'relative', overflow: 'hidden', transition: 'background 0.4s'
@@ -256,7 +248,6 @@ export default function Destinations() {
         </p>
       </div>
 
-      {}
       <div style={{
         padding: '1.5rem 3.5rem', background: 'var(--bg-alt)',
         borderBottom: '1px solid var(--border)',
@@ -272,7 +263,6 @@ export default function Destinations() {
           onClick={() => { setFromQ(''); setToQ('') }}>Clear ✕</button>
       </div>
 
-      {}
       <section style={{ padding: '3rem 3.5rem 5rem', transition: 'background 0.4s' }}>
         <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '1.8rem' }}>
           Showing <span style={{ color: 'var(--accent)', fontWeight: 500 }}>{filtered.length}</span> route{filtered.length !== 1 ? 's' : ''}
@@ -281,7 +271,7 @@ export default function Destinations() {
 
         {loading ? (
           <div style={{ display: 'flex', gap: 6, justifyContent: 'center', padding: '4rem' }}>
-            {[0,1,2].map(i => (
+            {[0, 1, 2].map(i => (
               <div key={i} style={{
                 width: 8, height: 8, background: 'var(--accent)', borderRadius: '50%',
                 animation: `ldBounce 1.1s ${i * 0.18}s infinite`

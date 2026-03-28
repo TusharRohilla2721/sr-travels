@@ -28,7 +28,6 @@ export default function CreatorCard() {
       <button
         onClick={() => setOpen(true)}
         style={{
-          position: 'fixed', bottom: '2rem', left: '2rem', zIndex: 900,
           padding: '0.6rem 1.2rem',
           background: 'rgba(22,18,14,0.75)',
           backdropFilter: 'blur(12px)',
