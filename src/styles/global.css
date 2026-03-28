@@ -284,6 +284,14 @@ body {
   }
 }
 
+@media (max-width: 768px) {
+
+  /* Galleria is a full-bleed 100vh panel — no padding on the section itself */
+  #galleria {
+    padding: 0 !important;
+  }
+}
+
 /* =========================================
    6. OUR SERVICES — horizontal scroll deck
    ========================================= */

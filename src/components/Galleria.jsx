@@ -120,8 +120,6 @@ const GALLERY_DATA = {
     'https://res.cloudinary.com/dzadpggxn/image/upload/q_auto,f_auto,w_800/v1774178010/IMG_20260104_073629_enezka.jpg',
     'https://res.cloudinary.com/dzadpggxn/image/upload/q_auto,f_auto,w_800/v1774177669/IMG_20260101_190826_tnukll.jpg',
     'https://res.cloudinary.com/dzadpggxn/image/upload/q_auto,f_auto,w_800/v1774177786/IMG_20260104_100509_an64rq.jpg',
-    'https://res.cloudinary.com/dzadpggxn/image/upload/q_auto,f_auto,w_800/v1774174660/WhatsApp_Image_2026-03-22_at_3.37.52_PM_1_x0acqd.jpg',
-    'https://res.cloudinary.com/dzadpggxn/image/upload/q_auto,f_auto,w_800/v1774174700/WhatsApp_Image_2026-03-22_at_3.38.03_PM_1_hodtsa.jpg',
   ],
   staff: [
     'https://res.cloudinary.com/dzadpggxn/image/upload/q_auto,f_auto,w_800/v1774174650/WhatsApp_Image_2026-03-22_at_3.37.50_PM_1_dklhsm.jpg',
@@ -155,6 +153,109 @@ function buildStrip(imgs) {
 const IS_TOUCH = typeof window !== 'undefined' &&
   ('ontouchstart' in window || navigator.maxTouchPoints > 0)
 
+// ─── Mobile marquee — pure JS rAF so the loop distance is always exact ─────
+// WHY NOT CSS animation?
+//   translateX(-50%) resolves against the element's OWN width.
+//   Inside a flex/overflow:hidden parent, mobile WebKit frequently resolves
+//   that width as the parent's width (or 0), making -50% the wrong shift.
+//   loading="lazy" also makes scrollWidth wrong at animation-start time.
+//   rAF reads scrollWidth AFTER real layout — always correct on every device.
+function MobileMarquee({ imgs }) {
+  const trackRef = useRef(null)
+  const rafRef = useRef(null)
+  const offsetRef = useRef(0)
+  const halfRef = useRef(0)
+  const pausedRef = useRef(false)
+
+  useEffect(() => {
+    const el = trackRef.current
+    if (!el) return
+
+    // Cancel any existing loop before starting a new one
+    if (rafRef.current) cancelAnimationFrame(rafRef.current)
+    offsetRef.current = 0
+
+    const loop = () => {
+      if (!pausedRef.current) {
+        offsetRef.current += 0.55           // ~33 px/s at 60 fps — readable pace
+        if (halfRef.current > 0 && offsetRef.current >= halfRef.current) {
+          offsetRef.current = 0             // snap back — second copy = first copy
+        }
+        if (el) el.style.transform = `translateX(-${offsetRef.current}px)`
+      }
+      rafRef.current = requestAnimationFrame(loop)
+    }
+
+    // Wait one rAF after mount so the browser has laid out all images
+    // (even without lazy, first rAF is safer than measuring synchronously)
+    rafRef.current = requestAnimationFrame(() => {
+      halfRef.current = el.scrollWidth / 2  // true half width after layout
+      loop()
+    })
+
+    return () => {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current)
+    }
+  }, [imgs])   // restart when category changes (key prop on MobileMarquee handles remount)
+
+  return (
+    // Clip container: plain block — NOT display:flex on this element
+    // so the inner track's inline-flex width is not constrained by flex logic
+    <div
+      style={{
+        flex: 1,
+        minHeight: 0,
+        overflow: 'hidden',
+        position: 'relative',
+        display: 'block',         // ← block, not flex
+      }}
+    >
+      {/* Vertical centering wrapper */}
+      <div style={{
+        position: 'absolute',
+        top: 0, bottom: 0, left: 0,
+        display: 'flex',
+        alignItems: 'center',
+      }}>
+        {/* Animated track — inline-flex so scrollWidth = true content width */}
+        <div
+          ref={trackRef}
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '0.65rem',
+            padding: '0 0.5rem',
+            willChange: 'transform',  // hint GPU compositing; safe on the leaf element
+            flexShrink: 0,
+          }}
+        >
+          {/* Double the array — when offset reaches halfRef, reset to 0 seamlessly */}
+          {[...imgs, ...imgs].map((src, i) => (
+            <img
+              key={i}
+              src={src}
+              alt="SR Travels Gallery"
+              // ✅ No loading="lazy" — we need real dimensions immediately for scrollWidth
+              style={{
+                height: '42vh',
+                width: 'auto',
+                aspectRatio: '3/4',
+                objectFit: 'cover',
+                objectPosition: 'center top',
+                borderRadius: 10,
+                flexShrink: 0,
+                display: 'block',
+                boxShadow: '0 6px 20px rgba(0,0,0,0.5)',
+                border: '1px solid rgba(255,255,255,0.08)',
+              }}
+            />
+          ))}
+        </div>
+      </div>
+    </div>
+  )
+}
+
 export default function Galleria() {
   const [cat, setCat] = useState('all')
   const [dissolve, setDissolve] = useState(false)
@@ -173,12 +274,12 @@ export default function Galleria() {
     }, 280)
   }
 
+  // Desktop tilt — skip on touch
   useEffect(() => {
     if (IS_TOUCH) return
     const wrap = wrapRef.current
     const strips = stripsRef.current
     if (!wrap || !strips) return
-
     const onMove = e => {
       const r = wrap.getBoundingClientRect()
       const nx = (e.clientX - r.left) / r.width - 0.5
@@ -186,7 +287,6 @@ export default function Galleria() {
       strips.style.transform = `rotateX(${ny * -6}deg) rotateY(${nx * 6}deg)`
     }
     const onLeave = () => { strips.style.transform = 'rotateX(0deg) rotateY(0deg)' }
-
     wrap.addEventListener('mousemove', onMove)
     wrap.addEventListener('mouseleave', onLeave)
     return () => {
@@ -201,83 +301,44 @@ export default function Galleria() {
     return () => window.removeEventListener('keydown', onKey)
   }, [])
 
+  // Flat list for mobile (MobileMarquee doubles it internally)
   const flatImgs = GALLERY_DATA[cat] || GALLERY_DATA.all
 
   return (
     <>
+      {/*
+        Keyframes for DESKTOP strips.
+        gdn/gup are also in global.css — duplicate is harmless,
+        ensures they're parsed before the component's animation starts.
+        DO NOT add @keyframes to CSS that also sets will-change on the
+        same element — keep them separate.
+      */}
       <style>{`
-        @keyframes gdn { from { transform: translateY(-50%); } to { transform: translateY(0%); } }
-        @keyframes gup { from { transform: translateY(0%); }  to { transform: translateY(-50%); } }
+        @keyframes gdn  { from { transform: translateY(-50%); } to { transform: translateY(0%);   } }
+        @keyframes gup  { from { transform: translateY(0%);   } to { transform: translateY(-50%); } }
         @keyframes lbIn { from { opacity:0; transform:scale(0.9); } to { opacity:1; transform:scale(1); } }
 
-        /* ── Unique keyframe name to avoid conflicts ── */
-        @keyframes galleriaSlideX {
-          from { transform: translateX(0); }
-          to   { transform: translateX(-50%); }
-        }
-
-        .gin-dissolve { opacity: 0 !important; transition: opacity 0.28s !important; }
-        .gin-show     { opacity: 1 !important; transition: opacity 0.32s !important; }
+        .gin-dissolve { opacity:0 !important; transition: opacity 0.28s !important; }
+        .gin-show     { opacity:1 !important; transition: opacity 0.32s !important; }
 
         @media (hover: hover) and (pointer: fine) {
           .gin-wrap:hover .gin { animation-play-state: paused !important; }
         }
-
-        /* ── Desktop / Mobile gallery visibility ── */
-        .galleria-desktop { display: flex; }
-        .galleria-mobile  { display: none; }
-
-        @media (max-width: 768px) {
-          .galleria-desktop { display: none !important; }
-
-          .galleria-mobile {
-            display: flex !important;
-            flex: 1;
-            min-height: 0;
-            align-items: center;
-            overflow: hidden;
-            position: relative;
-            width: 100%;
-          }
-
-          /* ── Track: sized to exactly 2× content so -50% loops perfectly ── */
-          .galleria-mobile-track {
-            display: flex;
-            align-items: center;
-            gap: 0.6rem;
-            padding: 0 0.6rem;
-            /* width is intrinsic (max-content) — JS does NOT need to set it */
-            width: max-content;
-            flex-shrink: 0;
-            /* Compositing on GPU avoids layout-triggered jank */
-            will-change: transform;
-            animation: galleriaSlideX 30s linear infinite;
-          }
-
-          /* ── Each image: fixed portrait-ish ratio, height relative to viewport ── */
-          .galleria-mobile-track img {
-            /* clamp keeps cards visible on all phone heights */
-            height: clamp(180px, 38vh, 300px);
-            /* fixed width keeps aspect ratio predictable */
-            width: clamp(130px, 26vw, 210px);
-            object-fit: cover;
-            object-position: center top;
-            border-radius: 10px;
-            flex-shrink: 0;
-            display: block;
-            box-shadow: 0 6px 20px rgba(0,0,0,0.55);
-            border: 1px solid rgba(255,255,255,0.08);
-          }
-        }
       `}</style>
 
-      <section id="galleria" style={{
-        height: '100vh', overflow: 'hidden', background: 'var(--bg-darkest)',
-        position: 'relative', display: 'flex', flexDirection: 'column',
-        transition: 'background 0.4s',
-      }}>
-
-        {/* ── Header / Tab bar ── */}
+      <section
+        id="galleria"
+        style={{
+          height: '100vh',
+          background: 'var(--bg-darkest)',
+          position: 'relative',
+          display: 'flex',
+          flexDirection: 'column',
+          overflow: 'hidden',
+          transition: 'background 0.4s',
+        }}
+      >
+        {/* ── Header / tabs ── */}
         <div style={{
           position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10,
           display: 'flex', justifyContent: 'space-between', alignItems: 'center',
@@ -286,11 +347,12 @@ export default function Galleria() {
           pointerEvents: 'none',
         }}>
           <h2 style={{
-            fontFamily: 'Cormorant Garamond, serif', fontSize: 'clamp(1.4rem,2vw,1.9rem)',
-            fontWeight: 300, color: 'rgba(255,255,255,0.9)', letterSpacing: '0.02em',
-            pointerEvents: 'auto',
+            fontFamily: 'Cormorant Garamond, serif',
+            fontSize: 'clamp(1.4rem,2vw,1.9rem)',
+            fontWeight: 300, color: 'rgba(255,255,255,0.9)',
+            letterSpacing: '0.02em', pointerEvents: 'auto',
           }}>
-            <em style={{ fontStyle: 'italic' }}>Galleria</em> — SR Travels
+            <em>Galleria</em> — SR Travels
           </h2>
           <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', pointerEvents: 'auto' }}>
             {TABS.map(t => (
@@ -307,15 +369,31 @@ export default function Galleria() {
           </div>
         </div>
 
-        {/* ── Desktop 3D strips ── */}
-        <div ref={wrapRef} className="galleria-desktop" style={{
-          flex: 1, perspective: '900px', perspectiveOrigin: '50% 50%',
-          padding: '20px', overflow: 'hidden',
-        }}>
-          <div ref={stripsRef} style={{
-            display: 'flex', width: '100%', height: '100%', gap: '20px',
-            transformStyle: 'preserve-3d', transition: 'transform 0.14s ease-out',
-          }}>
+        {/* ═══ DESKTOP — 6 vertical CSS-animated strips ════════════════════
+            KEY RULE: the wrapRef and stripsRef divs must NOT have
+            will-change:transform or translateZ() on them — those properties
+            create a new GPU compositing layer that BREAKS child CSS keyframe
+            animations (they reset mid-loop on layer promotion).
+            Only the .gin leaf elements (the animated ones) carry transform.
+        ═══════════════════════════════════════════════════════════════════ */}
+        <div
+          ref={wrapRef}
+          style={{
+            flex: 1, minHeight: 0,
+            perspective: '900px', perspectiveOrigin: '50% 50%',
+            padding: '20px', overflow: 'hidden',
+            display: IS_TOUCH ? 'none' : 'flex',   // hide on touch, show on desktop
+          }}
+        >
+          <div
+            ref={stripsRef}
+            style={{
+              display: 'flex', width: '100%', height: '100%', gap: '20px',
+              transformStyle: 'preserve-3d',
+              transition: 'transform 0.14s ease-out',
+              // ✅ NO will-change here — it breaks child keyframe animations
+            }}
+          >
             {WIDTHS.map((w, si) => (
               <div key={si} className="gin-wrap" style={{
                 overflow: 'hidden', height: '100%', borderRadius: 8,
@@ -329,6 +407,9 @@ export default function Galleria() {
                     animationDuration: `${SPEEDS[si]}s`,
                     animationTimingFunction: 'linear',
                     animationIterationCount: 'infinite',
+                    // ✅ translateZ on the LEAF animated element is fine — promotes
+                    //    only this element, not the parent layer
+                    transform: 'translateZ(0)',
                   }}
                 >
                   {imgs.map((src, ii) => (
@@ -354,20 +435,10 @@ export default function Galleria() {
           </div>
         </div>
 
-        {/* ── Mobile horizontal auto-scroll ── */}
-        <div className="galleria-mobile">
-          <div className="galleria-mobile-track">
-            {[...flatImgs, ...flatImgs].map((src, i) => (
-              <img
-                key={i}
-                src={src}
-                alt="SR Travels Gallery"
-                loading="lazy"
-                onClick={() => setLb(src.replace('w_800', 'w_1600'))}
-              />
-            ))}
-          </div>
-        </div>
+        {/* ═══ MOBILE — JS rAF marquee ════════════════════════════════════
+            key={cat} forces a full remount (and rAF restart) on category change
+        ═══════════════════════════════════════════════════════════════════ */}
+        {IS_TOUCH && <MobileMarquee imgs={flatImgs} key={cat} />}
       </section>
 
       {/* ── Lightbox ── */}
@@ -377,21 +448,19 @@ export default function Galleria() {
           style={{
             position: 'fixed', inset: 0, zIndex: 9990,
             background: 'rgba(0,0,0,0.92)', backdropFilter: 'blur(8px)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1.5rem',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            padding: '1.5rem',
           }}
         >
-          <button
-            onClick={() => setLb(null)}
-            style={{
-              position: 'fixed', top: '1.2rem', right: '1.4rem', zIndex: 3,
-              width: 40, height: 40, borderRadius: '50%',
-              background: 'rgba(255,255,255,0.12)', backdropFilter: 'blur(6px)',
-              border: '1px solid rgba(255,255,255,0.2)',
-              color: 'rgba(255,255,255,0.9)', fontSize: '1.1rem',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              cursor: 'none', transition: 'background 0.2s',
-            }}
-          >✕</button>
+          <button onClick={() => setLb(null)} style={{
+            position: 'fixed', top: '1.2rem', right: '1.4rem', zIndex: 3,
+            width: 40, height: 40, borderRadius: '50%',
+            background: 'rgba(255,255,255,0.12)', backdropFilter: 'blur(6px)',
+            border: '1px solid rgba(255,255,255,0.2)',
+            color: 'rgba(255,255,255,0.9)', fontSize: '1.1rem',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            cursor: 'none',
+          }}>✕</button>
           <img
             src={lb}
             alt="Gallery fullscreen"
