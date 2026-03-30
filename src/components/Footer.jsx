@@ -4,7 +4,7 @@ export default function Footer() {
     whatsapp: '919289694400',
     instagram: 'srtravels_official',
     linkedin: 'sr-travels',
-    address: 'SR Travels, Office Address = Shop no. 1 Ganpati complex Atul Kataria Chowk Opposite Huda Nursery'
+    address: 'Shop No. 1, Ganpati Complex, Atul Kataria Chowk, Opposite Huda Nursery, Gurgaon'
   }
 
   return (

@@ -5,10 +5,10 @@ import gsap from 'gsap'
 let hasPlayedThisSession = false;
 
 export default function Loader({ onComplete }) {
-  const srRef     = useRef(null)
+  const srRef = useRef(null)
   const lettersRef = useRef([])
-  const lineRef   = useRef(null)
-  const wrapRef   = useRef(null)
+  const lineRef = useRef(null)
+  const wrapRef = useRef(null)
 
   useEffect(() => {
     if (hasPlayedThisSession) {
@@ -25,10 +25,10 @@ export default function Loader({ onComplete }) {
       }
     })
     tl
-      .to(srRef.current,          { opacity: 1, y: 0, duration: 0.9, ease: 'power3.out', delay: 0.2 })
-      .to(lettersRef.current,     { opacity: 1, y: 0, stagger: 0.06, duration: 0.5, ease: 'power2.out' }, '-=0.4')
-      .to(lineRef.current,        { width: '280px', duration: 0.7, ease: 'power2.inOut' }, '-=0.2')
-      .to(wrapRef.current,        { yPercent: -100, duration: 1.1, ease: 'power4.inOut', delay: 0.5 })
+      .to(srRef.current, { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out', delay: 0.1 })
+      .to(lettersRef.current, { opacity: 1, y: 0, stagger: 0.05, duration: 0.4, ease: 'power2.out' }, '-=0.3')
+      .to(lineRef.current, { width: '280px', duration: 0.5, ease: 'power2.inOut' }, '-=0.2')
+      .to(wrapRef.current, { yPercent: -100, duration: 0.7, ease: 'power4.inOut', delay: 0.2 })
   }, [])
 
   const letters = 'TRAVELS'.split('')
@@ -45,7 +45,8 @@ export default function Loader({ onComplete }) {
           fontWeight: 300, color: 'var(--loader-txt)',
           lineHeight: 1, opacity: 0, transform: 'translateY(24px)'
         }}>SR</div>
-        <div style={{ display: 'flex', gap: '0.08em', justifyContent: 'center',
+        <div style={{
+          display: 'flex', gap: '0.08em', justifyContent: 'center',
           fontFamily: 'Cormorant Garamond, serif',
           fontSize: 'clamp(1.1rem, 2.8vw, 2.2rem)',
           letterSpacing: '0.45em', fontWeight: 300,

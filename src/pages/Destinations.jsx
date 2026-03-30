@@ -79,7 +79,7 @@ function RouteCard({ route }) {
             background: `var(--bg-alt) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238a8075' d='M6 8L1 3h10z'/%3E%3C/svg%3E") no-repeat right 1rem center`,
             border: '1px solid var(--border)', borderRadius: 3, color: 'var(--text)',
             fontFamily: 'DM Sans, sans-serif', fontSize: '0.88rem',
-            marginBottom: '1rem', appearance: 'none', cursor: 'none', outline: 'none'
+            marginBottom: '1rem', appearance: 'none', cursor: 'none',
           }}>
           <option value="">— Choose a vehicle —</option>
           {VEHICLES.map(v => (
@@ -182,7 +182,7 @@ export default function Destinations() {
     flex: 1, minWidth: 180, padding: '0.65rem 1rem',
     background: 'var(--card-bg)', border: '1px solid var(--border)',
     borderRadius: 3, color: 'var(--text)', fontFamily: 'DM Sans, sans-serif',
-    fontSize: '0.88rem', outline: 'none'
+    fontSize: '0.88rem'
   }
 
   return (
@@ -303,6 +303,12 @@ export default function Destinations() {
           }
         }
         @keyframes ldBounce { 0%,80%,100%{transform:translateY(0)} 40%{transform:translateY(-8px)} }
+        select:focus-visible,
+        input:focus-visible {
+          outline: 2px solid var(--accent);
+          outline-offset: 2px;
+          border-color: var(--accent) !important;
+        }
       `}</style>
     </>
   )

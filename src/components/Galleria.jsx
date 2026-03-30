@@ -139,15 +139,15 @@ const GALLERY_DATA = {
 }
 
 const SECTIONS = [
-  { key: 'all',         label: '✦ All Memories' },
-  { key: 'fleet',       label: '🚌 Fleet' },
-  { key: 'services',    label: '🗺 Services' },
+  { key: 'all', label: '✦ All Memories' },
+  { key: 'fleet', label: '🚌 Fleet' },
+  { key: 'services', label: '🗺 Services' },
   { key: 'destination', label: '📍 Destinations' },
-  { key: 'festivals',   label: '🎉 Festivals' },
-  { key: 'staff',       label: '👥 Team' },
+  { key: 'festivals', label: '🎉 Festivals' },
+  { key: 'staff', label: '👥 Team' },
 ]
 
-function MasonryGrid({ imgs, onImgClick }) {
+function MasonryGrid({ imgs, onImgClick, sectionLabel }) {
   return (
     <div style={{
       columnCount: 'auto',
@@ -171,7 +171,7 @@ function MasonryGrid({ imgs, onImgClick }) {
         >
           <img
             src={src}
-            alt="SR Travels Gallery"
+            alt={`SR Travels — $${sectionLabel} photo ${i + 1}`}
             loading="lazy"
             style={{
               width: '100%',
@@ -283,7 +283,7 @@ export default function Galleria() {
             return (
               <div key={section.key}>
                 <h2 className="g-section-label">{section.label}</h2>
-                <MasonryGrid imgs={imgs} onImgClick={setLb} />
+                <MasonryGrid imgs={imgs} onImgClick={setLb} sectionLabel={section.label} />
               </div>
             )
           })
@@ -326,11 +326,11 @@ export default function Galleria() {
 
             {/* 2. Loading Spinner (while full-res is in-flight) */}
             {!lbLoaded && (
-               <div style={{
-                 position: 'absolute', width: 32, height: 32,
-                 border: '2px solid rgba(255,255,255,0.1)', borderTopColor: 'var(--accent)',
-                 borderRadius: '50%', animation: 'g-spin 0.8s linear infinite'
-               }} />
+              <div style={{
+                position: 'absolute', width: 32, height: 32,
+                border: '2px solid rgba(255,255,255,0.1)', borderTopColor: 'var(--accent)',
+                borderRadius: '50%', animation: 'g-spin 0.8s linear infinite'
+              }} />
             )}
 
             {/* 3. Full-res High Quality (fades in) */}

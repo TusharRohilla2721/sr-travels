@@ -56,7 +56,7 @@ export default function Stats() {
   return (
     <section
       ref={sectionRef}              // ✅ attached — was missing before
-      style={{ padding: '8rem 2rem', background: '#0a0a0a' }}
+      style={{ padding: '8rem 2rem', background: 'var(--bg-darkest)', transition: 'background 0.4s' }}
     >
       <div style={{
         display: 'grid',
