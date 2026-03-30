@@ -48,10 +48,10 @@ export default function GalleriaPreview() {
   const startX = useRef(0)
   const imgs = TAGGED_IMAGES[activeTab] || TAGGED_IMAGES.all
 
-  // Reset index
+  // Reset active index when tab changes
   useEffect(() => { setActive(1) }, [activeTab])
 
-  // Swipe navigation
+  // Drag/swipe to navigate
   useEffect(() => {
     const el = containerRef.current
     if (!el) return
@@ -63,8 +63,8 @@ export default function GalleriaPreview() {
       const endX = e.clientX || e.changedTouches?.[0]?.clientX
       const diff = startX.current - endX
       if (Math.abs(diff) > 40) {
-        if (diff > 0) setActive(a => Math.min(a + 1, imgs.length))
-        else setActive(a => Math.max(a - 1, 0))
+        if (diff > 0) setActive(a => Math.min(a + 1, imgs.length)) // swipe left = next
+        else setActive(a => Math.max(a - 1, 0))                     // swipe right = prev
       }
     }
 
@@ -147,18 +147,18 @@ export default function GalleriaPreview() {
         </div>
 
         <div className="gp-stage" ref={containerRef}>
-          {/* Left arrow */}
+          {/* Left Arrow */}
           <button className="gp-arrow left" onClick={() => setActive(a => Math.max(a - 1, 0))}>‹</button>
 
-          {/* Image cards */}
+          {/* Image Cards */}
           {imgs.map((src, i) => {
-            const offset = i + 1 - active
+            const offset = i + 1 - active         // relative position to active card
             const absOff = Math.abs(offset)
-            if (absOff > 3) return null
+            if (absOff > 3) return null            // only render ±3 cards from center
 
-            const tx = offset * 56
-            const tz = -absOff * 120
-            const ry = -offset * 12
+            const tx = offset * 56                 // horizontal spacing in %
+            const tz = -absOff * 120               // depth: further away = smaller z
+            const ry = -offset * 12                // rotation on Y axis
             const scale = 1 - absOff * 0.12
             const opacity = 1 - absOff * 0.22
             const zIndex = 10 - absOff
@@ -180,7 +180,7 @@ export default function GalleriaPreview() {
             )
           })}
 
-          {/* CTA card */}
+          {/* End CTA Card */}
           {(() => {
             const offset = imgs.length + 1 - active
             const absOff = Math.abs(offset)
@@ -217,7 +217,7 @@ export default function GalleriaPreview() {
             )
           })()}
 
-          {/* Right arrow */}
+          {/* Right Arrow */}
           <button className="gp-arrow right" onClick={() => setActive(a => Math.min(a + 1, imgs.length + 1))}>›</button>
         </div>
 

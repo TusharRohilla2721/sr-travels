@@ -22,12 +22,12 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  // Close mobile menu
+  // OPTIMIZATION: Close mobile menu on route change
   useEffect(() => {
     setMobileMenuOpen(false)
   }, [location.pathname])
 
-  // Lock body scroll
+  // OPTIMIZATION: Lock body scroll when mobile menu is open
   useEffect(() => {
     document.body.style.overflow = mobileMenuOpen ? 'hidden' : ''
     return () => { document.body.style.overflow = '' }
@@ -71,7 +71,7 @@ export default function Navbar() {
         .nav-container.scrolled { padding: 1rem 2rem; border-bottom: 1px solid var(--border); }
         .nav-logo { font-size: 1.8rem; }
         
-        /* Accessible focus styles */
+        /* OPTIMIZATION: Focus styles for keyboard accessibility */
         .nav-icon-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
         
         @media (max-width: 960px) {
@@ -97,7 +97,7 @@ export default function Navbar() {
           display: 'flex', justifyContent: 'space-between', alignItems: 'center', transition: '0.3s'
         }}
       >
-        {/* Home logo */}
+        {/* Logo — landmark link to home */}
         <a
           href="/"
           className="nav-logo"
@@ -111,7 +111,7 @@ export default function Navbar() {
           SR <span style={{ color: 'var(--accent)', fontStyle: 'italic' }}>Travels</span>
         </a>
 
-        {/* Desktop options */}
+        {/* DESKTOP NAV */}
         <div className="desktop-nav" role="list">
           {NAV_LINKS.map(link => (
             <button
@@ -127,7 +127,7 @@ export default function Navbar() {
         </div>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', zIndex: 2 }}>
-          {/* Theme toggle */}
+          {/* OPTIMIZATION: aria-label describes the action, not just the icon */}
           <button
             className="nav-icon-btn"
             onClick={toggleTheme}
@@ -142,7 +142,7 @@ export default function Navbar() {
             {icon}
           </button>
 
-          {/* Hamburger icon */}
+          {/* OPTIMIZATION: aria-expanded + aria-controls on hamburger */}
           <button
             className="mobile-toggle nav-icon-btn"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -158,7 +158,7 @@ export default function Navbar() {
         </div>
       </nav>
 
-      {/* Mobile overlay */}
+      {/* FULL SCREEN OVERLAY — OPTIMIZATION: id + role + aria-hidden when closed */}
       <div
         id="mobile-nav-overlay"
         role="dialog"

@@ -26,6 +26,7 @@ function Card({ id, imgSrc, imgAlt, tag, title, subtitle, children }) {
         }} />
       </div>
 
+      {/* Dynamic is-expanded class applied here */}
       <div className={`deck-card-text ${expanded ? 'is-expanded' : ''}`} style={{
         padding: '2.6rem 2.4rem', display: 'flex',
         flexDirection: 'column', justifyContent: 'center', overflowY: 'hidden',
@@ -52,12 +53,12 @@ function Card({ id, imgSrc, imgAlt, tag, title, subtitle, children }) {
           }}>{subtitle}</p>
         )}
 
-        {/* Mobile paragraphs wrapper */}
+        {/* Paragraphs are wrapped in this div so we can hide them on mobile */}
         <div className="deck-card-content" style={{ fontSize: '0.84rem', lineHeight: 1.85, color: 'rgba(255,255,255,0.58)' }}>
           {children}
         </div>
 
-        {/* Mobile read more */}
+        {/* Mobile-only Read More Button */}
         <div className="read-more-wrapper">
           <button
             className="read-more-btn"
@@ -284,7 +285,7 @@ export default function AboutDeck() {
           to   { transform: translate(-50%,-50%) rotate(360deg); }
         }
         
-        /* Hide on desktop */
+        /* Hide Read More on Desktop */
         @media (min-width: 769px) {
           .read-more-wrapper { display: none !important; }
         }
@@ -304,8 +305,8 @@ export default function AboutDeck() {
             justify-content: flex-start !important;
           }
           
-          /* Read more logic */
-          .deck-card-content { display: none; }
+          /* READ MORE LOGIC */
+          .deck-card-content { display: none; } /* Hide paragraphs initially */
           
           .read-more-btn {
             margin-top: 1rem;
@@ -322,7 +323,7 @@ export default function AboutDeck() {
             align-self: flex-start;
           }
           
-          /* Expanding blur overlay */
+          /* The Expanding Blur Overlay */
           .deck-card-text.is-expanded {
             position: absolute !important;
             top: 0 !important;
@@ -337,7 +338,7 @@ export default function AboutDeck() {
             z-index: 10 !important;
           }
           
-          /* Expanded text state */
+          /* Show text when expanded */
           .deck-card-text.is-expanded .deck-card-content {
             display: block;
             margin-bottom: 1rem;

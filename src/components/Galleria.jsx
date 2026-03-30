@@ -196,7 +196,7 @@ export default function Galleria() {
     ? SECTIONS.filter(s => s.key !== 'all')
     : SECTIONS.filter(s => s.key === activeSection)
 
-  // Reset load status
+  // Reset loaded status when image changes
   useEffect(() => {
     if (lb) setLbLoaded(false)
   }, [lb])
@@ -245,7 +245,7 @@ export default function Galleria() {
 
       <div id="galleria" style={{ minHeight: '100vh', background: 'var(--bg-darkest)', paddingBottom: '4rem' }}>
 
-        {/* Page header */}
+        {/* Page Header */}
         <div style={{ padding: '5rem 2rem 1.5rem', display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
           <div>
             <span className="section-label" style={{ color: 'rgba(255,255,255,0.5)' }}>Our Memories</span>
@@ -258,7 +258,7 @@ export default function Galleria() {
           </p>
         </div>
 
-        {/* Sticky tab bar */}
+        {/* Sticky Tab Bar */}
         <div className="g-sticky-tabs">
           {SECTIONS.map(s => (
             <button
@@ -271,7 +271,7 @@ export default function Galleria() {
           ))}
         </div>
 
-        {/* Dynamic sections */}
+        {/* Dynamic Sections */}
         {activeSection === 'all' ? (
           <div>
             <MasonryGrid imgs={GALLERY_DATA.all} onImgClick={setLb} />
@@ -290,7 +290,7 @@ export default function Galleria() {
         )}
       </div>
 
-      {/* Lightbox modal */}
+      {/* Lightbox */}
       {lb && (
         <div
           onClick={() => setLb(null)}
@@ -301,7 +301,7 @@ export default function Galleria() {
             padding: '1.5rem',
           }}
         >
-          {/* Close button */}
+          {/* Close Button */}
           <button className="g-close-btn" onClick={() => setLb(null)} style={{
             position: 'fixed', top: '1.2rem', right: '1.4rem', zIndex: 20,
             width: 40, height: 40, borderRadius: '50%',
@@ -313,7 +313,7 @@ export default function Galleria() {
           }}>✕</button>
 
           <div style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }} onClick={e => e.stopPropagation()}>
-            {/* Low res placeholder */}
+            {/* 1. Low-res placeholder (immediate) */}
             <img
               src={lb.thumb}
               alt=""
@@ -324,7 +324,7 @@ export default function Galleria() {
               }}
             />
 
-            {/* Loading spinner */}
+            {/* 2. Loading Spinner (while full-res is in-flight) */}
             {!lbLoaded && (
               <div style={{
                 position: 'absolute', width: 32, height: 32,
@@ -333,7 +333,7 @@ export default function Galleria() {
               }} />
             )}
 
-            {/* Full res image */}
+            {/* 3. Full-res High Quality (fades in) */}
             <img
               src={lb.full}
               onLoad={() => setLbLoaded(true)}

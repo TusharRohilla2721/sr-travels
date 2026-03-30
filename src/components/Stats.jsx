@@ -12,13 +12,13 @@ const STATS = [
 ]
 
 export default function Stats() {
-  // One ref for everything
+  // ✅ One ref for everything — sectionRef was declared but never attached to DOM (null trigger bug)
   const sectionRef = useRef(null)
   const numbersRef = useRef([])
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Fade in stats
+      // Stat items fade-in
       gsap.from('.stat-item', {
         opacity: 0,
         y: 40,
@@ -26,12 +26,12 @@ export default function Stats() {
         stagger: 0.2,
         ease: 'power4.out',
         scrollTrigger: {
-          trigger: sectionRef.current, // Attached trigger
+          trigger: sectionRef.current, // ✅ now correctly attached
           start: 'top 80%',
         },
       })
 
-      // Animate numbers
+      // Animated number counters
       numbersRef.current.forEach((el, i) => {
         if (!el) return
         gsap.to({ val: 0 }, {
@@ -55,7 +55,7 @@ export default function Stats() {
 
   return (
     <section
-      ref={sectionRef}              // Section ref
+      ref={sectionRef}              // ✅ attached — was missing before
       style={{ padding: '8rem 2rem', background: 'var(--bg-darkest)', transition: 'background 0.4s' }}
     >
       <div style={{

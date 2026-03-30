@@ -14,7 +14,7 @@ export default function Footer() {
     }}>
       <div className="footer-grid" style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr 1.5fr', gap: '5rem' }}>
 
-        {/* Brand section */}
+        {/* BRAND */}
         <div>
           <h2 style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: '2.2rem', color: 'var(--text)', marginBottom: '1.2rem' }}>
             SR <span style={{ color: 'var(--accent)', fontStyle: 'italic' }}>Travels</span>
@@ -24,7 +24,7 @@ export default function Footer() {
           </p>
         </div>
 
-        {/* Address section */}
+        {/* HEADQUARTERS (Address) */}
         <div>
           <h4 className="section-label">Headquarters</h4>
           <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', lineHeight: 1.6, marginBottom: '1.5rem' }}>
@@ -33,7 +33,7 @@ export default function Footer() {
           <p style={{ color: 'var(--accent)', fontSize: '0.85rem', fontWeight: 600 }}>Available 24/7</p>
         </div>
 
-        {/* Social links */}
+        {/* SOCIAL LINKS */}
         <div>
           <h4 className="section-label">Social Connect</h4>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
@@ -54,7 +54,7 @@ export default function Footer() {
         </div>
       </div>
 
-      {/* Copyright footer */}
+      {/* COPYRIGHT */}
       <div style={{ marginTop: '5rem', paddingTop: '2.5rem', borderTop: '1px solid rgba(255,255,255,0.05)', display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', color: 'rgba(255,255,255,0.2)', letterSpacing: '0.1em' }}>
         <span>© 2026 SR TRAVELS. ALL RIGHTS RESERVED.</span>
         <span style={{ cursor: 'pointer' }} onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>BACK TO TOP ↑</span>

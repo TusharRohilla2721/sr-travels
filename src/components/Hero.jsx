@@ -140,7 +140,13 @@ export default function Hero() {
         <div ref={imgRef} style={{
           width: '100%', height: '100%', position: 'absolute', inset: 0, transform: 'scale(1.12)'
         }}>
-          {/* Hero image */}
+          {/*
+            OPTIMIZATION:
+            - fetchpriority="high" tells browser this is the LCP element — fetch ASAP
+            - loading="eager" (default) — do NOT lazy-load the hero
+            - width/height prevent layout shift (CLS)
+            - Use a wider Cloudinary transform (w_1200) for retina displays
+          */}
           <img
             src="https://res.cloudinary.com/dzadpggxn/image/upload/q_auto,f_auto,w_1200/v1774172216/WhatsApp_Image_2026-03-06_at_12.21.52_AM_ixi0oh.jpg"
             alt="SR Travels luxury bus fleet parked at depot"
