@@ -158,7 +158,7 @@ function MasonryGrid({ imgs, onImgClick, sectionLabel }) {
       {imgs.map((src, i) => (
         <div
           key={i}
-          onClick={() => onImgClick({ thumb: src, full: src.replace(',w_800', '').replace('w_800', '') })}
+          onClick={() => onImgClick({ thumb: src, full: src.replace('w_800', 'w_1600') })}
           style={{
             breakInside: 'avoid',
             marginBottom: '12px',

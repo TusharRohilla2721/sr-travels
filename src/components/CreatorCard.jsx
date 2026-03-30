@@ -1,5 +1,4 @@
-import { useState, useEffect } from 'react'
-import { createPortal } from 'react-dom'
+import { useState } from 'react'
 
 const MY_WA = '919718771255'
 
@@ -55,7 +54,7 @@ export default function CreatorCard() {
       </button>
 
       { }
-      {open && typeof document !== 'undefined' && createPortal(
+      {open && (
         <div
           onClick={() => setOpen(false)}
           style={{
@@ -251,8 +250,7 @@ export default function CreatorCard() {
               </div>
             </div>
           </div>
-        </div>,
-        document.body
+        </div>
       )}
 
       <style>{`
