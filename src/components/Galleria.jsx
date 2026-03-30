@@ -143,6 +143,7 @@ const SECTIONS = [
   { key: 'fleet',       label: '🚌 Fleet' },
   { key: 'services',    label: '🗺 Services' },
   { key: 'destination', label: '📍 Destinations' },
+  { key: 'festivals',   label: '🎉 Festivals' },
   { key: 'staff',       label: '👥 Team' },
 ]
 
@@ -271,16 +272,22 @@ export default function Galleria() {
         </div>
 
         {/* Dynamic Sections */}
-        {visibleSections.map(section => {
-          const imgs = GALLERY_DATA[section.key] || []
-          if (!imgs.length) return null
-          return (
-            <div key={section.key}>
-              <h2 className="g-section-label">{section.label}</h2>
-              <MasonryGrid imgs={imgs} onImgClick={setLb} />
-            </div>
-          )
-        })}
+        {activeSection === 'all' ? (
+          <div>
+            <MasonryGrid imgs={GALLERY_DATA.all} onImgClick={setLb} />
+          </div>
+        ) : (
+          visibleSections.map(section => {
+            const imgs = GALLERY_DATA[section.key] || []
+            if (!imgs.length) return null
+            return (
+              <div key={section.key}>
+                <h2 className="g-section-label">{section.label}</h2>
+                <MasonryGrid imgs={imgs} onImgClick={setLb} />
+              </div>
+            )
+          })
+        )}
       </div>
 
       {/* Lightbox */}
@@ -330,6 +337,12 @@ export default function Galleria() {
             <img
               src={lb.full}
               onLoad={() => setLbLoaded(true)}
+              onError={(e) => {
+                if (e.target.src !== lb.thumb) {
+                  e.target.src = lb.thumb;
+                }
+                setLbLoaded(true);
+              }}
               alt="Gallery fullscreen"
               style={{
                 maxWidth: '90vw', maxHeight: '88vh', borderRadius: 8,

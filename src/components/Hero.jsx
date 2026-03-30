@@ -43,7 +43,7 @@ export default function Hero() {
           fontSize: '0.7rem', letterSpacing: '0.22em', textTransform: 'uppercase',
           color: 'var(--accent)', fontWeight: 500, marginBottom: '1.4rem', opacity: 0
         }}>
-          ✦ Est. 2010 · Affordable & Efficient Travel
+          ✦ Est. 2012 · Affordable & Efficient Travel
         </p>
 
         <h1 className="hero-heading" style={{
