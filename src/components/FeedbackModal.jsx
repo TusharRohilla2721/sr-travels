@@ -4,8 +4,6 @@ const EDGE_URL = import.meta.env.VITE_SUPABASE_URL
   ? `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/submit-feedback`
   : null
 
-// OPTIMIZATION: Each label now uses htmlFor matching the input's id
-// This fixes the "Form elements do not have associated labels" Lighthouse audit
 const FIELD = ({ label, htmlFor, children }) => (
   <div style={{ marginBottom: '1rem' }}>
     <label
@@ -72,7 +70,6 @@ export default function FeedbackModal({ onClose }) {
     setLoading(false)
   }
 
-  // OPTIMIZATION: Close on Escape key
   const handleKeyDown = (e) => {
     if (e.key === 'Escape') onClose()
   }

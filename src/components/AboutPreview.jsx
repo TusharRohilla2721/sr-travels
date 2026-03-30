@@ -134,7 +134,7 @@ export default function AboutPreview() {
             </div>
           ))}
           
-          {/* CTA Card leading to About Page */}
+          {/* CTA card */}
           <div className="about-preview-card" style={{ background: 'var(--accent)', borderColor: 'var(--accent)', cursor: 'pointer', alignItems: 'center', textAlign: 'center' }} onClick={() => navigate('/about')}>
             <h3 style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: '1.8rem', color: '#fff', marginBottom: '1rem' }}>
               Want to see the whole journey?

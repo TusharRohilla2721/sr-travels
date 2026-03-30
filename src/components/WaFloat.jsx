@@ -7,9 +7,9 @@ export default function WaFloat() {
     <a
       href={waLink("Hello SR Travels, I'd like to enquire about your services.")}
       target="_blank"
-      // OPTIMIZATION: noopener prevents tabnapping; noreferrer adds privacy
+      // Security props
       rel="noopener noreferrer"
-      // OPTIMIZATION: Screen readers need a label — the SVG alone gives nothing
+      // Accessibility label
       aria-label="Chat with SR Travels on WhatsApp"
       title="Chat on WhatsApp"
       style={{

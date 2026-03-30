@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import gsap from 'gsap'
 
-// Selectors that trigger the grow effect
+// Hover selectors
 const HOVER_TARGETS = [
   'a', 'button',
   '.dest-card', '.test-card', '.why-card',
@@ -21,7 +21,7 @@ export default function Cursor() {
     const handleResize = () => setIsMobile(window.innerWidth <= 768)
     window.addEventListener('resize', handleResize)
     
-    // ── Skip everything on mobile ───────────────────────────────────────────
+    // Mobile skip
     if (isMobile) {
       window.removeEventListener('resize', handleResize)
       return
@@ -31,7 +31,7 @@ export default function Cursor() {
     const ring = ringRef.current
     if (!dot || !ring) return
 
-    // ── State ──────────────────────────────────────────────────────────────
+    // Cursor state
     let mX = -200, mY = -200
     let rX = -200, rY = -200
     let rafId
@@ -39,7 +39,7 @@ export default function Cursor() {
 
     gsap.set([dot, ring], { autoAlpha: 0 })
 
-    // ── Snappy follow for dot ──────────────────────────────────────────────
+    // Snappy dot follow
     const onMove = ({ clientX, clientY }) => {
       mX = clientX
       mY = clientY
@@ -50,7 +50,7 @@ export default function Cursor() {
       gsap.to(dot, { x: mX, y: mY, duration: 0.08, ease: 'power2.out' })
     }
 
-    // ── Smooth lag for ring ───────────────────────────────────────────────
+    // Smooth ring lag
     const tickRing = () => {
       rX += (mX - rX) * 0.1
       rY += (mY - rY) * 0.1
