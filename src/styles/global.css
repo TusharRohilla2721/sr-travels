@@ -308,20 +308,17 @@ body {
   display: flex;
   gap: 1.5rem;
   overflow-x: auto;
-  scroll-snap-type: x mandatory;
+  scroll-snap-type: x proximity;
+  /* Changed from mandatory for lazier scrolling */
   -webkit-overflow-scrolling: touch;
-  /*
-   * ✅ NO padding-left here.
-   * Browsers collapse padding-left inside overflow:auto flex containers (especially Safari).
-   * The gap is created entirely by margin-left on the first child (more reliable).
-   */
+  scroll-behavior: smooth;
+  /* Smooth scrolling */
   padding: 1rem 0 3rem 0;
   scroll-padding-left: 4rem;
 }
 
 /*
  * ✅ SINGLE gap mechanism — margin-left on first child.
- * DO NOT also add a ::before spacer; that would double the indent.
  */
 .services-scroll>*:first-child {
   margin-left: 4rem;
@@ -341,14 +338,18 @@ body {
 }
 
 .service-card {
-  flex: 0 0 320px;
-  height: 480px;
+  flex: 0 0 260px;
+  /* Reduced from 320px */
+  height: 400px;
+  /* Reduced from 480px */
   border-radius: 12px;
   overflow: hidden;
   position: relative;
   background: var(--card-bg);
   border: 1px solid var(--border);
   scroll-snap-align: start;
+  scroll-snap-stop: normal;
+  /* Allows lazy scrolling */
   transition: transform 0.3s, box-shadow 0.3s;
   cursor: grab;
   display: flex;
@@ -372,7 +373,7 @@ body {
 }
 
 .service-card-content {
-  padding: 1.4rem 1.5rem;
+  padding: 1.2rem 1.3rem;
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -386,7 +387,7 @@ body {
   text-align: center;
   cursor: pointer;
   border: none;
-  padding: 2.5rem 1.5rem;
+  padding: 2rem 1.3rem;
 }
 
 .cta-card:hover {
@@ -394,11 +395,11 @@ body {
 }
 
 .cta-btn {
-  padding: 0.8rem 1.5rem;
+  padding: 0.75rem 1.3rem;
   border: 1px solid #fff;
   border-radius: 25px;
   color: #fff;
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
 }
@@ -424,11 +425,10 @@ body {
     min-width: 1.5rem;
   }
 
-  /* ── Card shell: mirrors WhyChooseUs .whyus-card-wrapper geometry ── */
+  /* ── Card shell ── */
   .service-card {
     flex: 0 0 85vw;
     height: 520px;
-    /* taller than the old 420 — gives image room */
     display: flex;
     flex-direction: column;
     border-radius: 14px;
@@ -437,23 +437,20 @@ body {
     border: 1px solid var(--border);
   }
 
-  /* ── Image: 68 % of height (≈ WhyChooseUs 70 %) ── */
+  /* ── Image: 68 % of height ── */
   .service-card img {
     width: 100% !important;
     height: 68% !important;
-    /* was 55% of 420px — now matches WhyChooseUs proportion */
     object-fit: cover;
     object-position: center 20%;
-    /* keeps faces/subjects in frame */
     border-bottom: 1px solid var(--border);
     border-radius: 14px 14px 0 0;
     flex-shrink: 0;
   }
 
-  /* ── Content area: 32 % — badge + title + short desc ── */
+  /* ── Content area: 32 % ── */
   .service-card-content {
     flex: 1;
-    /* fills remaining 32 % */
     padding: 0.9rem 1.1rem !important;
     display: flex;
     flex-direction: column;
@@ -470,7 +467,6 @@ body {
   .service-card-content p {
     font-size: 0.78rem !important;
     line-height: 1.5 !important;
-    /* clamp lines so content never overflows the 32 % box */
     display: -webkit-box;
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
@@ -490,6 +486,9 @@ body {
   -ms-overflow-style: none;
   scrollbar-width: none;
   scroll-padding-left: 4rem;
+  scroll-snap-type: x proximity;
+  /* Lazier scrolling */
+  scroll-behavior: smooth;
 }
 
 .whyus-scroll>*:first-child {
@@ -528,6 +527,9 @@ body {
   -ms-overflow-style: none;
   scrollbar-width: none;
   scroll-padding-left: 4rem;
+  scroll-snap-type: x proximity;
+  /* Lazier scrolling */
+  scroll-behavior: smooth;
 }
 
 .about-scroll>*:first-child {
@@ -541,27 +543,8 @@ body {
 }
 
 .about-preview-card {
-  flex: 0 0 340px;
-  height: 380px;
-  border-radius: 12px;
-  padding: 2.5rem;
-  background: var(--card-bg);
-  border: 1px solid var(--border);
-  scroll-snap-align: start;
-  transition: transform 0.3s, box-shadow 0.3s;
-  cursor: grab;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
-.about-preview-card:active {
-  cursor: grabbing;
-}
-
-.about-preview-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  scroll-snap-stop: normal;
+  /* Allows lazy scrolling */
 }
 
 @media (max-width: 768px) {
@@ -602,10 +585,6 @@ body {
 
 /* =========================================
    10. GALLERY ANIMATION KEYFRAMES
-   =========================================
-   ✅ These are pure CSS — no will-change or translateZ override here.
-   The Galleria.jsx component intentionally omits will-change on the
-   animating strips so that the browser doesn't reset keyframe state.
    ========================================= */
 @keyframes gdn {
   from {
@@ -654,5 +633,10 @@ body {
   .slider-track,
   .galleria-mobile-track {
     animation-play-state: paused !important;
+  }
+
+  /* Also disable smooth scroll for reduced motion */
+  * {
+    scroll-behavior: auto !important;
   }
 }

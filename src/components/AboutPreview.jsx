@@ -70,10 +70,10 @@ export default function AboutPreview() {
         .about-scroll::-webkit-scrollbar { display: none; }
         .about-scroll { -ms-overflow-style: none; scrollbar-width: none; }
         .about-preview-card {
-          flex: 0 0 calc(340px);
-          height: 380px;
+          flex: 0 0 calc(280px);
+          height: 320px;
           border-radius: 12px;
-          padding: 2.5rem;
+          padding: 2rem;
           background: var(--card-bg);
           border: 1px solid var(--border);
           scroll-snap-align: start;
@@ -91,9 +91,10 @@ export default function AboutPreview() {
           .cards-scroll-container { padding: 1rem 1.5rem 3rem 1.5rem; gap: 1rem; }
           .about-preview-card {
             flex: 0 0 85vw;
-            height: 340px;
+            height: 300px;
             padding: 1.5rem;
           }
+          .scroll-indicator-gradient { display: none !important; }
         }
         .about-preview-card:active { cursor: grabbing; }
         .about-preview-card:hover { transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
@@ -113,35 +114,71 @@ export default function AboutPreview() {
           </button>
         </div>
 
-        <div className="about-scroll cards-scroll-container" ref={scrollRef} style={{
-          display: 'flex', gap: '1.5rem', overflowX: 'auto',
-          scrollSnapType: 'x mandatory', WebkitOverflowScrolling: 'touch'
-        }}>
-          {ABOUT_CARDS.map((item, idx) => (
-            <div key={idx} className="about-preview-card">
-              <span style={{
-                display: 'inline-block', alignSelf: 'flex-start',
-                padding: '0.2rem 0.6rem', border: '1px solid var(--accent)', color: 'var(--accent)',
-                borderRadius: 20, fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.1em',
-                marginBottom: '1rem'
-              }}>{item.tag}</span>
-              <h3 style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: '1.6rem', color: 'var(--text)', marginBottom: '1rem' }}>
-                {item.title}
-              </h3>
-              <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', lineHeight: 1.7 }}>
-                {item.desc}
-              </p>
-            </div>
-          ))}
-          
-          {/* CTA Card leading to About Page */}
-          <div className="about-preview-card" style={{ background: 'var(--accent)', borderColor: 'var(--accent)', cursor: 'pointer', alignItems: 'center', textAlign: 'center' }} onClick={() => navigate('/about')}>
-            <h3 style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: '1.8rem', color: '#fff', marginBottom: '1rem' }}>
-              Want to see the whole journey?
-            </h3>
-            <span style={{ fontSize: '0.9rem', color: 'rgba(255,255,255,0.9)' }}>Explore the interactive timelines ➔</span>
+        <div style={{ position: 'relative' }}>
+          {/* Scroll indicator gradient */}
+          <div className="scroll-indicator-gradient" style={{
+            position: 'absolute',
+            right: 0,
+            top: 0,
+            bottom: '3rem',
+            width: '150px',
+            background: 'linear-gradient(to left, var(--bg-alt), transparent)',
+            pointerEvents: 'none',
+            zIndex: 2,
+            transition: 'background 0.4s'
+          }} />
+
+          {/* Scroll hint text */}
+          <div style={{
+            position: 'absolute',
+            right: '1.5rem',
+            top: '50%',
+            transform: 'translateY(-50%)',
+            zIndex: 3,
+            pointerEvents: 'none',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.5rem',
+            opacity: 0.4,
+            fontSize: '0.75rem',
+            color: 'var(--text-muted)',
+            textTransform: 'uppercase',
+            letterSpacing: '0.1em'
+          }}>
+            <span>Scroll</span>
+            <span style={{ fontSize: '1.2rem' }}>→</span>
           </div>
 
+          <div className="about-scroll cards-scroll-container" ref={scrollRef} style={{
+            display: 'flex', gap: '1.5rem', overflowX: 'auto',
+            scrollSnapType: 'x mandatory', WebkitOverflowScrolling: 'touch',
+            scrollBehavior: 'smooth'
+          }}>
+            {ABOUT_CARDS.map((item, idx) => (
+              <div key={idx} className="about-preview-card">
+                <span style={{
+                  display: 'inline-block', alignSelf: 'flex-start',
+                  padding: '0.2rem 0.6rem', border: '1px solid var(--accent)', color: 'var(--accent)',
+                  borderRadius: 20, fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.1em',
+                  marginBottom: '1rem'
+                }}>{item.tag}</span>
+                <h3 style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: '1.5rem', color: 'var(--text)', marginBottom: '0.8rem' }}>
+                  {item.title}
+                </h3>
+                <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', lineHeight: 1.65 }}>
+                  {item.desc}
+                </p>
+              </div>
+            ))}
+
+            {/* CTA Card leading to About Page */}
+            <div className="about-preview-card" style={{ background: 'var(--accent)', borderColor: 'var(--accent)', cursor: 'pointer', alignItems: 'center', textAlign: 'center' }} onClick={() => navigate('/about')}>
+              <h3 style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: '1.7rem', color: '#fff', marginBottom: '1rem' }}>
+                Want to see the whole journey?
+              </h3>
+              <span style={{ fontSize: '0.88rem', color: 'rgba(255,255,255,0.9)' }}>Explore the interactive timelines ➔</span>
+            </div>
+          </div>
         </div>
       </section>
     </>

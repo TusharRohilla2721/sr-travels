@@ -126,32 +126,68 @@ function FleetRow({ fleet, navigate }) {
         </p>
       </div>
 
-      <div className="services-scroll cards-scroll-container" ref={scrollRef}>
-        {fleet.features.map(card => (
-          <div key={card.id} className="service-card">
-            <img src={card.img} alt={card.title} loading="lazy" />
-            <div className="service-card-content">
-              <span style={{ fontSize: '0.7rem', color: 'var(--accent)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '0.5rem' }}>
-                {fleet.name.split(' ')[0]} Seater Class
-              </span>
-              <h4 style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: '1.4rem', color: 'var(--text)', marginBottom: '0.5rem' }}>
-                {card.title}
-              </h4>
-              <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', lineHeight: 1.6 }}>{card.desc}</p>
-            </div>
-          </div>
-        ))}
+      <div style={{ position: 'relative' }}>
+        {/* Scroll indicator gradient - shows there's more content */}
+        <div className="scroll-indicator-gradient" style={{
+          position: 'absolute',
+          right: 0,
+          top: 0,
+          bottom: '3rem',
+          width: '150px',
+          background: 'linear-gradient(to left, var(--bg-alt), transparent)',
+          pointerEvents: 'none',
+          zIndex: 2,
+          transition: 'background 0.4s'
+        }} />
 
-        <div className="service-card cta-card" onClick={() => navigate('/destinations')}>
-          <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🗺️</div>
-          <h4 style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: '1.8rem', color: '#fff', marginBottom: '1rem', lineHeight: 1.2 }}>
-            Book This <br />{fleet.name.split(' ')[0]} Seater
-          </h4>
-          <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: '0.9rem', marginBottom: '1.5rem', padding: '0 1rem' }}>
-            Check rates, compare routes, and plan your journey with us today.
-          </p>
-          <div className="cta-btn">
-            Connect With Us →
+        {/* Scroll hint text */}
+        <div style={{
+          position: 'absolute',
+          right: '1.5rem',
+          top: '50%',
+          transform: 'translateY(-50%)',
+          zIndex: 3,
+          pointerEvents: 'none',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '0.5rem',
+          opacity: 0.4,
+          fontSize: '0.75rem',
+          color: 'var(--text-muted)',
+          textTransform: 'uppercase',
+          letterSpacing: '0.1em'
+        }}>
+          <span>Scroll</span>
+          <span style={{ fontSize: '1.2rem' }}>→</span>
+        </div>
+
+        <div className="services-scroll cards-scroll-container" ref={scrollRef}>
+          {fleet.features.map(card => (
+            <div key={card.id} className="service-card">
+              <img src={card.img} alt={card.title} loading="lazy" />
+              <div className="service-card-content">
+                <span style={{ fontSize: '0.7rem', color: 'var(--accent)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '0.5rem' }}>
+                  {fleet.name.split(' ')[0]} Seater Class
+                </span>
+                <h4 style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: '1.4rem', color: 'var(--text)', marginBottom: '0.5rem' }}>
+                  {card.title}
+                </h4>
+                <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', lineHeight: 1.6 }}>{card.desc}</p>
+              </div>
+            </div>
+          ))}
+
+          <div className="service-card cta-card" onClick={() => navigate('/destinations')}>
+            <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🗺️</div>
+            <h4 style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: '1.8rem', color: '#fff', marginBottom: '1rem', lineHeight: 1.2 }}>
+              Book This <br />{fleet.name.split(' ')[0]} Seater
+            </h4>
+            <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: '0.9rem', marginBottom: '1.5rem', padding: '0 1rem' }}>
+              Check rates, compare routes, and plan your journey with us today.
+            </p>
+            <div className="cta-btn">
+              Connect With Us →
+            </div>
           </div>
         </div>
       </div>

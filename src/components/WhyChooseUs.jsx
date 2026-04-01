@@ -60,7 +60,7 @@ function WCard({ card }) {
   return (
     <div id={card.id} className="w-card" style={{
       position: 'relative', width: '100%', height: '100%',
-      display: 'grid', gridTemplateColumns: '300px 1fr',
+      display: 'grid', gridTemplateColumns: '240px 1fr',
       borderRadius: 14, overflow: 'hidden',
       background: 'var(--card-bg)', border: '1px solid var(--border)',
       boxShadow: '0 8px 40px rgba(0,0,0,0.1)',
@@ -80,29 +80,29 @@ function WCard({ card }) {
       </div>
 
       <div className={`w-card-text ${expanded ? 'is-expanded' : ''}`} style={{
-        padding: '2.4rem 2.8rem', display: 'flex', flexDirection: 'column',
+        padding: '2rem 2.2rem', display: 'flex', flexDirection: 'column',
         justifyContent: 'center', position: 'relative', overflowY: 'hidden',
         zIndex: 2, transition: 'all 0.4s cubic-bezier(0.16, 1, 0.3, 1)'
       }}>
         <div className="w-card-num" style={{
           fontFamily: 'Cormorant Garamond, serif',
-          fontSize: '3.2rem', fontWeight: 300, color: 'var(--border)',
+          fontSize: '2.8rem', fontWeight: 300, color: 'var(--border)',
           lineHeight: 1, marginBottom: '0.4rem'
         }}>{card.num}</div>
 
         <h3 style={{
           fontFamily: 'Cormorant Garamond, serif',
-          fontSize: 'clamp(1.3rem, 2vw, 1.55rem)', fontWeight: 400,
-          color: 'var(--text)', marginBottom: '0.8rem'
+          fontSize: 'clamp(1.2rem, 1.8vw, 1.4rem)', fontWeight: 400,
+          color: 'var(--text)', marginBottom: '0.7rem'
         }}>{card.emoji} {card.title}</h3>
 
-        <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', lineHeight: 1.82 }}>{card.desc}</p>
+        <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', lineHeight: 1.75 }}>{card.desc}</p>
 
-        <ul className="w-card-list" style={{ listStyle: 'none', marginTop: '0.7rem' }}>
+        <ul className="w-card-list" style={{ listStyle: 'none', marginTop: '0.6rem' }}>
           {card.points.map((p, i) => (
             <li key={i} style={{
-              fontSize: '0.83rem', color: 'var(--text-muted)', lineHeight: 1.72,
-              padding: '0.18rem 0 0.18rem 1rem', position: 'relative'
+              fontSize: '0.8rem', color: 'var(--text-muted)', lineHeight: 1.68,
+              padding: '0.16rem 0 0.16rem 1rem', position: 'relative'
             }}>
               <span style={{
                 position: 'absolute', left: 0, color: 'var(--accent)',
@@ -168,8 +168,8 @@ export default function WhyChooseUs() {
         .whyus-scroll::-webkit-scrollbar { display: none; }
         .whyus-scroll { -ms-overflow-style: none; scrollbar-width: none; }
         .whyus-card-wrapper {
-          flex: 0 0 760px;
-          height: 400px;
+          flex: 0 0 620px;
+          height: 340px;
           scroll-snap-align: center;
         }
 
@@ -232,6 +232,7 @@ export default function WhyChooseUs() {
           .w-card-text.is-expanded .w-card-list {
             display: block; margin-bottom: 1rem;
           }
+          .scroll-indicator-gradient { display: none !important; }
         }
       `}</style>
 
@@ -244,15 +245,52 @@ export default function WhyChooseUs() {
           <h2 className="section-title">Why Choose <em>SR Travels?</em></h2>
         </div>
 
-        <div className="whyus-scroll cards-scroll-container" ref={containerRef} style={{
-          display: 'flex', gap: '2rem', overflowX: 'auto',
-          scrollSnapType: 'x mandatory', WebkitOverflowScrolling: 'touch', cursor: 'grab'
-        }}>
-          {CARDS.map(card => (
-            <div key={card.id} className="whyus-card-wrapper">
-              <WCard card={card} />
-            </div>
-          ))}
+        <div style={{ position: 'relative' }}>
+          {/* Scroll indicator gradient */}
+          <div className="scroll-indicator-gradient" style={{
+            position: 'absolute',
+            right: 0,
+            top: 0,
+            bottom: '3rem',
+            width: '150px',
+            background: 'linear-gradient(to left, var(--bg), transparent)',
+            pointerEvents: 'none',
+            zIndex: 2,
+            transition: 'background 0.4s'
+          }} />
+
+          {/* Scroll hint text */}
+          <div style={{
+            position: 'absolute',
+            right: '1.5rem',
+            top: '50%',
+            transform: 'translateY(-50%)',
+            zIndex: 3,
+            pointerEvents: 'none',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.5rem',
+            opacity: 0.4,
+            fontSize: '0.75rem',
+            color: 'var(--text-muted)',
+            textTransform: 'uppercase',
+            letterSpacing: '0.1em'
+          }}>
+            <span>Scroll</span>
+            <span style={{ fontSize: '1.2rem' }}>→</span>
+          </div>
+
+          <div className="whyus-scroll cards-scroll-container" ref={containerRef} style={{
+            display: 'flex', gap: '1.8rem', overflowX: 'auto',
+            scrollSnapType: 'x mandatory', WebkitOverflowScrolling: 'touch', cursor: 'grab',
+            scrollBehavior: 'smooth'
+          }}>
+            {CARDS.map(card => (
+              <div key={card.id} className="whyus-card-wrapper">
+                <WCard card={card} />
+              </div>
+            ))}
+          </div>
         </div>
       </section>
     </>
