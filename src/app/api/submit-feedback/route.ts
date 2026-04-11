@@ -27,9 +27,9 @@ export async function POST(request: Request) {
         review: body.review.trim(),
         rating: body.rating,
         location: body.location?.trim() ?? null,
-        approved: false, // Requires manual approval
+        approved: false,
       },
-    ])
+    ] as any)
 
     if (error) {
       console.error('Supabase insert error:', error)
