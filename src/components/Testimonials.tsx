@@ -122,7 +122,7 @@ function FeedbackModal({ onClose }: { onClose: () => void }) {
   const handleSubmit = async () => {
     if (!form.name || !form.review) return
     setStatus('submitting')
-    const { error } = await supabase.from('testimonials').insert([{ ...form, approved: false }])
+    const { error } = await supabase.from('testimonials').insert([{ ...form, approved: false }] as any)
     setStatus(error ? 'error' : 'success')
   }
 
