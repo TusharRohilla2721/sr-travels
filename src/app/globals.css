@@ -1,0 +1,194 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,600&family=Inter:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── CSS Variables per theme ─────────────────────────────── */
+:root,
+.theme-green {
+  --bg: #0a1a0f;
+  --surface: #0f2318;
+  --card: #122b1c;
+  --accent: #2ecc71;
+  --accent-dark: #27ae60;
+  --text: #e8f5e9;
+  --text-muted: #a5d6a7;
+  --border: #1e4d2b;
+  --overlay: rgba(10, 26, 15, 0.85);
+  --scrollbar-thumb: #2ecc71;
+}
+
+.theme-black {
+  --bg: #0a0a0a;
+  --surface: #141414;
+  --card: #1a1a1a;
+  --accent: #f5c518;
+  --accent-dark: #d4a017;
+  --text: #f0f0f0;
+  --text-muted: #999999;
+  --border: #2a2a2a;
+  --overlay: rgba(10, 10, 10, 0.85);
+  --scrollbar-thumb: #f5c518;
+}
+
+/* ─── Base ──────────────────────────────────────────────────── */
+@layer base {
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', system-ui, sans-serif;
+    overflow-x: hidden;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    color: var(--text);
+    line-height: 1.2;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  img {
+    max-width: 100%;
+    display: block;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--surface); }
+  ::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb);
+    border-radius: 3px;
+  }
+  ::-webkit-scrollbar-thumb:hover { opacity: 0.8; }
+}
+
+/* ─── Components ────────────────────────────────────────────── */
+@layer components {
+  /* Section layout */
+  .section {
+    @apply py-20 px-4 md:px-8 lg:px-16;
+  }
+
+  .container-sr {
+    @apply max-w-7xl mx-auto;
+  }
+
+  /* Section heading */
+  .section-title {
+    @apply text-4xl md:text-5xl lg:text-6xl font-serif font-light text-center mb-4;
+    color: var(--text);
+  }
+
+  .section-subtitle {
+    @apply text-center text-sm uppercase tracking-widest mb-16;
+    color: var(--text-muted);
+  }
+
+  /* Accent line */
+  .accent-line {
+    @apply w-16 h-px mx-auto mb-4;
+    background: var(--accent);
+  }
+
+  /* Buttons */
+  .btn-primary {
+    @apply inline-flex items-center gap-2 px-8 py-3 text-sm font-medium uppercase tracking-widest
+           transition-all duration-300 rounded-sm;
+    background: var(--accent);
+    color: var(--bg);
+  }
+  .btn-primary:hover {
+    background: var(--accent-dark);
+    transform: translateY(-2px);
+  }
+
+  .btn-outline {
+    @apply inline-flex items-center gap-2 px-8 py-3 text-sm font-medium uppercase tracking-widest
+           border transition-all duration-300 rounded-sm;
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  .btn-outline:hover {
+    background: var(--accent);
+    color: var(--bg);
+    transform: translateY(-2px);
+  }
+
+  /* Card */
+  .card-sr {
+    @apply rounded-lg overflow-hidden transition-all duration-300;
+    background: var(--card);
+    border: 1px solid var(--border);
+  }
+  .card-sr:hover {
+    border-color: var(--accent);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+  }
+
+  /* Nav link */
+  .nav-link {
+    @apply text-sm uppercase tracking-widest transition-colors duration-200;
+    color: var(--text-muted);
+  }
+  .nav-link:hover,
+  .nav-link.active {
+    color: var(--accent);
+  }
+
+  /* Star rating */
+  .star-filled { color: var(--accent); }
+  .star-empty  { color: var(--border); }
+
+  /* Badge */
+  .badge {
+    @apply text-xs uppercase tracking-widest px-3 py-1 rounded-full font-medium;
+    background: var(--border);
+    color: var(--text-muted);
+  }
+  .badge-accent {
+    background: var(--accent);
+    color: var(--bg);
+  }
+}
+
+/* ─── Utilities ─────────────────────────────────────────────── */
+@layer utilities {
+  .text-accent  { color: var(--accent); }
+  .bg-surface   { background-color: var(--surface); }
+  .bg-card      { background-color: var(--card); }
+  .border-theme { border-color: var(--border); }
+  .text-muted   { color: var(--text-muted); }
+
+  /* Gradient overlays */
+  .overlay-bottom {
+    background: linear-gradient(to top, var(--bg) 0%, transparent 100%);
+  }
+  .overlay-full {
+    background: var(--overlay);
+  }
+
+  /* Glass effect */
+  .glass {
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+}
