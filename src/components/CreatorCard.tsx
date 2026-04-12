@@ -32,7 +32,7 @@ export default function CreatorCard() {
             gsap.fromTo(overlayRef.current, { opacity: 0 }, { opacity: 1, duration: 0.25, ease: 'power2.out' })
             gsap.fromTo(modalRef.current, { opacity: 0, scale: 0.93, y: 18 }, { opacity: 1, scale: 1, y: 0, duration: 0.38, ease: 'back.out(1.5)' })
         } else {
-            gsap.to(overlayRef.current, { opacity: 0, duration: 0.22, ease: 'power2.in', onComplete: () => gsap.set(overlayRef.current, { display: 'none' }) })
+            gsap.to(overlayRef.current, { opacity: 0, duration: 0.22, ease: 'power2.in', onComplete: () => { gsap.set(overlayRef.current, { display: 'none' }) } })
         }
     }, [open])
 
