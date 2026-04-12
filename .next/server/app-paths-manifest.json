@@ -1,8 +1,0 @@
-{
-  "/api/submit-feedback/route": "app/api/submit-feedback/route.js",
-  "/_not-found/page": "app/_not-found/page.js",
-  "/about/page": "app/about/page.js",
-  "/destinations/page": "app/destinations/page.js",
-  "/galleria/page": "app/galleria/page.js",
-  "/page": "app/page.js"
-}
