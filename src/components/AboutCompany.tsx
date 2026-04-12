@@ -1,92 +1,47 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
-import Image from 'next/image'
 import Link from 'next/link'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-
 gsap.registerPlugin(ScrollTrigger)
 
 export default function AboutCompany() {
-  const sectionRef = useRef<HTMLElement>(null)
+  const textRef = useRef<HTMLDivElement>(null)
+  const imgRef = useRef<HTMLDivElement>(null)
+  const containerRef = useRef<HTMLElement>(null)
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      gsap.from('.about-text > *', {
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: 'top 80%',
-        },
-        y: 30,
-        opacity: 0,
-        duration: 0.6,
-        stagger: 0.15,
-        ease: 'power2.out',
-      })
-      gsap.from('.about-img', {
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: 'top 80%',
-        },
-        scale: 0.92,
-        opacity: 0,
-        duration: 0.9,
-        ease: 'power3.out',
-      })
-    }, sectionRef)
+      if (!textRef.current) return
+      gsap.from(Array.from(textRef.current.children), { opacity: 0, x: -36, duration: 0.75, stagger: 0.14, ease: 'power3.out', scrollTrigger: { trigger: textRef.current, start: 'top 85%' } })
+      gsap.from(imgRef.current, { opacity: 0, x: 48, scale: 1.04, duration: 1.1, ease: 'power3.out', scrollTrigger: { trigger: imgRef.current, start: 'top 85%' } })
+    }, containerRef)
     return () => ctx.revert()
   }, [])
 
   return (
-    <section ref={sectionRef} className="section" style={{ background: 'var(--surface)' }}>
-      <div className="container-sr grid lg:grid-cols-2 gap-16 items-center">
-        {/* Image */}
-        <div className="about-img relative h-[440px] rounded-2xl overflow-hidden order-2 lg:order-1">
-          <Image
-            src="https://images.unsplash.com/photo-1464219789935-c2d9d9aba644?w=800&q=80"
-            alt="SR Travels fleet"
-            fill
-            className="object-cover"
-            sizes="(max-width: 1024px) 100vw, 50vw"
-          />
-          <div
-            className="absolute inset-0"
-            style={{ background: 'linear-gradient(to top right, var(--overlay), transparent)' }}
-          />
-          {/* Badge */}
-          <div
-            className="absolute top-6 left-6 px-4 py-2 rounded-full glass text-sm font-medium"
-            style={{ color: 'var(--accent)' }}
-          >
-            Est. 2010
-          </div>
-        </div>
-
-        {/* Text */}
-        <div className="about-text order-1 lg:order-2">
-          <p className="section-subtitle text-left mb-3">Our Story</p>
-          <div className="w-16 h-px mb-4" style={{ background: 'var(--accent)' }} />
-          <h2 className="text-4xl md:text-5xl font-serif font-light mb-6 leading-snug" style={{ color: 'var(--text)' }}>
-            Driven by Trust,
-            <br />
-            <em className="italic" style={{ color: 'var(--accent)' }}>Powered by Passion</em>
-          </h2>
-          <p className="text-sm leading-loose mb-4" style={{ color: 'var(--text-muted)' }}>
-            SR Travels was founded with a single mission — to make quality travel accessible for everyone.
-            Over a decade later, we've carried thousands of passengers safely to their destinations,
-            building a reputation rooted in reliability, comfort, and transparency.
-          </p>
-          <p className="text-sm leading-loose mb-8" style={{ color: 'var(--text-muted)' }}>
-            From humble beginnings with a handful of coaches, we've grown into a trusted name across
-            multiple routes. Every journey we operate reflects our commitment to safety and passenger
-            satisfaction above everything else.
-          </p>
-          <Link href="/about" className="btn-primary">
-            Learn More About Us
-          </Link>
+    <section ref={containerRef} id="about-company" style={{ padding: '7rem 4rem', background: 'var(--bg)', display: 'grid', gridTemplateColumns: '30% 70%', gap: '3.5rem', alignItems: 'center', transition: 'background 0.4s' }}>
+      <div ref={textRef} style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
+        <span className="section-label">Our Story</span>
+        <h2 className="section-title">SR Travels —<br /><em>Driven by Trust</em></h2>
+        <p style={{ fontSize: '0.9rem', lineHeight: 1.9, color: 'var(--text-muted)', marginBottom: '0.6rem' }}>
+          SR Travels was established in <strong style={{ color: 'var(--text)' }}>2012–13</strong> with a simple but powerful belief: <strong style={{ color: 'var(--text)' }}>trust must come before profit.</strong> What began as a small step has grown into a dependable travel company built on discipline, integrity, and personal responsibility.
+        </p>
+        <p style={{ fontSize: '0.9rem', lineHeight: 1.9, color: 'var(--text-muted)', marginBottom: '0.6rem' }}>
+          Every stage of our growth has been achieved through consistency, late nights, and a strong commitment to delivering on our promises.
+        </p>
+        <div style={{ marginTop: '1.2rem', padding: '1.2rem 1.4rem', borderLeft: '3px solid var(--accent)', background: 'var(--bg-alt)', borderRadius: '0 4px 4px 0', fontFamily: 'Cormorant Garamond, serif', fontSize: '1rem', fontStyle: 'italic', color: 'var(--text)', lineHeight: 1.7 }}>
+          &quot;At SR Travels, we do not simply provide vehicles. We provide assurance, accountability, and long-term partnership.&quot;
         </div>
       </div>
+      <div ref={imgRef} style={{ position: 'relative', borderRadius: 6, overflow: 'hidden', aspectRatio: '9/10', width: '100%' }}>
+        <img src="https://res.cloudinary.com/dzadpggxn/image/upload/q_auto,f_auto,w_800/v1774166640/WhatsApp_Image_2026-03-06_at_12.21.54_AM_zagne4.jpg" alt="SR Travels Luxury Bus Service" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(135deg, var(--accent) 0%, transparent 60%)', opacity: 0.12 }} />
+      </div>
+      <style>{`
+        @media (max-width: 768px) { #about-company { grid-template-columns: 1fr !important; padding: 4.5rem 1.5rem !important; } }
+      `}</style>
     </section>
   )
 }

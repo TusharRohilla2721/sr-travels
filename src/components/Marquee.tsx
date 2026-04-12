@@ -1,32 +1,19 @@
-const MARQUEE_ITEMS = [
-  '✦ Comfortable Buses',
-  '✦ AC & Non-AC Available',
-  '✦ On-Time Departure',
-  '✦ Experienced Drivers',
-  '✦ 24/7 Support',
-  '✦ Safe Journeys',
-  '✦ Affordable Fares',
-  '✦ Multiple Routes',
+const ITEMS = [
+  'NCR Employee Transport', 'Rajasthan Tours', 'Kerala Backwaters',
+  'Ladakh Adventures', 'Goa Getaways', 'Pilgrimage Tours',
+  'Corporate Travel', 'International Packages', 'Himachal Pradesh', 'Honeymoon Escapes'
 ]
+const DOUBLED = [...ITEMS, ...ITEMS]
 
 export default function Marquee() {
-  const items = [...MARQUEE_ITEMS, ...MARQUEE_ITEMS]
-
   return (
-    <div
-      className="overflow-hidden py-4 border-y"
-      style={{ borderColor: 'var(--border)', background: 'var(--surface)' }}
-    >
-      <div className="flex animate-marquee whitespace-nowrap">
-        {items.map((item, i) => (
-          <span
-            key={i}
-            className="inline-flex items-center mx-8 text-sm uppercase tracking-widest font-medium shrink-0"
-            style={{ color: 'var(--text-muted)' }}
-          >
-            <span style={{ color: 'var(--accent)' }} className="mr-2">✦</span>
-            {item.replace('✦ ', '')}
-          </span>
+    <div style={{ background: 'var(--bg-dark)', padding: '1.1rem 0', overflow: 'hidden', transition: 'background 0.4s' }}>
+      <div style={{ display: 'flex', gap: '3rem', animation: 'marquee 24s linear infinite', width: 'max-content' }}>
+        {DOUBLED.map((name, i) => (
+          <div key={i} style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: '1.05rem', fontWeight: 300, fontStyle: 'italic', color: 'rgba(255,255,255,0.4)', whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: '3rem' }}>
+            {name}
+            <span style={{ width: 4, height: 4, borderRadius: '50%', background: 'var(--accent)', flexShrink: 0, display: 'block' }} />
+          </div>
         ))}
       </div>
     </div>

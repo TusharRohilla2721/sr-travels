@@ -1,210 +1,155 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
-import { supabase } from '@/lib/supabase/client'
-import type { ApprovedTestimonial } from '@/types/database.types'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-
+import { createClient } from '@supabase/supabase-js'
 gsap.registerPlugin(ScrollTrigger)
 
-// Fallback static testimonials
-const FALLBACK: ApprovedTestimonial[] = [
-  { id: 1, created_at: '', name: 'Rahul Sharma', review: 'Excellent service! The bus was clean and departed on time. Will definitely book again with SR Travels.', rating: 5, location: 'Mumbai', avatar_url: null },
-  { id: 2, created_at: '', name: 'Priya Mehta', review: 'Very comfortable journey. The driver was professional and the AC was working perfectly.', rating: 5, location: 'Pune', avatar_url: null },
-  { id: 3, created_at: '', name: 'Akash Patel', review: 'Best travel experience! Affordable prices and great service. Highly recommended.', rating: 4, location: 'Nashik', avatar_url: null },
-  { id: 4, created_at: '', name: 'Sneha Kulkarni', review: 'SR Travels has been my go-to for years. Always reliable and the staff is very helpful.', rating: 5, location: 'Aurangabad', avatar_url: null },
-  { id: 5, created_at: '', name: 'Vijay Desai', review: 'Booked on WhatsApp in 2 minutes flat. The journey was smooth and the seats comfortable.', rating: 5, location: 'Nagpur', avatar_url: null },
-  { id: 6, created_at: '', name: 'Anita Singh', review: 'Great value for money. Clean bus, on-time departure, and friendly crew.', rating: 4, location: 'Solapur', avatar_url: null },
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+const supabase = supabaseUrl && supabaseKey ? createClient(supabaseUrl, supabaseKey) : null
+
+const WA_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '919289694400'
+
+const PLACEHOLDERS = [
+  { name: 'Priya Mehta', city: 'Mumbai', state: 'Maharashtra', from_city: 'Delhi', to_city: 'Jaipur', feedback: 'SR Travels turned our anniversary trip into an absolute fairytale. Every detail was perfect — from pickup to drop-off.' },
+  { name: 'Rajesh Kumar', city: 'Bangalore', state: 'Karnataka', from_city: 'Gurgaon', to_city: 'Goa', feedback: 'Booked a family trip. The itinerary was impeccably planned and our driver incredibly professional. Highly recommend!' },
+  { name: 'Arjun Sharma', city: 'Delhi', state: 'NCR', from_city: 'Delhi', to_city: 'Ladakh', feedback: 'Our Ladakh adventure was beyond words. SR Travels handled everything flawlessly. A bucket-list trip done right.' },
 ]
 
-function StarRating({ rating }: { rating: number }) {
+type Review = { name: string; city: string; state?: string; from_city?: string; to_city?: string; feedback: string }
+
+function TestCard({ r }: { r: Review }) {
   return (
-    <div className="flex gap-0.5">
-      {Array.from({ length: 5 }).map((_, i) => (
-        <svg
-          key={i}
-          className="w-4 h-4"
-          fill={i < rating ? 'var(--accent)' : 'var(--border)'}
-          viewBox="0 0 20 20"
-        >
-          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-        </svg>
-      ))}
+    <div className="test-card" style={{ background: 'var(--card-bg)', border: '1px solid var(--border)', borderRadius: 4, padding: '2rem', cursor: 'default', transition: 'transform 0.35s, box-shadow 0.35s, background 0.4s' }}
+      onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.transform = 'translateY(-5px)'; (e.currentTarget as HTMLDivElement).style.boxShadow = '0 14px 40px rgba(0,0,0,0.07)' }}
+      onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.transform = 'translateY(0)'; (e.currentTarget as HTMLDivElement).style.boxShadow = 'none' }}>
+      <div style={{ color: 'var(--gold)', fontSize: '0.85rem', letterSpacing: '0.1em', marginBottom: '1rem' }}>★★★★★</div>
+      <p style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: '1.05rem', fontStyle: 'italic', lineHeight: 1.75, color: 'var(--text)', marginBottom: '1.4rem' }}>&ldquo;{r.feedback}&rdquo;</p>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
+        <div style={{ width: 38, height: 38, borderRadius: '50%', background: 'var(--bg-alt)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'Cormorant Garamond, serif', fontSize: '1rem', color: 'var(--accent)', fontWeight: 600, flexShrink: 0, border: '1px solid var(--border)' }}>{(r.name || '?')[0].toUpperCase()}</div>
+        <div>
+          <p style={{ fontSize: '0.82rem', fontWeight: 500, color: 'var(--text)' }}>{r.name}</p>
+          <p style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>{r.city}{r.state ? `, ${r.state}` : ''}</p>
+          {r.from_city && r.to_city && <p style={{ fontSize: '0.7rem', color: 'var(--accent)', marginTop: 2 }}>{r.from_city} → {r.to_city}</p>}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function FeedbackModal({ onClose }: { onClose: () => void }) {
+  const [form, setForm] = useState({ name: '', city: '', state: '', from_city: '', to_city: '', journey_date: '', feedback: '' })
+  const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle')
+  const set = (k: string, v: string) => setForm(f => ({ ...f, [k]: v }))
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setStatus('submitting')
+    if (!supabase) { setStatus('success'); setTimeout(onClose, 2000); return }
+    const { error } = await supabase.from('testimonials').insert([{ ...form, journey_date: form.journey_date || null, approved: false, rejected: false }] as any)
+    setStatus(error ? 'error' : 'success')
+    if (!error) setTimeout(onClose, 2000)
+  }
+
+  const inputStyle: React.CSSProperties = { width: '100%', padding: '0.7rem 1rem', background: 'var(--bg-alt)', border: '1px solid var(--border)', borderRadius: 3, color: 'var(--text)', fontFamily: 'DM Sans, sans-serif', fontSize: '0.9rem', outline: 'none' }
+
+  return (
+    <div onClick={onClose} style={{ position: 'fixed', inset: 0, zIndex: 9000, background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(6px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem' }}>
+      <div role="dialog" aria-modal="true" onClick={e => e.stopPropagation()} style={{ background: 'var(--card-bg)', border: '1px solid var(--border)', borderRadius: 8, padding: '2.5rem', width: '100%', maxWidth: 560, maxHeight: '90vh', overflowY: 'auto', position: 'relative' }}>
+        <button onClick={onClose} style={{ position: 'absolute', top: '1rem', right: '1rem', background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.4rem', color: 'var(--text-muted)' }}>✕</button>
+        <h3 style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: '1.8rem', fontWeight: 300, color: 'var(--text)', marginBottom: '0.4rem' }}>Share Your Journey</h3>
+        <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '1.8rem' }}>We&apos;d love to hear about your experience with SR Travels 🚌</p>
+
+        {status === 'success' ? (
+          <div style={{ textAlign: 'center', padding: '2rem' }}>
+            <p style={{ fontSize: '2rem', marginBottom: '1rem' }}>🎉</p>
+            <h4 style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: '1.5rem', color: 'var(--text)', marginBottom: '0.5rem' }}>Thank You!</h4>
+            <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>Your story has been shared and is pending review.</p>
+          </div>
+        ) : (
+          <form onSubmit={handleSubmit} noValidate>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
+              <div><label style={{ display: 'block', fontSize: '0.72rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: '0.4rem' }}>Your Name *</label><input required value={form.name} onChange={e => set('name', e.target.value)} placeholder="Rahul Verma" style={inputStyle} /></div>
+              <div><label style={{ display: 'block', fontSize: '0.72rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: '0.4rem' }}>City *</label><input required value={form.city} onChange={e => set('city', e.target.value)} placeholder="Delhi" style={inputStyle} /></div>
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
+              <div><label style={{ display: 'block', fontSize: '0.72rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: '0.4rem' }}>State</label><input value={form.state} onChange={e => set('state', e.target.value)} placeholder="Delhi NCR" style={inputStyle} /></div>
+              <div><label style={{ display: 'block', fontSize: '0.72rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: '0.4rem' }}>Journey Date</label><input type="date" value={form.journey_date} onChange={e => set('journey_date', e.target.value)} style={inputStyle} /></div>
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
+              <div><label style={{ display: 'block', fontSize: '0.72rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: '0.4rem' }}>Travelled From</label><input value={form.from_city} onChange={e => set('from_city', e.target.value)} placeholder="Gurgaon" style={inputStyle} /></div>
+              <div><label style={{ display: 'block', fontSize: '0.72rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: '0.4rem' }}>Travelled To</label><input value={form.to_city} onChange={e => set('to_city', e.target.value)} placeholder="Jaipur" style={inputStyle} /></div>
+            </div>
+            <div style={{ marginBottom: '1rem' }}>
+              <label style={{ display: 'block', fontSize: '0.72rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: '0.4rem' }}>Your Feedback *</label>
+              <textarea required value={form.feedback} onChange={e => set('feedback', e.target.value)} placeholder="Tell us about your experience..." style={{ ...inputStyle, resize: 'vertical', minHeight: 100 }} />
+            </div>
+            <button type="submit" disabled={status === 'submitting'} style={{ width: '100%', background: 'var(--accent)', color: '#fff', padding: '0.9rem', border: 'none', borderRadius: 3, fontSize: '0.8rem', letterSpacing: '0.1em', textTransform: 'uppercase', fontWeight: 500, cursor: 'pointer', opacity: status === 'submitting' ? 0.7 : 1 }}>
+              {status === 'submitting' ? 'Submitting…' : 'Submit Feedback →'}
+            </button>
+            {status === 'error' && <p style={{ color: 'red', textAlign: 'center', marginTop: '0.8rem', fontSize: '0.82rem' }}>Something went wrong. Please try again.</p>}
+          </form>
+        )}
+      </div>
     </div>
   )
 }
 
 export default function Testimonials() {
-  const [reviews, setReviews] = useState<ApprovedTestimonial[]>(FALLBACK)
-  const [modalOpen, setModalOpen] = useState(false)
-  const sectionRef = useRef<HTMLElement>(null)
+  const [reviews, setReviews] = useState<Review[]>([])
+  const [loading, setLoading] = useState(true)
+  const [showModal, setShowModal] = useState(false)
+  const gridRef = useRef<HTMLDivElement>(null)
 
-  useEffect(() => {
-    supabase
-      .from('approved_testimonials')
-      .select('*')
-      .limit(9)
-      .then(({ data }) => {
-        if (data && data.length > 0) setReviews(data)
-      })
-  }, [])
-
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      gsap.from('.review-card', {
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: 'top 75%',
-        },
-        y: 30,
-        opacity: 0,
-        duration: 0.5,
-        stagger: 0.08,
-        ease: 'power2.out',
-      })
-    }, sectionRef)
-    return () => ctx.revert()
-  }, [reviews])
-
-  return (
-    <section ref={sectionRef} className="section" style={{ background: 'var(--bg)' }}>
-      <div className="container-sr">
-        <p className="section-subtitle">What Passengers Say</p>
-        <div className="accent-line" />
-        <h2 className="section-title">Testimonials</h2>
-
-        {/* Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mt-12">
-          {reviews.slice(0, 6).map((r) => (
-            <div key={r.id} className="review-card card-sr p-6 flex flex-col gap-4">
-              <StarRating rating={r.rating} />
-              <p className="text-sm leading-relaxed flex-1 italic" style={{ color: 'var(--text-muted)' }}>
-                &ldquo;{r.review}&rdquo;
-              </p>
-              <div className="flex items-center gap-3 pt-2" style={{ borderTop: '1px solid var(--border)' }}>
-                <div
-                  className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-semibold shrink-0"
-                  style={{ background: 'var(--accent)', color: 'var(--bg)' }}
-                >
-                  {r.name.charAt(0)}
-                </div>
-                <div>
-                  <p className="text-sm font-medium" style={{ color: 'var(--text)' }}>{r.name}</p>
-                  {r.location && (
-                    <p className="text-xs" style={{ color: 'var(--text-muted)' }}>{r.location}</p>
-                  )}
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Share Feedback CTA */}
-        <div className="text-center mt-12">
-          <button onClick={() => setModalOpen(true)} className="btn-outline">
-            Share Your Experience
-          </button>
-        </div>
-      </div>
-
-      {/* Feedback Modal */}
-      {modalOpen && <FeedbackModal onClose={() => setModalOpen(false)} />}
-    </section>
-  )
-}
-
-// ── Inline Feedback Modal ────────────────────────────────────
-function FeedbackModal({ onClose }: { onClose: () => void }) {
-  const [form, setForm] = useState({ name: '', location: '', review: '', rating: 5 })
-  const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle')
-
-  const handleSubmit = async () => {
-    if (!form.name || !form.review) return
-    setStatus('submitting')
-    const { error } = await supabase.from('testimonials').insert([{ ...form, approved: false }] as any)
-    setStatus(error ? 'error' : 'success')
+  const load = async () => {
+    setLoading(true)
+    if (!supabase) { setReviews(PLACEHOLDERS); setLoading(false); return }
+    const { data, error } = await supabase.from('approved_testimonials').select('*').order('approved_at', { ascending: false }).limit(9)
+    setReviews(error || !data?.length ? PLACEHOLDERS : data)
+    setLoading(false)
   }
 
-  return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4"
-      style={{ background: 'rgba(0,0,0,0.7)' }}
-      onClick={(e) => e.target === e.currentTarget && onClose()}
-    >
-      <div className="card-sr w-full max-w-md p-8 relative" style={{ background: 'var(--surface)' }}>
-        <button
-          onClick={onClose}
-          className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full hover:bg-red-500/10 transition-colors"
-          style={{ color: 'var(--text-muted)' }}
-        >
-          ✕
-        </button>
+  useEffect(() => { load() }, [])
 
-        {status === 'success' ? (
-          <div className="text-center py-8">
-            <p className="text-5xl mb-4">🎉</p>
-            <h3 className="font-serif text-2xl mb-2" style={{ color: 'var(--text)' }}>Thank You!</h3>
-            <p className="text-sm" style={{ color: 'var(--text-muted)' }}>
-              Your review will be published after approval.
-            </p>
+  useEffect(() => {
+    if (!loading && gridRef.current) {
+      const ctx = gsap.context(() => {
+        gsap.from(Array.from(gridRef.current!.children), { opacity: 0, y: 30, duration: 0.7, stagger: 0.1, ease: 'power3.out', scrollTrigger: { trigger: gridRef.current, start: 'top 85%' } })
+      }, gridRef)
+      return () => ctx.revert()
+    }
+  }, [loading])
+
+  return (
+    <>
+      <section id="stories" style={{ padding: '7rem 4rem', background: 'var(--bg-alt)', transition: 'background 0.4s' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '3.5rem', flexWrap: 'wrap', gap: '1rem' }}>
+          <div>
+            <span className="section-label">What Travellers Say</span>
+            <h2 className="section-title">Stories That <em>Inspire</em> Us</h2>
+          </div>
+          <button className="btn-outline" onClick={() => setShowModal(true)}>Share Your Journey ✦</button>
+        </div>
+
+        {loading ? (
+          <div style={{ display: 'flex', gap: 6, justifyContent: 'center', padding: '3rem' }}>
+            {[0, 1, 2].map(i => <div key={i} style={{ width: 8, height: 8, background: 'var(--accent)', borderRadius: '50%', animation: `ldBounce 1.1s ${i * 0.18}s infinite` }} />)}
           </div>
         ) : (
-          <>
-            <h3 className="font-serif text-2xl mb-6" style={{ color: 'var(--text)' }}>Share Your Review</h3>
-
-            <div className="flex flex-col gap-4">
-              <input
-                type="text"
-                placeholder="Your Name *"
-                value={form.name}
-                onChange={(e) => setForm(p => ({ ...p, name: e.target.value }))}
-                className="w-full px-4 py-3 rounded-lg text-sm outline-none"
-                style={{ background: 'var(--card)', border: '1px solid var(--border)', color: 'var(--text)' }}
-              />
-              <input
-                type="text"
-                placeholder="City / Location"
-                value={form.location}
-                onChange={(e) => setForm(p => ({ ...p, location: e.target.value }))}
-                className="w-full px-4 py-3 rounded-lg text-sm outline-none"
-                style={{ background: 'var(--card)', border: '1px solid var(--border)', color: 'var(--text)' }}
-              />
-              <textarea
-                placeholder="Your review *"
-                rows={4}
-                value={form.review}
-                onChange={(e) => setForm(p => ({ ...p, review: e.target.value }))}
-                className="w-full px-4 py-3 rounded-lg text-sm outline-none resize-none"
-                style={{ background: 'var(--card)', border: '1px solid var(--border)', color: 'var(--text)' }}
-              />
-              {/* Star picker */}
-              <div className="flex gap-1">
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <button
-                    key={i}
-                    onClick={() => setForm(p => ({ ...p, rating: i + 1 }))}
-                    className="text-2xl transition-transform hover:scale-110"
-                  >
-                    <span style={{ color: i < form.rating ? 'var(--accent)' : 'var(--border)' }}>★</span>
-                  </button>
-                ))}
-              </div>
-
-              <button
-                onClick={handleSubmit}
-                disabled={status === 'submitting'}
-                className="btn-primary justify-center mt-2"
-              >
-                {status === 'submitting' ? 'Submitting…' : 'Submit Review'}
-              </button>
-              {status === 'error' && (
-                <p className="text-xs text-red-400 text-center">Something went wrong. Please try again.</p>
-              )}
-            </div>
-          </>
+          <div ref={gridRef} style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1.5rem' }}>
+            {reviews.map((r, i) => <TestCard key={i} r={r} />)}
+          </div>
         )}
-      </div>
-    </div>
+
+        <style>{`
+          @media (max-width: 900px) { #stories > div:last-of-type { grid-template-columns: 1fr 1fr !important; } }
+          @media (max-width: 600px) { #stories > div:last-of-type { grid-template-columns: 1fr !important; } }
+          @media (max-width: 768px) { #stories { padding: 4.5rem 1.5rem !important; } }
+        `}</style>
+      </section>
+      {showModal && <FeedbackModal onClose={() => { setShowModal(false); load() }} />}
+    </>
   )
 }
