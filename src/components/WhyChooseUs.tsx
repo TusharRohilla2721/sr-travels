@@ -1,112 +1,135 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
-import Image from 'next/image'
+import { useEffect, useRef, useState } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-
 gsap.registerPlugin(ScrollTrigger)
 
-const REASONS = [
-  { icon: '🛡️', title: 'Safety First', desc: 'All vehicles GPS-tracked, drivers background-verified.' },
-  { icon: '⏱️', title: 'Always On Time', desc: '98% on-time departure rate across all routes.' },
-  { icon: '💰', title: 'Best Prices', desc: 'Competitive fares with no hidden charges.' },
-  { icon: '📞', title: '24/7 Support', desc: 'Round-the-clock helpline for any travel assistance.' },
-  { icon: '🧼', title: 'Clean Coaches', desc: 'Sanitized buses before every departure.' },
-  { icon: '🎟️', title: 'Easy Booking', desc: 'Book your seat via WhatsApp in under 2 minutes.' },
+const CARDS = [
+  {
+    id: 'wc0', num: '01', emoji: '🌟',
+    title: 'The SR Travels Promise',
+    img: 'https://res.cloudinary.com/dzadpggxn/image/upload/q_auto,f_auto,w_800/v1774173717/WhatsApp_Image_2026-03-06_at_12.22.39_AM_1_cmrksy.jpg',
+    desc: 'Trust and ground-level experience from Sunder and Tushar in every booking.',
+    points: [
+      { b: 'Experience that Counts:', t: '25 years of field knowledge — roads, rhythms, shortcuts of India.' },
+      { b: 'Personal Touch:', t: 'Every booking treated like a family commitment.' },
+      { b: 'Safety First:', t: 'Expert drivers trained to prioritise your safety above all else.' },
+      { b: '24/7 Support:', t: '2 AM pickup or last-minute change — just a call away.' },
+    ],
+  },
+  {
+    id: 'wc1', num: '02', emoji: '🚐',
+    title: 'Our Fleet',
+    img: 'https://res.cloudinary.com/dzadpggxn/image/upload/q_auto,f_auto,w_800/v1774174233/WhatsApp_Image_2026-03-06_at_12.21.55_AM_lq4eqa.jpg',
+    desc: '100+ vehicles ready for any group size — intimate family trips to large corporate retreats.',
+    points: [
+      { b: 'Small Squad (7-Seaters):', t: 'Perfect for family airport runs or quick city trips.' },
+      { b: 'Mid-Range (12 & 14 Seaters):', t: 'Space without the "big bus" feel.' },
+      { b: 'Premium Urbania (16-Seater):', t: 'Premium interiors for those who travel like royalty.' },
+      { b: 'Big Groups (20, 26 & 42 Seaters):', t: 'Luxury coaches for weddings, corporate outings, reunions.' },
+    ],
+  },
+  {
+    id: 'wc2', num: '03', emoji: '✨',
+    title: 'Premium Comfort',
+    img: 'https://res.cloudinary.com/dzadpggxn/image/upload/q_auto,f_auto,w_800/v1774173391/WhatsApp_Image_2026-03-06_at_12.25.32_AM_lxdk0u.jpg',
+    desc: 'Aesthetic interiors and real comfort features that make every mile enjoyable.',
+    points: [
+      { b: 'Aesthetic Lighting:', t: 'Custom ambience that starts the vacation before you arrive.' },
+      { b: 'Push-Back Seats + Full AC:', t: 'Sleep through those long overnight hauls.' },
+      { b: 'Charging at Every Seat:', t: 'Maps, music, and cameras — always powered.' },
+      { b: 'Clean-Car Policy:', t: 'Spotless interiors, every single trip.' },
+    ],
+  },
+  {
+    id: 'wc3', num: '04', emoji: '🌍',
+    title: 'Specialized Packages',
+    img: 'https://res.cloudinary.com/dzadpggxn/image/upload/q_auto,f_auto,w_800/v1774173689/WhatsApp_Image_2026-03-06_at_12.21.58_AM_xw5des.jpg',
+    desc: 'End-to-end travel planning beyond just the bus — we handle everything.',
+    points: [
+      { b: 'Custom Itineraries:', t: 'Dream destination, perfect plan — budget to ultra-luxury.' },
+      { b: 'Honeymoon & Romance:', t: 'Handpicked resorts, candlelit experiences.' },
+      { b: 'Spiritual Journeys:', t: 'Pilgrimage tours with respect and expert guidance.' },
+      { b: 'Global Adventures:', t: 'Dubai, Thailand, Bali, Europe — handled end-to-end.' },
+    ],
+  },
 ]
 
+function WCard({ card }: { card: typeof CARDS[0] }) {
+  const [expanded, setExpanded] = useState(false)
+  return (
+    <div id={card.id} className="w-card" style={{ position: 'relative', width: '100%', height: '100%', display: 'grid', gridTemplateColumns: '240px 1fr', borderRadius: 14, overflow: 'hidden', background: 'var(--card-bg)', border: '1px solid var(--border)', boxShadow: '0 8px 40px rgba(0,0,0,0.1)', transition: 'background 0.4s, border-color 0.4s, transform 0.3s', cursor: 'grab' }}
+      onMouseEnter={e => (e.currentTarget.style.transform = 'translateY(-5px)')}
+      onMouseLeave={e => (e.currentTarget.style.transform = 'translateY(0)')}>
+      <div style={{ position: 'relative', overflow: 'hidden', zIndex: 1 }}>
+        <img src={card.img} alt={card.title} loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', filter: 'grayscale(1) contrast(1.1) brightness(0.9)' }} />
+      </div>
+      <div className={`w-card-text${expanded ? ' is-expanded' : ''}`} style={{ padding: '2rem 2.2rem', display: 'flex', flexDirection: 'column', justifyContent: 'center', position: 'relative', overflowY: 'hidden', zIndex: 2, transition: 'all 0.4s cubic-bezier(0.16, 1, 0.3, 1)' }}>
+        <div className="w-card-num" style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: '2.8rem', fontWeight: 300, color: 'var(--border)', lineHeight: 1, marginBottom: '0.4rem' }}>{card.num}</div>
+        <h3 style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: 'clamp(1.2rem, 1.8vw, 1.4rem)', fontWeight: 400, color: 'var(--text)', marginBottom: '0.7rem' }}>{card.emoji} {card.title}</h3>
+        <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', lineHeight: 1.75 }}>{card.desc}</p>
+        <ul className="w-card-list" style={{ listStyle: 'none', marginTop: '0.6rem' }}>
+          {card.points.map((p, i) => (
+            <li key={i} style={{ fontSize: '0.8rem', color: 'var(--text-muted)', lineHeight: 1.68, padding: '0.16rem 0 0.16rem 1rem', position: 'relative' }}>
+              <span style={{ position: 'absolute', left: 0, color: 'var(--accent)', fontSize: '0.5rem', top: '0.5rem' }}>✦</span>
+              <strong>{p.b}</strong> {p.t}
+            </li>
+          ))}
+        </ul>
+        <div className="read-more-wrapper">
+          <button className="read-more-btn" onClick={() => setExpanded(!expanded)}>{expanded ? 'Show Less ↑' : 'Read More ↓'}</button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 export default function WhyChooseUs() {
-  const sectionRef = useRef<HTMLElement>(null)
+  const containerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    const ctx = gsap.context(() => {
-      gsap.from('.why-item', {
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: 'top 75%',
-        },
-        x: -30,
-        opacity: 0,
-        duration: 0.5,
-        stagger: 0.1,
-        ease: 'power2.out',
-      })
-
-      gsap.from('.why-image', {
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: 'top 75%',
-        },
-        x: 60,
-        opacity: 0,
-        duration: 0.9,
-        ease: 'power3.out',
-      })
-    }, sectionRef)
-
-    return () => ctx.revert()
+    const el = containerRef.current
+    if (!el) return
+    let isDown = false, startX = 0, scrollLeft = 0
+    const onDown = (e: MouseEvent) => { isDown = true; el.style.cursor = 'grabbing'; startX = e.pageX - el.offsetLeft; scrollLeft = el.scrollLeft }
+    const onLeave = () => { isDown = false; el.style.cursor = 'grab' }
+    const onUp = () => { isDown = false; el.style.cursor = 'grab' }
+    const onMove = (e: MouseEvent) => { if (!isDown) return; e.preventDefault(); el.scrollLeft = scrollLeft - (e.pageX - el.offsetLeft - startX) * 2 }
+    el.addEventListener('mousedown', onDown); el.addEventListener('mouseleave', onLeave); el.addEventListener('mouseup', onUp); el.addEventListener('mousemove', onMove)
+    return () => { el.removeEventListener('mousedown', onDown); el.removeEventListener('mouseleave', onLeave); el.removeEventListener('mouseup', onUp); el.removeEventListener('mousemove', onMove) }
   }, [])
 
   return (
-    <section ref={sectionRef} className="section" style={{ background: 'var(--bg)' }}>
-      <div className="container-sr grid lg:grid-cols-2 gap-16 items-center">
-        {/* Left: Text */}
-        <div>
-          <p className="section-subtitle text-left mb-4">Our Promise</p>
-          <div className="w-16 h-px mb-4" style={{ background: 'var(--accent)' }} />
-          <h2 className="text-4xl md:text-5xl font-serif font-light mb-8 leading-snug" style={{ color: 'var(--text)' }}>
-            Why Thousands
-            <br />
-            <em className="italic" style={{ color: 'var(--accent)' }}>Choose SR Travels</em>
-          </h2>
-
-          <div className="grid sm:grid-cols-2 gap-5">
-            {REASONS.map((r) => (
-              <div key={r.title} className="why-item flex gap-4 items-start group">
-                <div
-                  className="shrink-0 w-10 h-10 rounded-lg flex items-center justify-center text-xl transition-transform duration-300 group-hover:scale-110"
-                  style={{ background: 'var(--border)' }}
-                >
-                  {r.icon}
-                </div>
-                <div>
-                  <p className="font-medium mb-1 text-sm" style={{ color: 'var(--text)' }}>{r.title}</p>
-                  <p className="text-xs leading-relaxed" style={{ color: 'var(--text-muted)' }}>{r.desc}</p>
-                </div>
-              </div>
-            ))}
-          </div>
+    <>
+      <style>{`
+        .whyus-scroll::-webkit-scrollbar { display: none; }
+        .whyus-scroll { -ms-overflow-style: none; scrollbar-width: none; }
+        .whyus-card-wrapper { flex: 0 0 620px; height: 340px; scroll-snap-align: center; }
+        @media (min-width: 769px) { .read-more-wrapper { display: none !important; } }
+        @media (max-width: 768px) {
+          .whyus-card-wrapper { flex: 0 0 85vw; height: 580px; }
+          .w-card { display: flex !important; flex-direction: column !important; background: #0f0d0b !important; }
+          .w-card > div:first-child { height: 70% !important; width: 100% !important; border-radius: 14px 14px 0 0 !important; }
+          .w-card-text { height: 30% !important; padding: 0rem 1.5rem 1.2rem 1.5rem !important; justify-content: flex-start !important; overflow-y: auto; }
+          .w-card-num { position: absolute !important; top: 1rem !important; right: 1.2rem !important; font-size: 2.2rem !important; margin: 0 !important; opacity: 0.15 !important; }
+          .w-card-list { display: none; }
+          .read-more-btn { margin-top: auto !important; padding: 0.4rem 1rem !important; background: rgba(196,98,45,0.1) !important; border: 1px solid var(--accent) !important; color: var(--accent) !important; border-radius: 20px !important; font-size: 0.7rem !important; text-transform: uppercase !important; cursor: pointer; }
+          .w-card-text.is-expanded { position: absolute !important; top: 0 !important; left: 0 !important; width: 100% !important; height: 100% !important; border-radius: 14px !important; background: rgba(15,13,11,0.96) !important; backdrop-filter: blur(12px) !important; justify-content: center !important; z-index: 10; }
+          .w-card-text.is-expanded .w-card-list { display: block; margin-bottom: 1rem; }
+        }
+      `}</style>
+      <section id="why-us" style={{ padding: '6rem 0', background: 'var(--bg)', transition: 'background 0.4s', display: 'flex', flexDirection: 'column' }}>
+        <div style={{ textAlign: 'center', marginBottom: '3rem', padding: '0 4rem' }}>
+          <span className="section-label">Our Promise</span>
+          <h2 className="section-title">Why Choose <em>SR Travels?</em></h2>
         </div>
-
-        {/* Right: Image */}
-        <div className="why-image relative h-[480px] rounded-2xl overflow-hidden">
-          <Image
-            src="https://images.unsplash.com/photo-1570125909232-eb263c188f7e?w=800&q=80"
-            alt="SR Travels comfortable bus interior"
-            fill
-            className="object-cover"
-            sizes="(max-width: 1024px) 100vw, 50vw"
-          />
-          <div
-            className="absolute inset-0"
-            style={{ background: 'linear-gradient(135deg, var(--overlay) 0%, transparent 60%)' }}
-          />
-          {/* Stat overlay */}
-          <div
-            className="absolute bottom-6 left-6 right-6 p-5 rounded-xl glass"
-          >
-            <div className="grid grid-cols-3 gap-4 text-center">
-              {[['10+', 'Years'], ['50K+', 'Trips'], ['98%', 'On Time']].map(([num, label]) => (
-                <div key={label}>
-                  <p className="text-2xl font-serif font-semibold" style={{ color: 'var(--accent)' }}>{num}</p>
-                  <p className="text-xs uppercase tracking-widest mt-1" style={{ color: 'var(--text-muted)' }}>{label}</p>
-                </div>
-              ))}
-            </div>
-          </div>
+        <div className="whyus-scroll" ref={containerRef} style={{ display: 'flex', gap: '1.8rem', overflowX: 'auto', scrollSnapType: 'x mandatory', WebkitOverflowScrolling: 'touch', cursor: 'grab', scrollBehavior: 'smooth', padding: '1rem 1.5rem 3rem 1.5rem' }}>
+          {CARDS.map(card => (
+            <div key={card.id} className="whyus-card-wrapper"><WCard card={card} /></div>
+          ))}
         </div>
-      </div>
-    </section>
+      </section>
+    </>
   )
 }

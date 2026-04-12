@@ -2,139 +2,85 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { useTheme } from '@/context/ThemeContext'
 
 const NAV_LINKS = [
-  { href: '/', label: 'Home' },
-  { href: '/about', label: 'About' },
-  { href: '/destinations', label: 'Destinations' },
-  { href: '/galleria', label: 'Galleria' },
+  { label: 'HOME', path: '/' },
+  { label: 'ABOUT', path: '/about' },
+  { label: 'EXPLORE', path: '/destinations' },
+  { label: 'GALLERIA', path: '/galleria' },
 ]
 
 export default function Navbar() {
-  const pathname = usePathname()
-  const { theme, toggleTheme } = useTheme()
-  const [scrolled, setScrolled] = useState(false)
+  const [isScrolled, setIsScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
+  const { toggleTheme, icon } = useTheme()
+  const pathname = usePathname()
+  const router = useRouter()
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 40)
-    window.addEventListener('scroll', handleScroll, { passive: true })
+    const handleScroll = () => setIsScrolled(window.scrollY > 50)
+    window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  // Close menu on route change
-  useEffect(() => setMenuOpen(false), [pathname])
+  useEffect(() => { setMenuOpen(false) }, [pathname])
+  useEffect(() => { document.body.style.overflow = menuOpen ? 'hidden' : ''; return () => { document.body.style.overflow = '' } }, [menuOpen])
 
   return (
-    <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled ? 'glass py-3 shadow-lg' : 'py-5 bg-transparent'
-      }`}
-    >
-      <div className="container-sr flex items-center justify-between">
-        {/* Logo */}
-        <Link href="/" className="flex items-center gap-3 group">
-          <div
-            className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold transition-transform duration-300 group-hover:scale-110"
-            style={{ background: 'var(--accent)', color: 'var(--bg)' }}
-          >
-            SR
-          </div>
-          <span className="font-serif text-xl tracking-wide hidden sm:block" style={{ color: 'var(--text)' }}>
-            SR Travels
-          </span>
+    <>
+      <nav
+        role="navigation"
+        aria-label="Main navigation"
+        style={{
+          position: 'fixed', top: 0, left: 0, right: 0, zIndex: 9999,
+          background: isScrolled ? 'var(--nav-bg)' : 'transparent',
+          backdropFilter: isScrolled ? 'blur(12px)' : 'none',
+          borderBottom: isScrolled ? '1px solid var(--border)' : '1px solid transparent',
+          display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+          padding: isScrolled ? '1rem 2rem' : '1.5rem 2.5rem',
+          transition: '0.3s',
+        }}
+      >
+        <Link href="/" style={{ fontFamily: 'Cormorant Garamond, serif', fontWeight: 600, color: 'var(--text)', textDecoration: 'none', fontSize: '1.8rem', zIndex: 2 }}>
+          SR <span style={{ color: 'var(--accent)', fontStyle: 'italic' }}>Travels</span>
         </Link>
 
-        {/* Desktop Nav */}
-        <nav className="hidden md:flex items-center gap-8">
-          {NAV_LINKS.map(({ href, label }) => (
-            <Link
-              key={href}
-              href={href}
-              className={`nav-link ${pathname === href ? 'active' : ''}`}
-            >
-              {label}
+        <div style={{ display: 'flex', gap: '2rem', alignItems: 'center', position: 'absolute', left: '50%', transform: 'translateX(-50%)' }} className="desktop-nav">
+          {NAV_LINKS.map(link => (
+            <Link key={link.label} href={link.path} style={{ background: 'none', border: 'none', color: pathname === link.path ? 'var(--accent)' : 'var(--text)', fontFamily: 'DM Sans, sans-serif', fontSize: '0.8rem', fontWeight: 500, letterSpacing: '0.15em', textDecoration: 'none', transition: 'color 0.3s' }}>
+              {link.label}
             </Link>
           ))}
-        </nav>
+        </div>
 
-        {/* Right side */}
-        <div className="flex items-center gap-4">
-          {/* Theme Toggle */}
-          <button
-            onClick={toggleTheme}
-            aria-label="Toggle theme"
-            className="w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110"
-            style={{ background: 'var(--border)' }}
-          >
-            {theme === 'green' ? (
-              <span className="text-base">🌙</span>
-            ) : (
-              <span className="text-base">🌿</span>
-            )}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', zIndex: 2 }}>
+          <button onClick={toggleTheme} aria-label="Toggle theme" style={{ background: 'rgba(150,150,150,0.1)', border: '1px solid var(--border)', width: 42, height: 42, borderRadius: '50%', cursor: 'pointer', fontSize: '1.2rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            {icon}
           </button>
-
-          {/* Book Now CTA */}
-          <a
-            href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER}?text=Hi%20SR%20Travels!%20I%20want%20to%20book%20a%20seat.`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="btn-primary hidden sm:inline-flex text-xs px-5 py-2"
-          >
-            Book Now
-          </a>
-
-          {/* Hamburger */}
-          <button
-            onClick={() => setMenuOpen(prev => !prev)}
-            className="md:hidden flex flex-col gap-1.5 p-1"
-            aria-label="Toggle menu"
-          >
-            <span
-              className={`block w-5 h-px transition-all duration-300 ${menuOpen ? 'rotate-45 translate-y-2' : ''}`}
-              style={{ background: 'var(--accent)' }}
-            />
-            <span
-              className={`block w-5 h-px transition-all duration-300 ${menuOpen ? 'opacity-0' : ''}`}
-              style={{ background: 'var(--accent)' }}
-            />
-            <span
-              className={`block w-5 h-px transition-all duration-300 ${menuOpen ? '-rotate-45 -translate-y-2' : ''}`}
-              style={{ background: 'var(--accent)' }}
-            />
+          <button onClick={() => setMenuOpen(!menuOpen)} aria-label={menuOpen ? 'Close menu' : 'Open menu'} aria-expanded={menuOpen} style={{ cursor: 'pointer', flexDirection: 'column', gap: '5px', background: 'none', border: 'none', padding: '4px', display: 'none' }} className="mobile-toggle">
+            <span style={{ display: 'block', width: '24px', height: '2px', background: 'var(--text)', transition: '0.3s', transform: menuOpen ? 'rotate(45deg) translate(5px, 5px)' : '' }} />
+            <span style={{ display: 'block', width: '24px', height: '2px', background: 'var(--text)', transition: '0.3s', opacity: menuOpen ? 0 : 1 }} />
+            <span style={{ display: 'block', width: '24px', height: '2px', background: 'var(--text)', transition: '0.3s', transform: menuOpen ? 'rotate(-45deg) translate(5px, -5px)' : '' }} />
           </button>
         </div>
+      </nav>
+
+      <div style={{ position: 'fixed', inset: 0, zIndex: 9998, background: 'var(--bg-darkest)', visibility: menuOpen ? 'visible' : 'hidden', opacity: menuOpen ? 0.98 : 0, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', transition: '0.4s' }}>
+        {NAV_LINKS.map(link => (
+          <Link key={link.label} href={link.path} style={{ color: 'var(--text)', fontFamily: 'Cormorant Garamond, serif', fontSize: '2.5rem', fontStyle: 'italic', margin: '1rem 0', textDecoration: pathname === link.path ? 'underline' : 'none', textUnderlineOffset: '4px' }}>
+            {link.label}
+          </Link>
+        ))}
       </div>
 
-      {/* Mobile Menu */}
-      <div
-        className={`md:hidden transition-all duration-300 overflow-hidden ${
-          menuOpen ? 'max-h-72 opacity-100' : 'max-h-0 opacity-0'
-        }`}
-        style={{ background: 'var(--surface)' }}
-      >
-        <nav className="flex flex-col px-6 py-4 gap-5">
-          {NAV_LINKS.map(({ href, label }) => (
-            <Link
-              key={href}
-              href={href}
-              className={`nav-link text-base ${pathname === href ? 'active' : ''}`}
-            >
-              {label}
-            </Link>
-          ))}
-          <a
-            href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER}?text=Hi%20SR%20Travels!%20I%20want%20to%20book%20a%20seat.`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="btn-primary text-xs px-5 py-2 self-start"
-          >
-            Book Now
-          </a>
-        </nav>
-      </div>
-    </header>
+      <style>{`
+        .desktop-nav { display: flex !important; }
+        .mobile-toggle { display: none !important; }
+        @media (max-width: 960px) { .desktop-nav { display: none !important; } .mobile-toggle { display: flex !important; } }
+        @media (max-width: 768px) { nav { padding: 1rem 1.2rem !important; } }
+      `}</style>
+    </>
   )
 }

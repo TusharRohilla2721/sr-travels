@@ -2,12 +2,14 @@
 
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react'
 
-type Theme = 'green' | 'black'
+type Theme = 'green' | 'warm' | 'dark'
+const THEMES: Theme[] = ['green', 'warm', 'dark']
+const ICONS: Record<Theme, string> = { green: '🌲', warm: '☀️', dark: '🌙' }
 
 interface ThemeContextType {
   theme: Theme
   toggleTheme: () => void
-  isGreen: boolean
+  icon: string
 }
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined)
@@ -18,38 +20,31 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     setMounted(true)
-    const stored = localStorage.getItem('sr-theme') as Theme | null
-    if (stored === 'green' || stored === 'black') {
-      setTheme(stored)
-    }
+    try {
+      const stored = localStorage.getItem('sr-theme') as Theme | null
+      if (stored && THEMES.includes(stored)) setTheme(stored)
+    } catch { }
   }, [])
 
   useEffect(() => {
     if (!mounted) return
-    const root = document.documentElement
-    root.classList.remove('theme-green', 'theme-black')
-    root.classList.add(`theme-${theme}`)
-    localStorage.setItem('sr-theme', theme)
+    document.documentElement.setAttribute('data-theme', theme)
+    try { localStorage.setItem('sr-theme', theme) } catch { }
   }, [theme, mounted])
 
-  const toggleTheme = () => {
-    setTheme(prev => (prev === 'green' ? 'black' : 'green'))
-  }
+  const toggleTheme = () => setTheme(t => THEMES[(THEMES.indexOf(t) + 1) % THEMES.length])
 
-  // Prevent flash of wrong theme
   if (!mounted) return null
 
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme, isGreen: theme === 'green' }}>
+    <ThemeContext.Provider value={{ theme, toggleTheme, icon: ICONS[theme] }}>
       {children}
     </ThemeContext.Provider>
   )
 }
 
 export function useTheme(): ThemeContextType {
-  const context = useContext(ThemeContext)
-  if (!context) {
-    throw new Error('useTheme must be used inside ThemeProvider')
-  }
-  return context
+  const ctx = useContext(ThemeContext)
+  if (!ctx) throw new Error('useTheme must be used inside ThemeProvider')
+  return ctx
 }

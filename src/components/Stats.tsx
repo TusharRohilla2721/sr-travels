@@ -1,73 +1,43 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { useEffect, useRef } from 'react'
 import gsap from 'gsap'
-
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
 gsap.registerPlugin(ScrollTrigger)
 
 const STATS = [
-  { value: 10, suffix: '+', label: 'Years of Service' },
-  { value: 50000, suffix: '+', label: 'Happy Passengers' },
-  { value: 30, suffix: '+', label: 'Routes Covered' },
-  { value: 98, suffix: '%', label: 'On-Time Rate' },
+  { count: 100, suffix: 'K+', label: 'Happy Clients' },
+  { count: 50, suffix: '+', label: 'Tour Packages' },
+  { count: 100, suffix: '+', label: 'Destinations Covered' },
+  { count: 25, suffix: '+', label: 'Years of Excellence' },
 ]
 
-function Counter({ value, suffix }: { value: number; suffix: string }) {
-  const [count, setCount] = useState(0)
-  const ref = useRef<HTMLSpanElement>(null)
-  const triggered = useRef(false)
+export default function Stats() {
+  const sectionRef = useRef<HTMLElement>(null)
+  const numbersRef = useRef<(HTMLDivElement | null)[]>([])
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting && !triggered.current) {
-          triggered.current = true
-          let start = 0
-          const duration = 2000
-          const step = value / (duration / 16)
-          const timer = setInterval(() => {
-            start += step
-            if (start >= value) {
-              setCount(value)
-              clearInterval(timer)
-            } else {
-              setCount(Math.floor(start))
-            }
-          }, 16)
-        }
-      },
-      { threshold: 0.5 }
-    )
-    if (ref.current) observer.observe(ref.current)
-    return () => observer.disconnect()
-  }, [value])
+    const ctx = gsap.context(() => {
+      gsap.from('.stat-item', { opacity: 0, y: 40, duration: 1, stagger: 0.2, ease: 'power4.out', scrollTrigger: { trigger: sectionRef.current, start: 'top 80%' } })
+      numbersRef.current.forEach((el, i) => {
+        if (!el) return
+        gsap.to({ val: 0 }, {
+          val: STATS[i].count, duration: 2, ease: 'power2.out',
+          scrollTrigger: { trigger: el, start: 'top 90%', once: true },
+          onUpdate: function () { if (el) el.textContent = Math.round((this.targets()[0] as any).val) + STATS[i].suffix }
+        })
+      })
+    }, sectionRef)
+    return () => ctx.revert()
+  }, [])
 
   return (
-    <span ref={ref}>
-      {count.toLocaleString()}{suffix}
-    </span>
-  )
-}
-
-export default function Stats() {
-  return (
-    <section
-      className="section"
-      style={{ background: 'var(--surface)', borderTop: '1px solid var(--border)' }}
-    >
-      <div className="container-sr grid grid-cols-2 lg:grid-cols-4 gap-8">
-        {STATS.map((stat) => (
-          <div key={stat.label} className="text-center group">
-            <p
-              className="text-4xl md:text-5xl font-serif font-light mb-2 transition-colors duration-300 group-hover:text-accent"
-              style={{ color: 'var(--accent)' }}
-            >
-              <Counter value={stat.value} suffix={stat.suffix} />
-            </p>
-            <p className="text-xs uppercase tracking-widest" style={{ color: 'var(--text-muted)' }}>
-              {stat.label}
-            </p>
+    <section ref={sectionRef} style={{ padding: '8rem 2rem', background: 'var(--bg-darkest)', transition: 'background 0.4s' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '3rem', maxWidth: '1200px', margin: '0 auto' }}>
+        {STATS.map((s, i) => (
+          <div key={i} className="stat-item" style={{ textAlign: 'center' }}>
+            <div ref={el => { numbersRef.current[i] = el }} style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: '4rem', color: '#ffffff', marginBottom: '0.5rem' }}>0{s.suffix}</div>
+            <p style={{ color: 'rgba(255,255,255,0.5)', textTransform: 'uppercase', letterSpacing: '2px', fontSize: '0.8rem' }}>{s.label}</p>
           </div>
         ))}
       </div>
