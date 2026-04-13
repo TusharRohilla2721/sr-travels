@@ -59,20 +59,20 @@ const CARDS = [
 function WCard({ card }: { card: typeof CARDS[0] }) {
   const [expanded, setExpanded] = useState(false)
   return (
-    <div id={card.id} className="w-card" style={{ position: 'relative', width: '100%', height: '100%', display: 'grid', gridTemplateColumns: '240px 1fr', borderRadius: 14, overflow: 'hidden', background: 'var(--card-bg)', border: '1px solid var(--border)', boxShadow: '0 8px 40px rgba(0,0,0,0.1)', transition: 'background 0.4s, border-color 0.4s, transform 0.3s', cursor: 'grab' }}
+    <div id={card.id} className="w-card" style={{ position: 'relative', width: '100%', height: '100%', display: 'grid', gridTemplateColumns: '260px 1fr', borderRadius: 14, overflow: 'hidden', background: 'var(--card-bg)', border: '1px solid var(--border)', boxShadow: '0 8px 40px rgba(0,0,0,0.1)', transition: 'background 0.4s, border-color 0.4s, transform 0.3s', cursor: 'grab' }}
       onMouseEnter={e => (e.currentTarget.style.transform = 'translateY(-5px)')}
       onMouseLeave={e => (e.currentTarget.style.transform = 'translateY(0)')}>
       <div style={{ position: 'relative', overflow: 'hidden', zIndex: 1 }}>
         <img src={card.img} alt={card.title} loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', filter: 'grayscale(1) contrast(1.1) brightness(0.9)' }} />
       </div>
-      <div className={`w-card-text${expanded ? ' is-expanded' : ''}`} style={{ padding: '2rem 2.2rem', display: 'flex', flexDirection: 'column', justifyContent: 'center', position: 'relative', overflowY: 'hidden', zIndex: 2, transition: 'all 0.4s cubic-bezier(0.16, 1, 0.3, 1)' }}>
+      <div className={`w-card-text${expanded ? ' is-expanded' : ''}`} style={{ padding: '2.2rem 2.4rem', display: 'flex', flexDirection: 'column', justifyContent: 'center', position: 'relative', overflowY: 'hidden', zIndex: 2, transition: 'all 0.4s cubic-bezier(0.16, 1, 0.3, 1)' }}>
         <div className="w-card-num" style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: '2.8rem', fontWeight: 300, color: 'var(--border)', lineHeight: 1, marginBottom: '0.4rem' }}>{card.num}</div>
-        <h3 style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: 'clamp(1.2rem, 1.8vw, 1.4rem)', fontWeight: 400, color: 'var(--text)', marginBottom: '0.7rem' }}>{card.emoji} {card.title}</h3>
-        <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', lineHeight: 1.75 }}>{card.desc}</p>
-        <ul className="w-card-list" style={{ listStyle: 'none', marginTop: '0.6rem' }}>
+        <h3 style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: 'clamp(1.2rem, 1.8vw, 1.5rem)', fontWeight: 400, color: 'var(--text)', marginBottom: '0.7rem' }}>{card.emoji} {card.title}</h3>
+        <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', lineHeight: 1.75 }}>{card.desc}</p>
+        <ul className="w-card-list" style={{ listStyle: 'none', marginTop: '0.8rem' }}>
           {card.points.map((p, i) => (
-            <li key={i} style={{ fontSize: '0.8rem', color: 'var(--text-muted)', lineHeight: 1.68, padding: '0.16rem 0 0.16rem 1rem', position: 'relative' }}>
-              <span style={{ position: 'absolute', left: 0, color: 'var(--accent)', fontSize: '0.5rem', top: '0.5rem' }}>✦</span>
+            <li key={i} style={{ fontSize: '0.82rem', color: 'var(--text-muted)', lineHeight: 1.72, padding: '0.2rem 0 0.2rem 1rem', position: 'relative' }}>
+              <span style={{ position: 'absolute', left: 0, color: 'var(--accent)', fontSize: '0.5rem', top: '0.55rem' }}>✦</span>
               <strong>{p.b}</strong> {p.t}
             </li>
           ))}
@@ -105,8 +105,16 @@ export default function WhyChooseUs() {
       <style>{`
         .whyus-scroll::-webkit-scrollbar { display: none; }
         .whyus-scroll { -ms-overflow-style: none; scrollbar-width: none; }
-        .whyus-card-wrapper { flex: 0 0 620px; height: 340px; scroll-snap-align: center; }
-        @media (min-width: 769px) { .read-more-wrapper { display: none !important; } }
+        /* Desktop: wider + taller cards */
+        .whyus-card-wrapper {
+          flex: 0 0 clamp(640px, 56vw, 820px);
+          height: clamp(360px, 40vh, 460px);
+          scroll-snap-align: center;
+        }
+        @media (min-width: 769px) {
+          .read-more-wrapper { display: none !important; }
+          .w-card { grid-template-columns: 280px 1fr !important; }
+        }
         @media (max-width: 768px) {
           .whyus-card-wrapper { flex: 0 0 85vw; height: 580px; }
           .w-card { display: flex !important; flex-direction: column !important; background: #0f0d0b !important; }
@@ -128,6 +136,10 @@ export default function WhyChooseUs() {
           {CARDS.map(card => (
             <div key={card.id} className="whyus-card-wrapper"><WCard card={card} /></div>
           ))}
+        </div>
+        {/* Scroll hint */}
+        <div style={{ textAlign: 'center', fontSize: '0.62rem', letterSpacing: '0.2em', color: 'rgba(255,255,255,0.2)', textTransform: 'uppercase', marginTop: '-1rem', userSelect: 'none' }}>
+          ← scroll to explore →
         </div>
       </section>
     </>

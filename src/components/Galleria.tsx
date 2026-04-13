@@ -1,23 +1,10 @@
 'use client'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 
 type GalleryData = Record<string, string[]>
-
-interface Section {
-  key: string
-  label: string
-}
-
-interface LightboxImage {
-  thumb: string
-  full: string
-}
-
-interface MasonryGridProps {
-  imgs: string[]
-  onImgClick: (img: LightboxImage) => void
-  sectionLabel?: string
-}
+interface Section { key: string; label: string }
+interface LightboxImage { thumb: string; full: string }
+interface MasonryGridProps { imgs: string[]; onImgClick: (img: LightboxImage) => void; sectionLabel?: string }
 
 const GALLERY_DATA: GalleryData = {
   all: [
@@ -145,10 +132,6 @@ const GALLERY_DATA: GalleryData = {
     'https://res.cloudinary.com/dzadpggxn/image/upload/q_auto,f_auto,w_800/v1774174651/WhatsApp_Image_2026-03-22_at_3.37.50_PM_joq0ac.jpg',
     'https://res.cloudinary.com/dzadpggxn/image/upload/q_auto,f_auto,w_800/v1774173722/WhatsApp_Image_2026-03-06_at_12.22.29_AM_jg2d1a.jpg',
     'https://res.cloudinary.com/dzadpggxn/image/upload/q_auto,f_auto,w_800/v1774173717/WhatsApp_Image_2026-03-06_at_12.22.39_AM_1_cmrksy.jpg',
-    'https://res.cloudinary.com/dzadpggxn/image/upload/q_auto,f_auto,w_800/v1774173672/WhatsApp_Image_2026-03-06_at_12.21.45_AM_l1n3hw.jpg',
-    'https://res.cloudinary.com/dzadpggxn/image/upload/q_auto,f_auto,w_800/v1774173722/WhatsApp_Image_2026-03-06_at_12.22.42_AM_buwelw.jpg',
-    'https://res.cloudinary.com/dzadpggxn/image/upload/q_auto,f_auto,w_800/v1774173722/WhatsApp_Image_2026-03-06_at_12.22.41_AM_1_hyoec7.jpg',
-    'https://res.cloudinary.com/dzadpggxn/image/upload/q_auto,f_auto,w_800/v1774174714/WhatsApp_Image_2026-03-22_at_3.38.05_PM_uqq8hq.jpg',
     'https://res.cloudinary.com/dzadpggxn/image/upload/q_auto,f_auto,w_800/v1774181421/WhatsApp_Image_2026-03-22_at_5.29.15_PM_rgaliv.jpg',
     'https://res.cloudinary.com/dzadpggxn/image/upload/q_auto,f_auto,w_800/v1774181420/WhatsApp_Image_2026-03-22_at_5.27.48_PM_mivzwt.jpg',
     'https://res.cloudinary.com/dzadpggxn/image/upload/q_auto,f_auto,w_800/v1774181417/WhatsApp_Image_2026-03-22_at_5.30.26_PM_kegtbh.jpg',
@@ -168,38 +151,13 @@ const SECTIONS: Section[] = [
 
 function MasonryGrid({ imgs, onImgClick, sectionLabel }: MasonryGridProps) {
   return (
-    <div style={{
-      columnCount: 'auto',
-      columnWidth: '280px',
-      columnGap: '12px',
-      padding: '0 12px',
-    }}>
+    <div style={{ columnCount: 'auto', columnWidth: '280px', columnGap: '12px', padding: '0 12px' }}>
       {imgs.map((src, i) => (
-        <div
-          key={i}
-          onClick={() => onImgClick({ thumb: src, full: src.replace('w_800', 'w_1600') })}
-          style={{
-            breakInside: 'avoid',
-            marginBottom: '12px',
-            borderRadius: '10px',
-            overflow: 'hidden',
-            cursor: 'pointer',
-            position: 'relative',
-          }}
-          className="g-masonry-img"
-        >
-          <img
-            src={src}
-            alt={`SR Travels — ${sectionLabel || 'All'} photo ${i + 1}`}
-            loading="lazy"
-            style={{
-              width: '100%',
-              display: 'block',
-              borderRadius: '10px',
-              objectFit: 'cover',
-              transition: 'transform 0.4s ease',
-            }}
-          />
+        <div key={i} onClick={() => onImgClick({ thumb: src, full: src.replace('w_800', 'w_1600') })}
+          style={{ breakInside: 'avoid', marginBottom: '12px', borderRadius: '10px', overflow: 'hidden', cursor: 'pointer', position: 'relative' }}
+          className="g-masonry-img">
+          <img src={src} alt={`SR Travels — ${sectionLabel || 'All'} photo ${i + 1}`} loading="lazy"
+            style={{ width: '100%', display: 'block', borderRadius: '10px', objectFit: 'cover', transition: 'transform 0.4s ease' }} />
         </div>
       ))}
     </div>
@@ -210,13 +168,21 @@ export default function Galleria() {
   const [activeSection, setActiveSection] = useState<string>('all')
   const [lb, setLb] = useState<LightboxImage | null>(null)
   const [lbLoaded, setLbLoaded] = useState<boolean>(false)
+  const fullImgRef = useRef<HTMLImageElement>(null)
 
   const visibleSections = activeSection === 'all'
     ? SECTIONS.filter(s => s.key !== 'all')
     : SECTIONS.filter(s => s.key === activeSection)
 
+  // When lb changes, reset loaded state and attempt load
   useEffect(() => {
-    if (lb) setLbLoaded(false)
+    if (!lb) return
+    setLbLoaded(false)
+    // If image is already cached, onLoad may not fire — check immediately
+    const img = fullImgRef.current
+    if (img && img.complete && img.naturalWidth > 0) {
+      setLbLoaded(true)
+    }
   }, [lb])
 
   useEffect(() => {
@@ -251,18 +217,14 @@ export default function Galleria() {
           font-weight: 300; color: var(--text); margin: 3rem 0 1.5rem 2rem;
           padding-bottom: 0.8rem; border-bottom: 1px solid var(--border);
         }
-        @media (max-width: 768px) {
-          .g-close-btn { 
-            right: auto !important;
-            left: 1.4rem !important;
-          }
-        }
-        @keyframes lbIn { from { opacity:0; transform:scale(0.9); } to { opacity:1; transform:scale(1); } }
+        @keyframes lbIn { from { opacity:0; transform:scale(0.92); } to { opacity:1; transform:scale(1); } }
         @keyframes g-spin { from { transform:rotate(0deg); } to { transform:rotate(360deg); } }
+        @media (max-width: 768px) {
+          .g-close-btn { left: 1rem !important; right: auto !important; }
+        }
       `}</style>
 
       <div id="galleria" style={{ minHeight: '100vh', background: 'var(--bg-darkest)', paddingBottom: '4rem' }}>
-
         <div style={{ padding: '5rem 2rem 1.5rem', display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
           <div>
             <span className="section-label" style={{ color: 'rgba(255,255,255,0.5)' }}>Our Memories</span>
@@ -277,20 +239,14 @@ export default function Galleria() {
 
         <div className="g-sticky-tabs">
           {SECTIONS.map(s => (
-            <button
-              key={s.key}
-              className={`g-section-tab ${activeSection === s.key ? 'active' : ''}`}
-              onClick={() => setActiveSection(s.key)}
-            >
+            <button key={s.key} className={`g-section-tab ${activeSection === s.key ? 'active' : ''}`} onClick={() => setActiveSection(s.key)}>
               {s.label}
             </button>
           ))}
         </div>
 
         {activeSection === 'all' ? (
-          <div>
-            <MasonryGrid imgs={GALLERY_DATA.all} onImgClick={setLb} />
-          </div>
+          <div><MasonryGrid imgs={GALLERY_DATA.all} onImgClick={setLb} /></div>
         ) : (
           visibleSections.map(section => {
             const imgs = GALLERY_DATA[section.key] || []
@@ -306,60 +262,47 @@ export default function Galleria() {
       </div>
 
       {lb && (
-        <div
-          onClick={() => setLb(null)}
-          style={{
-            position: 'fixed', inset: 0, zIndex: 10001,
-            background: 'rgba(0,0,0,0.92)', backdropFilter: 'blur(8px)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            padding: '1.5rem',
-          }}
-        >
-          <button className="g-close-btn" onClick={() => setLb(null)} style={{
-            position: 'fixed', top: '1.2rem', right: '1.4rem', zIndex: 20,
-            width: 40, height: 40, borderRadius: '50%',
-            background: 'rgba(255,255,255,0.12)', backdropFilter: 'blur(6px)',
-            border: '1px solid rgba(255,255,255,0.2)',
-            color: 'rgba(255,255,255,0.9)', fontSize: '1.1rem',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            cursor: 'pointer',
-          }}>✕</button>
+        <div onClick={() => setLb(null)}
+          style={{ position: 'fixed', inset: 0, zIndex: 10001, background: 'rgba(0,0,0,0.95)', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1.5rem' }}>
 
-          <div style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }} onClick={e => e.stopPropagation()}>
-            <img
-              src={lb.thumb}
-              alt=""
-              style={{
-                maxWidth: '90vw', maxHeight: '88vh', borderRadius: 8,
-                objectFit: 'contain', filter: 'blur(10px)', opacity: lbLoaded ? 0 : 0.6,
-                position: 'absolute', transition: 'opacity 0.4s ease'
-              }}
-            />
+          {/* Close button */}
+          <button className="g-close-btn" onClick={() => setLb(null)}
+            style={{ position: 'fixed', top: '1.2rem', right: '1.4rem', zIndex: 20, width: 42, height: 42, borderRadius: '50%', background: 'rgba(255,255,255,0.15)', backdropFilter: 'blur(6px)', border: '1px solid rgba(255,255,255,0.25)', color: '#fff', fontSize: '1.1rem', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
+            ✕
+          </button>
 
+          <div onClick={e => e.stopPropagation()}
+            style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', maxWidth: '90vw', maxHeight: '88vh' }}>
+
+            {/* Spinner — shows while loading */}
             {!lbLoaded && (
-              <div style={{
-                position: 'absolute', width: 32, height: 32,
-                border: '2px solid rgba(255,255,255,0.1)', borderTopColor: 'var(--accent)',
-                borderRadius: '50%', animation: 'g-spin 0.8s linear infinite'
-              }} />
+              <div style={{ position: 'absolute', width: 36, height: 36, border: '2.5px solid rgba(255,255,255,0.15)', borderTopColor: 'var(--accent)', borderRadius: '50%', animation: 'g-spin 0.8s linear infinite', zIndex: 5 }} />
             )}
 
+            {/* Full-res image */}
             <img
+              ref={fullImgRef}
               src={lb.full}
+              key={lb.full}
               onLoad={() => setLbLoaded(true)}
               onError={(e) => {
-                if ((e.target as HTMLImageElement).src !== lb.thumb) {
-                  (e.target as HTMLImageElement).src = lb.thumb
-                }
+                const el = e.target as HTMLImageElement
+                if (el.src !== lb.thumb) el.src = lb.thumb
                 setLbLoaded(true)
               }}
               alt="Gallery fullscreen"
               style={{
-                maxWidth: '90vw', maxHeight: '88vh', borderRadius: 8,
-                objectFit: 'contain', boxShadow: '0 24px 80px rgba(0,0,0,0.7)',
-                position: 'relative', zIndex: 2, opacity: lbLoaded ? 1 : 0,
-                transition: 'opacity 0.4s ease',
-                animation: 'lbIn 0.28s cubic-bezier(0.22,1,0.36,1)',
+                maxWidth: '90vw',
+                maxHeight: '88vh',
+                width: 'auto',
+                height: 'auto',
+                borderRadius: 10,
+                objectFit: 'contain',
+                boxShadow: '0 24px 80px rgba(0,0,0,0.8)',
+                display: 'block',
+                opacity: lbLoaded ? 1 : 0,
+                transition: 'opacity 0.35s ease',
+                animation: lbLoaded ? 'lbIn 0.3s cubic-bezier(0.22,1,0.36,1)' : 'none',
               }}
             />
           </div>

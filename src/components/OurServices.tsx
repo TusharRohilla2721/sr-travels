@@ -102,7 +102,7 @@ function FleetRow({ fleet, onNavigate }: { fleet: typeof FLEET_DATA[0], onNaviga
         <h3 style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: '2.2rem', color: 'var(--text)', marginBottom: '0.2rem', lineHeight: 1.2 }}>{fleet.name}</h3>
         <p style={{ color: 'var(--accent)', fontStyle: 'italic', fontSize: '1.05rem' }}>{fleet.tagline}</p>
       </div>
-      <div className="services-scroll" ref={scrollRef} style={{ display: 'flex', gap: '1.5rem', overflowX: 'auto', scrollSnapType: 'x proximity', WebkitOverflowScrolling: 'touch', scrollBehavior: 'smooth', padding: '1rem 0 3rem 0' }}>
+      <div className="services-scroll fleet-row-scroll" ref={scrollRef} style={{ display: 'flex', gap: '1.5rem', overflowX: 'auto', scrollSnapType: 'x proximity', WebkitOverflowScrolling: 'touch', scrollBehavior: 'smooth', padding: '1rem 0 3rem 0' }}>
         {fleet.features.map((card, idx) => (
           <div key={card.id} className="service-card" style={{ marginLeft: idx === 0 ? '1.5rem' : 0 }}>
             <img src={card.img} alt={card.title} loading="lazy" />
@@ -120,6 +120,10 @@ function FleetRow({ fleet, onNavigate }: { fleet: typeof FLEET_DATA[0], onNaviga
           <div className="cta-btn">Connect With Us →</div>
         </div>
       </div>
+      {/* Scroll hint tag */}
+      <div style={{ textAlign: 'center', fontSize: '0.62rem', letterSpacing: '0.2em', color: 'rgba(255,255,255,0.25)', textTransform: 'uppercase', marginTop: '-1.5rem', marginBottom: '0.5rem', userSelect: 'none' }}>
+        ← scroll to explore →
+      </div>
     </div>
   )
 }
@@ -127,14 +131,34 @@ function FleetRow({ fleet, onNavigate }: { fleet: typeof FLEET_DATA[0], onNaviga
 export default function OurServices() {
   const router = useRouter()
   return (
-    <section id="our-services" style={{ padding: '6rem 0', background: 'var(--bg-alt)', transition: 'background 0.4s', display: 'flex', flexDirection: 'column' }}>
-      <div style={{ padding: '0 1.5rem', marginBottom: '4rem', textAlign: 'center' }}>
-        <span className="section-label">Travel In Style</span>
-        <h2 className="section-title">Our <em>Fleet</em> &amp; Services</h2>
-      </div>
-      {FLEET_DATA.map(fleet => (
-        <FleetRow key={fleet.id} fleet={fleet} onNavigate={() => router.push('/destinations')} />
-      ))}
-    </section>
+    <>
+      <style>{`
+        @media (min-width: 769px) {
+          .service-card {
+            flex: 0 0 clamp(300px, 24vw, 390px) !important;
+            height: clamp(440px, 55vh, 600px) !important;
+          }
+          .service-card img {
+            height: 58% !important;
+          }
+          .service-card-content {
+            padding: 1.6rem 1.8rem !important;
+          }
+          .cta-card {
+            flex: 0 0 clamp(300px, 24vw, 390px) !important;
+            height: clamp(440px, 55vh, 600px) !important;
+          }
+        }
+      `}</style>
+      <section id="our-services" style={{ padding: '6rem 0', background: 'var(--bg-alt)', transition: 'background 0.4s', display: 'flex', flexDirection: 'column' }}>
+        <div style={{ padding: '0 1.5rem', marginBottom: '4rem', textAlign: 'center' }}>
+          <span className="section-label">Travel In Style</span>
+          <h2 className="section-title">Our <em>Fleet</em> &amp; Services</h2>
+        </div>
+        {FLEET_DATA.map(fleet => (
+          <FleetRow key={fleet.id} fleet={fleet} onNavigate={() => router.push('/destinations')} />
+        ))}
+      </section>
+    </>
   )
 }
