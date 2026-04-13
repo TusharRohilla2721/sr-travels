@@ -175,16 +175,52 @@ export default function AboutDeck() {
       <style>{`
         @media (min-width: 769px) { .read-more-wrapper { display: none !important; } }
         @media (max-width: 768px) {
-          .deck-card { width: 90vw !important; height: 82vh !important; grid-template-columns: 1fr !important; grid-template-rows: 45% 55% !important; }
-          .deck-card-text { padding: 1.5rem 1.2rem !important; justify-content: flex-start !important; }
+          /* Deck cards on mobile: half phone height */
+          .deck-card {
+            width: 88vw !important;
+            height: 52vh !important;
+            min-height: 280px !important;
+            max-height: 420px !important;
+            grid-template-columns: 1fr !important;
+            grid-template-rows: 48% 52% !important;
+          }
+          .deck-card-text {
+            padding: 1.1rem 1.2rem !important;
+            justify-content: flex-start !important;
+            overflow-y: auto;
+          }
           .deck-card-content { display: none; }
-          .read-more-btn { margin-top: 1rem; padding: 0.4rem 1rem; background: rgba(196,98,45,0.1); border: 1px solid var(--accent); color: var(--accent); border-radius: 20px; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; cursor: pointer; align-self: flex-start; }
-          .deck-card-text.is-expanded { position: absolute !important; top: 0 !important; left: 0 !important; width: 100% !important; height: 100% !important; border-radius: 14px !important; background: rgba(22,18,14,0.96) !important; backdrop-filter: blur(16px) !important; justify-content: center !important; z-index: 10 !important; }
+          .read-more-btn {
+            margin-top: 0.8rem;
+            padding: 0.35rem 0.9rem;
+            background: rgba(196,98,45,0.1);
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            border-radius: 20px;
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            cursor: pointer;
+            align-self: flex-start;
+          }
+          .deck-card-text.is-expanded {
+            position: absolute !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100% !important;
+            height: 100% !important;
+            border-radius: 14px !important;
+            background: rgba(22,18,14,0.96) !important;
+            backdrop-filter: blur(16px) !important;
+            justify-content: center !important;
+            z-index: 10 !important;
+            padding: 1.4rem !important;
+          }
           .deck-card-text.is-expanded .deck-card-content { display: block; margin-bottom: 1rem; }
         }
       `}</style>
 
-      <div style={{ background: 'var(--bg-alt)', padding: '4rem 4rem 2rem', transition: 'background 0.4s' }}>
+      <div style={{ background: 'var(--bg-alt)', padding: '4rem 1.5rem 2rem', transition: 'background 0.4s' }}>
         <span className="section-label">Meet the Founder</span>
         <h2 className="section-title">Sunder <em>Rohilla</em></h2>
         <div style={{ display: 'flex', gap: '1rem', marginTop: '0.8rem', flexWrap: 'wrap' }}>
@@ -195,7 +231,7 @@ export default function AboutDeck() {
       </div>
       <Deck name="sunder" cards={SUNDER_CARDS.map((c, i) => ({ ...c, id: `sunder-c${i}` }))} outerHeight="200vh" bgIcon={SteeringWheel} />
 
-      <div style={{ background: 'var(--bg)', padding: '4rem 4rem 2rem', transition: 'background 0.4s' }}>
+      <div style={{ background: 'var(--bg)', padding: '4rem 1.5rem 2rem', transition: 'background 0.4s' }}>
         <span className="section-label">🚌 Meet the CEO</span>
         <h2 className="section-title">Tushar <em>Rohilla</em></h2>
         <div style={{ display: 'flex', gap: '1rem', marginTop: '0.8rem', flexWrap: 'wrap' }}>

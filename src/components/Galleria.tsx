@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from 'react'
 
 type GalleryData = Record<string, string[]>
 interface Section { key: string; label: string }
-interface LightboxImage { thumb: string; full: string }
+interface LightboxImage { src: string }
 interface MasonryGridProps { imgs: string[]; onImgClick: (img: LightboxImage) => void; sectionLabel?: string }
 
 const GALLERY_DATA: GalleryData = {
@@ -153,7 +153,7 @@ function MasonryGrid({ imgs, onImgClick, sectionLabel }: MasonryGridProps) {
   return (
     <div style={{ columnCount: 'auto', columnWidth: '280px', columnGap: '12px', padding: '0 12px' }}>
       {imgs.map((src, i) => (
-        <div key={i} onClick={() => onImgClick({ thumb: src, full: src.replace('w_800', 'w_1600') })}
+        <div key={i} onClick={() => onImgClick({ src })}
           style={{ breakInside: 'avoid', marginBottom: '12px', borderRadius: '10px', overflow: 'hidden', cursor: 'pointer', position: 'relative' }}
           className="g-masonry-img">
           <img src={src} alt={`SR Travels — ${sectionLabel || 'All'} photo ${i + 1}`} loading="lazy"
@@ -167,23 +167,10 @@ function MasonryGrid({ imgs, onImgClick, sectionLabel }: MasonryGridProps) {
 export default function Galleria() {
   const [activeSection, setActiveSection] = useState<string>('all')
   const [lb, setLb] = useState<LightboxImage | null>(null)
-  const [lbLoaded, setLbLoaded] = useState<boolean>(false)
-  const fullImgRef = useRef<HTMLImageElement>(null)
 
   const visibleSections = activeSection === 'all'
     ? SECTIONS.filter(s => s.key !== 'all')
     : SECTIONS.filter(s => s.key === activeSection)
-
-  // When lb changes, reset loaded state and attempt load
-  useEffect(() => {
-    if (!lb) return
-    setLbLoaded(false)
-    // If image is already cached, onLoad may not fire — check immediately
-    const img = fullImgRef.current
-    if (img && img.complete && img.naturalWidth > 0) {
-      setLbLoaded(true)
-    }
-  }, [lb])
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setLb(null) }
@@ -218,7 +205,17 @@ export default function Galleria() {
           padding-bottom: 0.8rem; border-bottom: 1px solid var(--border);
         }
         @keyframes lbIn { from { opacity:0; transform:scale(0.92); } to { opacity:1; transform:scale(1); } }
-        @keyframes g-spin { from { transform:rotate(0deg); } to { transform:rotate(360deg); } }
+        .g-lightbox-img {
+          max-width: 90vw;
+          max-height: 88vh;
+          width: auto;
+          height: auto;
+          border-radius: 10px;
+          object-fit: contain;
+          display: block;
+          box-shadow: 0 24px 80px rgba(0,0,0,0.8);
+          animation: lbIn 0.3s cubic-bezier(0.22,1,0.36,1);
+        }
         @media (max-width: 768px) {
           .g-close-btn { left: 1rem !important; right: auto !important; }
         }
@@ -262,50 +259,41 @@ export default function Galleria() {
       </div>
 
       {lb && (
-        <div onClick={() => setLb(null)}
-          style={{ position: 'fixed', inset: 0, zIndex: 10001, background: 'rgba(0,0,0,0.95)', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1.5rem' }}>
-
-          {/* Close button */}
-          <button className="g-close-btn" onClick={() => setLb(null)}
-            style={{ position: 'fixed', top: '1.2rem', right: '1.4rem', zIndex: 20, width: 42, height: 42, borderRadius: '50%', background: 'rgba(255,255,255,0.15)', backdropFilter: 'blur(6px)', border: '1px solid rgba(255,255,255,0.25)', color: '#fff', fontSize: '1.1rem', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
+        <div
+          onClick={() => setLb(null)}
+          style={{
+            position: 'fixed', inset: 0, zIndex: 10001,
+            background: 'rgba(0,0,0,0.96)',
+            backdropFilter: 'blur(8px)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '1.5rem',
+          }}
+        >
+          <button
+            className="g-close-btn"
+            onClick={() => setLb(null)}
+            style={{
+              position: 'fixed', top: '1.2rem', right: '1.4rem', zIndex: 20,
+              width: 42, height: 42, borderRadius: '50%',
+              background: 'rgba(255,255,255,0.15)',
+              backdropFilter: 'blur(6px)',
+              border: '1px solid rgba(255,255,255,0.25)',
+              color: '#fff', fontSize: '1.1rem',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              cursor: 'pointer',
+            }}
+          >
             ✕
           </button>
-
-          <div onClick={e => e.stopPropagation()}
-            style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', maxWidth: '90vw', maxHeight: '88vh' }}>
-
-            {/* Spinner — shows while loading */}
-            {!lbLoaded && (
-              <div style={{ position: 'absolute', width: 36, height: 36, border: '2.5px solid rgba(255,255,255,0.15)', borderTopColor: 'var(--accent)', borderRadius: '50%', animation: 'g-spin 0.8s linear infinite', zIndex: 5 }} />
-            )}
-
-            {/* Full-res image */}
-            <img
-              ref={fullImgRef}
-              src={lb.full}
-              key={lb.full}
-              onLoad={() => setLbLoaded(true)}
-              onError={(e) => {
-                const el = e.target as HTMLImageElement
-                if (el.src !== lb.thumb) el.src = lb.thumb
-                setLbLoaded(true)
-              }}
-              alt="Gallery fullscreen"
-              style={{
-                maxWidth: '90vw',
-                maxHeight: '88vh',
-                width: 'auto',
-                height: 'auto',
-                borderRadius: 10,
-                objectFit: 'contain',
-                boxShadow: '0 24px 80px rgba(0,0,0,0.8)',
-                display: 'block',
-                opacity: lbLoaded ? 1 : 0,
-                transition: 'opacity 0.35s ease',
-                animation: lbLoaded ? 'lbIn 0.3s cubic-bezier(0.22,1,0.36,1)' : 'none',
-              }}
-            />
-          </div>
+          <img
+            key={lb.src}
+            src={lb.src}
+            alt="Gallery fullscreen"
+            className="g-lightbox-img"
+            onClick={e => e.stopPropagation()}
+          />
         </div>
       )}
     </>

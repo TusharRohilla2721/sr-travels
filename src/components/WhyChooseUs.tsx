@@ -1,9 +1,6 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import gsap from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
-gsap.registerPlugin(ScrollTrigger)
 
 const CARDS = [
   {
@@ -105,7 +102,7 @@ export default function WhyChooseUs() {
       <style>{`
         .whyus-scroll::-webkit-scrollbar { display: none; }
         .whyus-scroll { -ms-overflow-style: none; scrollbar-width: none; }
-        /* Desktop: wider + taller cards */
+        /* Desktop */
         .whyus-card-wrapper {
           flex: 0 0 clamp(640px, 56vw, 820px);
           height: clamp(360px, 40vh, 460px);
@@ -116,28 +113,27 @@ export default function WhyChooseUs() {
           .w-card { grid-template-columns: 280px 1fr !important; }
         }
         @media (max-width: 768px) {
-          .whyus-card-wrapper { flex: 0 0 85vw; height: 580px; }
+          .whyus-card-wrapper { flex: 0 0 82vw; height: 300px; }
           .w-card { display: flex !important; flex-direction: column !important; background: #0f0d0b !important; }
-          .w-card > div:first-child { height: 70% !important; width: 100% !important; border-radius: 14px 14px 0 0 !important; }
-          .w-card-text { height: 30% !important; padding: 0rem 1.5rem 1.2rem 1.5rem !important; justify-content: flex-start !important; overflow-y: auto; }
-          .w-card-num { position: absolute !important; top: 1rem !important; right: 1.2rem !important; font-size: 2.2rem !important; margin: 0 !important; opacity: 0.15 !important; }
+          .w-card > div:first-child { height: 55% !important; width: 100% !important; border-radius: 14px 14px 0 0 !important; flex-shrink: 0 !important; }
+          .w-card-text { height: 45% !important; padding: 0.8rem 1.2rem 0.8rem 1.2rem !important; justify-content: flex-start !important; overflow-y: auto; }
+          .w-card-num { position: absolute !important; top: 0.6rem !important; right: 0.8rem !important; font-size: 1.8rem !important; margin: 0 !important; opacity: 0.15 !important; }
           .w-card-list { display: none; }
-          .read-more-btn { margin-top: auto !important; padding: 0.4rem 1rem !important; background: rgba(196,98,45,0.1) !important; border: 1px solid var(--accent) !important; color: var(--accent) !important; border-radius: 20px !important; font-size: 0.7rem !important; text-transform: uppercase !important; cursor: pointer; }
-          .w-card-text.is-expanded { position: absolute !important; top: 0 !important; left: 0 !important; width: 100% !important; height: 100% !important; border-radius: 14px !important; background: rgba(15,13,11,0.96) !important; backdrop-filter: blur(12px) !important; justify-content: center !important; z-index: 10; }
+          .read-more-btn { margin-top: 0.5rem !important; padding: 0.3rem 0.8rem !important; background: rgba(196,98,45,0.1) !important; border: 1px solid var(--accent) !important; color: var(--accent) !important; border-radius: 20px !important; font-size: 0.68rem !important; text-transform: uppercase !important; cursor: pointer; }
+          .w-card-text.is-expanded { position: absolute !important; top: 0 !important; left: 0 !important; width: 100% !important; height: 100% !important; border-radius: 14px !important; background: rgba(15,13,11,0.96) !important; backdrop-filter: blur(12px) !important; justify-content: center !important; z-index: 10; padding: 1.2rem !important; }
           .w-card-text.is-expanded .w-card-list { display: block; margin-bottom: 1rem; }
         }
       `}</style>
       <section id="why-us" style={{ padding: '6rem 0', background: 'var(--bg)', transition: 'background 0.4s', display: 'flex', flexDirection: 'column' }}>
-        <div style={{ textAlign: 'center', marginBottom: '3rem', padding: '0 4rem' }}>
+        <div style={{ textAlign: 'center', marginBottom: '3rem', padding: '0 1.5rem' }}>
           <span className="section-label">Our Promise</span>
           <h2 className="section-title">Why Choose <em>SR Travels?</em></h2>
         </div>
-        <div className="whyus-scroll" ref={containerRef} style={{ display: 'flex', gap: '1.8rem', overflowX: 'auto', scrollSnapType: 'x mandatory', WebkitOverflowScrolling: 'touch', cursor: 'grab', scrollBehavior: 'smooth', padding: '1rem 1.5rem 3rem 1.5rem' }}>
+        <div className="whyus-scroll" ref={containerRef} style={{ display: 'flex', gap: '1.5rem', overflowX: 'auto', scrollSnapType: 'x mandatory', WebkitOverflowScrolling: 'touch', cursor: 'grab', scrollBehavior: 'smooth', padding: '1rem 1.5rem 3rem 1.5rem' }}>
           {CARDS.map(card => (
             <div key={card.id} className="whyus-card-wrapper"><WCard card={card} /></div>
           ))}
         </div>
-        {/* Scroll hint */}
         <div style={{ textAlign: 'center', fontSize: '0.62rem', letterSpacing: '0.2em', color: 'rgba(255,255,255,0.2)', textTransform: 'uppercase', marginTop: '-1rem', userSelect: 'none' }}>
           ← scroll to explore →
         </div>

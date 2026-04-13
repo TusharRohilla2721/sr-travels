@@ -102,9 +102,9 @@ function FleetRow({ fleet, onNavigate }: { fleet: typeof FLEET_DATA[0], onNaviga
         <h3 style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: '2.2rem', color: 'var(--text)', marginBottom: '0.2rem', lineHeight: 1.2 }}>{fleet.name}</h3>
         <p style={{ color: 'var(--accent)', fontStyle: 'italic', fontSize: '1.05rem' }}>{fleet.tagline}</p>
       </div>
-      <div className="services-scroll fleet-row-scroll" ref={scrollRef} style={{ display: 'flex', gap: '1.5rem', overflowX: 'auto', scrollSnapType: 'x proximity', WebkitOverflowScrolling: 'touch', scrollBehavior: 'smooth', padding: '1rem 0 3rem 0' }}>
-        {fleet.features.map((card, idx) => (
-          <div key={card.id} className="service-card" style={{ marginLeft: idx === 0 ? '1.5rem' : 0 }}>
+      <div className="services-scroll fleet-row-scroll" ref={scrollRef} style={{ display: 'flex', gap: '1.2rem', overflowX: 'auto', scrollSnapType: 'x proximity', WebkitOverflowScrolling: 'touch', scrollBehavior: 'smooth', padding: '1rem 1.5rem 3rem 1.5rem' }}>
+        {fleet.features.map((card) => (
+          <div key={card.id} className="service-card">
             <img src={card.img} alt={card.title} loading="lazy" />
             <div className="service-card-content">
               <span style={{ fontSize: '0.7rem', color: 'var(--accent)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '0.5rem' }}>{fleet.name.split(' ')[0]} Seater Class</span>
@@ -113,14 +113,13 @@ function FleetRow({ fleet, onNavigate }: { fleet: typeof FLEET_DATA[0], onNaviga
             </div>
           </div>
         ))}
-        <div className="service-card cta-card" onClick={onNavigate} style={{ marginRight: '1.5rem' }}>
+        <div className="service-card cta-card" onClick={onNavigate} style={{ marginRight: '0' }}>
           <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🗺️</div>
           <h4 style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: '1.8rem', color: '#fff', marginBottom: '1rem', lineHeight: 1.2 }}>Book This<br />{fleet.name.split(' ')[0]} Seater</h4>
           <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: '0.9rem', marginBottom: '1.5rem', padding: '0 1rem' }}>Check rates, compare routes, and plan your journey with us today.</p>
           <div className="cta-btn">Connect With Us →</div>
         </div>
       </div>
-      {/* Scroll hint tag */}
       <div style={{ textAlign: 'center', fontSize: '0.62rem', letterSpacing: '0.2em', color: 'rgba(255,255,255,0.25)', textTransform: 'uppercase', marginTop: '-1.5rem', marginBottom: '0.5rem', userSelect: 'none' }}>
         ← scroll to explore →
       </div>
@@ -147,6 +146,33 @@ export default function OurServices() {
           .cta-card {
             flex: 0 0 clamp(300px, 24vw, 390px) !important;
             height: clamp(440px, 55vh, 600px) !important;
+          }
+        }
+        @media (max-width: 768px) {
+          .service-card {
+            flex: 0 0 72vw !important;
+            height: 340px !important;
+            background: var(--card-bg-solid) !important;
+            border-radius: 14px !important;
+          }
+          .service-card img {
+            height: 55% !important;
+            object-position: center 20% !important;
+            border-radius: 14px 14px 0 0 !important;
+            flex-shrink: 0 !important;
+          }
+          .service-card-content {
+            padding: 0.75rem 1rem !important;
+            justify-content: center !important;
+            overflow: hidden !important;
+          }
+          .cta-card {
+            flex: 0 0 72vw !important;
+            height: 340px !important;
+          }
+          .fleet-header {
+            padding: 0 1.5rem !important;
+            margin-bottom: 1.2rem !important;
           }
         }
       `}</style>

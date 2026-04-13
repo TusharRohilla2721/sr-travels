@@ -55,19 +55,22 @@ export default function Hero() {
           #hero > div:last-child {
             margin: 0 1.25rem 3rem !important;
             height: 52vw !important;
-            min-height: 260px !important;
-            max-height: 420px !important;
+            min-height: 220px !important;
+            max-height: 360px !important;
             border-radius: 16px !important;
             position: relative !important;
             overflow: hidden !important;
           }
           .hero-badge {
-            bottom: 1rem !important;
-            left: 50% !important;
-            transform: translateX(-50%) !important;
-            padding: 0.75rem 1.2rem !important;
-            min-width: 140px !important;
+            bottom: 0.6rem !important;
+            left: 0.75rem !important;
+            transform: none !important;
+            padding: 0.45rem 0.85rem !important;
+            min-width: unset !important;
+            text-align: left !important;
           }
+          .hero-badge-num { font-size: 1.2rem !important; margin-bottom: 0 !important; line-height: 1.1 !important; }
+          .hero-badge-label { font-size: 0.55rem !important; }
         }
       `}</style>
       <section id="hero" ref={containerRef} style={{ minHeight: '100vh', display: 'grid', gridTemplateColumns: '1fr 1fr', position: 'relative', overflow: 'hidden', background: 'var(--bg)' }}>
@@ -110,8 +113,8 @@ export default function Hero() {
             <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, transparent 35%, var(--bg) 100%)' }} />
           </div>
           <div ref={badgeRef} className="hero-badge" style={{ position: 'absolute', bottom: '3rem', left: '50%', transform: 'translateX(-50%) translateY(20px)', zIndex: 3, background: 'var(--card-bg)', backdropFilter: 'blur(8px)', border: '1px solid var(--border)', padding: '1rem 1.8rem', textAlign: 'center', borderRadius: 4, minWidth: 180, opacity: 0 }}>
-            <div style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: '2rem', fontWeight: 600, color: 'var(--accent)', lineHeight: 1, marginBottom: '0.3rem' }}>25+</div>
-            <p style={{ fontSize: '0.7rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--text-muted)' }}>Years of Excellence</p>
+            <div className="hero-badge-num" style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: '2rem', fontWeight: 600, color: 'var(--accent)', lineHeight: 1, marginBottom: '0.3rem' }}>25+</div>
+            <p className="hero-badge-label" style={{ fontSize: '0.7rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--text-muted)' }}>Years of Excellence</p>
           </div>
         </div>
       </section>
