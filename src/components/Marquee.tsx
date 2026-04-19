@@ -10,37 +10,26 @@ const ITEMS = [
 const DOUBLED = [...ITEMS, ...ITEMS]
 
 export default function Marquee() {
-  const trackRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    const el = trackRef.current
-    if (!el) return
-    // Inject keyframe directly via JS to bypass any CSS override
-    const style = document.createElement('style')
-    style.textContent = `
-      @keyframes sr-marquee {
-        0%   { transform: translate3d(0, 0, 0); }
-        100% { transform: translate3d(-50%, 0, 0); }
-      }
-    `
-    document.head.appendChild(style)
-    el.style.animation = 'sr-marquee 28s linear infinite'
-    return () => { document.head.removeChild(style) }
-  }, [])
-
   return (
-    <div style={{ background: 'var(--bg-dark)', padding: '1.1rem 0', overflow: 'hidden', transition: 'background 0.4s', userSelect: 'none' }}>
-      <div
-        ref={trackRef}
-        style={{
-          display: 'flex',
-          flexWrap: 'nowrap',
-          width: 'max-content',
-          willChange: 'transform',
-        }}
-        onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.animationPlayState = 'paused' }}
-        onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.animationPlayState = 'running' }}
-      >
+    <>
+      <style>{`
+        @keyframes sr-marquee {
+          from { transform: translateX(0); }
+          to { transform: translateX(-50%); }
+        }
+        .marquee-track {
+          display: flex;
+          flex-wrap: nowrap;
+          width: max-content;
+          will-change: transform;
+          animation: sr-marquee 28s linear infinite;
+        }
+        .marquee-track:hover {
+          animation-play-state: paused;
+        }
+      `}</style>
+      <div style={{ background: 'var(--bg-dark)', padding: '1.1rem 0', overflow: 'hidden', transition: 'background 0.4s', userSelect: 'none' }}>
+        <div className="marquee-track">
         {DOUBLED.map((name, i) => (
           <div
             key={i}
@@ -62,6 +51,6 @@ export default function Marquee() {
           </div>
         ))}
       </div>
-    </div>
+    </>
   )
 }

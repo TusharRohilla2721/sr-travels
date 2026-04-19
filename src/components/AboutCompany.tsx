@@ -36,13 +36,14 @@ export default function AboutCompany() {
           border-radius: 8px;
           overflow: hidden;
           width: 100%;
-          height: 520px;
+          height: auto;
+          aspect-ratio: 4 / 5;
         }
         .about-img-wrap img {
           width: 100%;
           height: 100%;
           object-fit: cover;
-          object-position: center 20%;
+          object-position: center;
           display: block;
         }
         @media (max-width: 900px) {
@@ -52,9 +53,10 @@ export default function AboutCompany() {
             gap: 2.5rem !important;
           }
           .about-img-wrap {
-            height: 55vw !important;
-            min-height: 240px !important;
-            max-height: 400px !important;
+            height: auto !important;
+            aspect-ratio: 16 / 9;
+            min-height: unset !important;
+            max-height: unset !important;
           }
         }
       `}</style>

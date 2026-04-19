@@ -214,7 +214,9 @@ export default function Galleria() {
           object-fit: contain;
           display: block;
           box-shadow: 0 24px 80px rgba(0,0,0,0.8);
-          animation: lbIn 0.3s cubic-bezier(0.22,1,0.36,1);
+          position: relative;
+          z-index: 10002;
+          animation: lbIn 0.4s cubic-bezier(0.22,1,0.36,1) forwards;
         }
         @media (max-width: 768px) {
           .g-close-btn { left: 1rem !important; right: auto !important; }

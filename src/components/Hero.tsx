@@ -53,24 +53,42 @@ export default function Hero() {
           #hero { display: flex !important; flex-direction: column !important; min-height: auto !important; }
           #hero > div:first-child { padding: 7rem 1.5rem 2rem !important; }
           #hero > div:last-child {
-            margin: 0 1.25rem 3rem !important;
-            height: 52vw !important;
-            min-height: 220px !important;
-            max-height: 360px !important;
-            border-radius: 16px !important;
+            margin: 0 !important;
+            padding: 0 1.25rem 3rem !important;
+            height: auto !important;
+            min-height: unset !important;
+            max-height: unset !important;
+            border-radius: 0 !important;
             position: relative !important;
+            overflow: visible !important;
+          }
+          .hero-img-wrap {
+            height: 60vw !important;
+            min-height: 240px !important;
+            max-height: 400px !important;
+            border-radius: 16px !important;
             overflow: hidden !important;
+            position: relative !important;
+            transform: none !important;
+          }
+          .hero-img-wrap img {
+             object-position: center 20% !important;
           }
           .hero-badge {
-            bottom: 0.6rem !important;
-            left: 0.75rem !important;
+            bottom: auto !important;
+            left: auto !important;
             transform: none !important;
-            padding: 0.45rem 0.85rem !important;
+            position: static !important;
+            padding: 0 !important;
             min-width: unset !important;
             text-align: left !important;
+            margin-top: 1rem !important;
+            background: transparent !important;
+            backdrop-filter: none !important;
+            border: none !important;
           }
-          .hero-badge-num { font-size: 1.2rem !important; margin-bottom: 0 !important; line-height: 1.1 !important; }
-          .hero-badge-label { font-size: 0.55rem !important; }
+          .hero-badge-num { font-size: 2rem !important; margin-bottom: 0 !important; line-height: 1.1 !important; color: var(--accent) !important; }
+          .hero-badge-label { font-size: 0.75rem !important; }
         }
       `}</style>
       <section id="hero" ref={containerRef} style={{ minHeight: '100vh', display: 'grid', gridTemplateColumns: '1fr 1fr', position: 'relative', overflow: 'hidden', background: 'var(--bg)' }}>

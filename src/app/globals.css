@@ -393,32 +393,6 @@ body {
   }
 }
 
-@media (max-width: 768px) {
-  .fleet-header {
-    margin-bottom: 2rem;
-  }
-
-  .service-card {
-    flex: 0 0 85vw;
-    height: 520px;
-    background: var(--card-bg-solid);
-    border-radius: 14px;
-  }
-
-  .service-card img {
-    height: 68% !important;
-    object-position: center 20%;
-    border-radius: 14px 14px 0 0;
-    flex-shrink: 0;
-  }
-
-  .service-card-content {
-    padding: 0.9rem 1.1rem !important;
-    justify-content: center;
-    overflow: hidden;
-  }
-}
-
 @media (max-width: 900px) {
   #stories>div {
     grid-template-columns: 1fr 1fr !important;
