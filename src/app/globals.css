@@ -407,7 +407,6 @@ body {
 
 @media (prefers-reduced-motion: reduce) {
   * {
-    animation-play-state: paused !important;
     scroll-behavior: auto !important;
   }
 }
