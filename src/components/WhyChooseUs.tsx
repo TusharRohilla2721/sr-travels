@@ -113,7 +113,7 @@ export default function WhyChooseUs() {
           .w-card { grid-template-columns: 280px 1fr !important; }
         }
         @media (max-width: 768px) {
-          .whyus-card-wrapper { flex: 0 0 82vw; height: 300px; }
+          .whyus-card-wrapper { flex: 0 0 85vw; height: 440px !important; }
           .w-card { display: flex !important; flex-direction: column !important; background: #0f0d0b !important; }
           .w-card > div:first-child { height: 55% !important; width: 100% !important; border-radius: 14px 14px 0 0 !important; flex-shrink: 0 !important; }
           .w-card-text { height: 45% !important; padding: 0.8rem 1.2rem 0.8rem 1.2rem !important; justify-content: flex-start !important; overflow-y: auto; }

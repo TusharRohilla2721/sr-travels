@@ -26,18 +26,27 @@ export default function AboutCompany() {
           padding: 7rem 4rem;
           background: var(--bg);
           display: grid;
-          grid-template-columns: 42% 58%;
-          gap: 4rem;
+          grid-template-columns: 1fr 36%;
+          gap: 6rem;
           align-items: center;
           transition: background 0.4s;
         }
         .about-img-wrap {
           position: relative;
-          border-radius: 8px;
+          border-radius: 12px;
           overflow: hidden;
           width: 100%;
           height: auto;
           aspect-ratio: 4 / 5;
+          margin: 0 auto;
+          max-height: 580px;
+          box-shadow: 0 8px 40px rgba(0,0,0,0.1);
+          transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease;
+          cursor: pointer;
+        }
+        .about-img-wrap:hover {
+          transform: translateY(-8px);
+          box-shadow: 0 20px 45px rgba(0,0,0,0.25);
         }
         .about-img-wrap img {
           width: 100%;

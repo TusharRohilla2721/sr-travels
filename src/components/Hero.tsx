@@ -63,16 +63,16 @@ export default function Hero() {
             overflow: visible !important;
           }
           .hero-img-wrap {
-            height: 60vw !important;
-            min-height: 240px !important;
-            max-height: 400px !important;
+            height: 80vw !important;
+            min-height: 280px !important;
+            max-height: 480px !important;
             border-radius: 16px !important;
             overflow: hidden !important;
             position: relative !important;
             transform: none !important;
           }
           .hero-img-wrap img {
-             object-position: center 20% !important;
+             object-position: center !important;
           }
           .hero-badge {
             bottom: auto !important;

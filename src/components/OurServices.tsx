@@ -102,8 +102,7 @@ function FleetRow({ fleet, onNavigate }: { fleet: typeof FLEET_DATA[0], onNaviga
         <h3 style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: '2.2rem', color: 'var(--text)', marginBottom: '0.2rem', lineHeight: 1.2 }}>{fleet.name}</h3>
         <p style={{ color: 'var(--accent)', fontStyle: 'italic', fontSize: '1.05rem' }}>{fleet.tagline}</p>
       </div>
-      <div className="services-scroll fleet-row-scroll" ref={scrollRef} style={{ display: 'flex', gap: '1.2rem', overflowX: 'auto', scrollSnapType: 'x proximity', WebkitOverflowScrolling: 'touch', scrollBehavior: 'smooth', padding: '1rem 0 3rem 0' }}>
-        <div style={{ flexShrink: 0, width: '0.3rem' }} />
+      <div className="services-scroll fleet-row-scroll" ref={scrollRef} style={{ display: 'flex', gap: '1.2rem', overflowX: 'auto', scrollSnapType: 'x proximity', WebkitOverflowScrolling: 'touch', scrollBehavior: 'smooth', padding: '1rem 1.5rem 3rem 1.5rem', scrollPaddingLeft: '1.5rem' }}>
         {fleet.features.map((card) => (
           <div key={card.id} className="service-card">
             <img src={card.img} alt={card.title} loading="lazy" />
@@ -120,7 +119,6 @@ function FleetRow({ fleet, onNavigate }: { fleet: typeof FLEET_DATA[0], onNaviga
           <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: '0.9rem', marginBottom: '1.5rem', padding: '0 1rem' }}>Check rates, compare routes, and plan your journey with us today.</p>
           <div className="cta-btn">Connect With Us →</div>
         </div>
-        <div style={{ flexShrink: 0, width: '0.3rem' }} />
       </div>
       <div style={{ textAlign: 'center', fontSize: '0.62rem', letterSpacing: '0.2em', color: 'rgba(255,255,255,0.25)', textTransform: 'uppercase', marginTop: '-1.5rem', marginBottom: '0.5rem', userSelect: 'none' }}>
         ← scroll to explore →
@@ -153,25 +151,25 @@ export default function OurServices() {
         @media (max-width: 768px) {
           .service-card {
             flex: 0 0 85vw !important;
-            height: auto !important;
-            min-height: 480px !important;
+            height: 380px !important;
+            min-height: unset !important;
             background: var(--card-bg-solid) !important;
             border-radius: 14px !important;
           }
           .service-card img {
-            height: 240px !important;
+            height: 210px !important;
             object-position: center 20% !important;
             border-radius: 14px 14px 0 0 !important;
             flex-shrink: 0 !important;
           }
           .service-card-content {
-            padding: 1.8rem 1.5rem !important;
+            padding: 1.4rem 1.4rem !important;
             justify-content: flex-start !important;
             overflow: hidden !important;
           }
           .cta-card {
             flex: 0 0 85vw !important;
-            height: 480px !important;
+            height: 380px !important;
           }
           .fleet-header {
             padding: 0 1.5rem !important;
