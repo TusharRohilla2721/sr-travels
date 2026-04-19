@@ -51,6 +51,7 @@ export default function Marquee() {
           </div>
         ))}
       </div>
+      </div>
     </>
   )
 }
