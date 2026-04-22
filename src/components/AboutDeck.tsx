@@ -175,14 +175,17 @@ export default function AboutDeck() {
       <style>{`
         @media (min-width: 769px) { .read-more-wrapper { display: none !important; } }
         @media (max-width: 768px) {
-          /* Deck cards on mobile: half phone height */
+          /* Deck cards on mobile */
           .deck-card {
             width: 88vw !important;
-            height: 52vh !important;
-            min-height: 280px !important;
-            max-height: 420px !important;
+            height: 65vh !important;
+            min-height: 480px !important;
+            max-height: 580px !important;
             grid-template-columns: 1fr !important;
-            grid-template-rows: 48% 52% !important;
+            grid-template-rows: 54% 46% !important;
+          }
+          .deck-card-img {
+            object-position: center top !important;
           }
           .deck-card-text {
             padding: 1.1rem 1.2rem !important;
@@ -212,11 +215,11 @@ export default function AboutDeck() {
             border-radius: 14px !important;
             background: rgba(22,18,14,0.96) !important;
             backdrop-filter: blur(16px) !important;
-            justify-content: center !important;
+            justify-content: flex-start !important;
             z-index: 10 !important;
             padding: 1.4rem !important;
           }
-          .deck-card-text.is-expanded .deck-card-content { display: block; margin-bottom: 1rem; }
+          .deck-card-text.is-expanded .deck-card-content { display: block; margin-bottom: 2rem; }
         }
       `}</style>
 

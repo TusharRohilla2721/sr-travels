@@ -63,7 +63,7 @@ export default function AboutCompany() {
           }
           .about-img-wrap {
             height: auto !important;
-            aspect-ratio: 16 / 9;
+            aspect-ratio: 4 / 3 !important;
             min-height: unset !important;
             max-height: unset !important;
           }
