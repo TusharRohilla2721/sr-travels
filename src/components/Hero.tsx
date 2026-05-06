@@ -49,17 +49,38 @@ export default function Hero() {
           animation: scrollLinePulse 2.4s ease-in-out infinite;
         }
         #hero { grid-template-columns: 1fr 1fr; }
+
+        /* ── CHANGE 1: Hero right column fills full viewport height ── */
+        #hero .hero-right-col {
+          position: relative;
+          overflow: hidden;
+          /* Stretch to fill the grid row (min-height: 100vh on parent) */
+          height: 100%;
+          min-height: 100vh;
+        }
+        #hero .hero-img-inner {
+          position: absolute;
+          inset: 0;
+          width: 100%;
+          height: 100%;  /* <-- explicit 100% vertical fill */
+        }
+        #hero .hero-img-inner img {
+          width: 100%;
+          height: 100%;   /* <-- fills container fully */
+          object-fit: cover;
+          filter: brightness(0.88);
+          display: block;
+        }
+
         @media (max-width: 768px) {
           #hero { display: flex !important; flex-direction: column !important; min-height: auto !important; }
           #hero > div:first-child { padding: 7rem 1.5rem 2rem !important; }
-          #hero > div:last-child {
+          #hero .hero-right-col {
+            min-height: unset !important;
+            height: auto !important;
             margin: 0 !important;
             padding: 0 1.25rem 3rem !important;
-            height: auto !important;
-            min-height: unset !important;
-            max-height: unset !important;
             border-radius: 0 !important;
-            position: relative !important;
             overflow: visible !important;
           }
           .hero-img-wrap {
@@ -121,15 +142,15 @@ export default function Hero() {
           </div>
         </div>
 
-        <div style={{ position: 'relative', overflow: 'hidden' }}>
-          <div ref={imgRef} style={{ width: '100%', height: '100%', position: 'absolute', inset: 0, transform: 'scale(1.12)' }}>
+        {/* ── CHANGE 1: right column explicitly fills 100% height ── */}
+        <div className="hero-right-col">
+          <div ref={imgRef} className="hero-img-inner" style={{ transform: 'scale(1.12)' }}>
             <img
               src="https://res.cloudinary.com/dzadpggxn/image/upload/q_auto,f_auto,w_1200/v1774172216/WhatsApp_Image_2026-03-06_at_12.21.52_AM_ixi0oh.jpg"
               alt="SR Travels luxury bus fleet"
               fetchPriority="high"
               loading="eager"
               width={800} height={600}
-              style={{ width: '100%', height: '100%', objectFit: 'cover', filter: 'brightness(0.88)' }}
             />
             <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, transparent 35%, var(--bg) 100%)' }} />
           </div>

@@ -13,8 +13,14 @@ export default function AboutCompany() {
   useEffect(() => {
     const ctx = gsap.context(() => {
       if (!textRef.current) return
-      gsap.from(Array.from(textRef.current.children), { opacity: 0, x: -36, duration: 0.75, stagger: 0.14, ease: 'power3.out', scrollTrigger: { trigger: textRef.current, start: 'top 85%' } })
-      gsap.from(imgRef.current, { opacity: 0, x: 48, scale: 1.04, duration: 1.1, ease: 'power3.out', scrollTrigger: { trigger: imgRef.current, start: 'top 85%' } })
+      gsap.from(Array.from(textRef.current.children), {
+        opacity: 0, x: -36, duration: 0.75, stagger: 0.14, ease: 'power3.out',
+        scrollTrigger: { trigger: textRef.current, start: 'top 85%' },
+      })
+      gsap.from(imgRef.current, {
+        opacity: 0, x: 48, scale: 1.04, duration: 1.1, ease: 'power3.out',
+        scrollTrigger: { trigger: imgRef.current, start: 'top 85%' },
+      })
     }, containerRef)
     return () => ctx.revert()
   }, [])
@@ -28,18 +34,22 @@ export default function AboutCompany() {
           display: grid;
           grid-template-columns: 1fr 36%;
           gap: 6rem;
-          align-items: center;
+          /* CHANGE 4: let the grid row stretch to the taller column so the
+             image column can fill 100% of that height */
+          align-items: stretch;
           transition: background 0.4s;
         }
+
+        /* CHANGE 4: image wrapper fills 100% of its grid cell vertically */
         .about-img-wrap {
           position: relative;
           border-radius: 12px;
           overflow: hidden;
           width: 100%;
-          height: auto;
-          aspect-ratio: 4 / 5;
-          margin: 0 auto;
-          max-height: 580px;
+          /* height: 100% instead of aspect-ratio so it stretches to fill
+             whatever height the text column produces */
+          height: 100%;
+          min-height: 420px;     /* sensible floor so it never collapses */
           box-shadow: 0 8px 40px rgba(0,0,0,0.1);
           transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease;
           cursor: pointer;
@@ -50,45 +60,76 @@ export default function AboutCompany() {
         }
         .about-img-wrap img {
           width: 100%;
-          height: 100%;
+          height: 100%;          /* fills wrapper fully — 100% vertical */
           object-fit: cover;
           object-position: center;
           display: block;
         }
+
         @media (max-width: 900px) {
           #about-company {
             grid-template-columns: 1fr !important;
             padding: 4.5rem 1.5rem !important;
             gap: 2.5rem !important;
+            align-items: start !important;
           }
           .about-img-wrap {
             height: auto !important;
-            aspect-ratio: 4 / 3 !important;
             min-height: unset !important;
-            max-height: unset !important;
+            aspect-ratio: 4 / 3 !important;
           }
         }
       `}</style>
+
       <section ref={containerRef} id="about-company">
+        {/* Text column */}
         <div ref={textRef} style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
           <span className="section-label">Our Story</span>
           <h2 className="section-title">SR Travels —<br /><em>Driven by Trust</em></h2>
           <p style={{ fontSize: '0.9rem', lineHeight: 1.9, color: 'var(--text-muted)', marginBottom: '0.6rem' }}>
-            SR Travels was established in <strong style={{ color: 'var(--text)' }}>2012–13</strong> with a simple but powerful belief: <strong style={{ color: 'var(--text)' }}>trust must come before profit.</strong> What began as a small step has grown into a dependable travel company built on discipline, integrity, and personal responsibility.
+            SR Travels was established in{' '}
+            <strong style={{ color: 'var(--text)' }}>2012–13</strong> with a simple but powerful belief:{' '}
+            <strong style={{ color: 'var(--text)' }}>trust must come before profit.</strong> What began as a small
+            step has grown into a dependable travel company built on discipline, integrity, and personal
+            responsibility.
           </p>
           <p style={{ fontSize: '0.9rem', lineHeight: 1.9, color: 'var(--text-muted)', marginBottom: '0.6rem' }}>
-            Every stage of our growth has been achieved through consistency, late nights, and a strong commitment to delivering on our promises.
+            Every stage of our growth has been achieved through consistency, late nights, and a strong commitment
+            to delivering on our promises.
           </p>
-          <div style={{ marginTop: '1.2rem', padding: '1.2rem 1.4rem', borderLeft: '3px solid var(--accent)', background: 'var(--bg-alt)', borderRadius: '0 4px 4px 0', fontFamily: 'Cormorant Garamond, serif', fontSize: '1rem', fontStyle: 'italic', color: 'var(--text)', lineHeight: 1.7 }}>
-            &quot;At SR Travels, we do not simply provide vehicles. We provide assurance, accountability, and long-term partnership.&quot;
+          <div
+            style={{
+              marginTop: '1.2rem',
+              padding: '1.2rem 1.4rem',
+              borderLeft: '3px solid var(--accent)',
+              background: 'var(--bg-alt)',
+              borderRadius: '0 4px 4px 0',
+              fontFamily: 'Cormorant Garamond, serif',
+              fontSize: '1rem',
+              fontStyle: 'italic',
+              color: 'var(--text)',
+              lineHeight: 1.7,
+            }}
+          >
+            &quot;At SR Travels, we do not simply provide vehicles. We provide assurance, accountability, and
+            long-term partnership.&quot;
           </div>
         </div>
+
+        {/* Image column — CHANGE 4: fills 100% of the row height */}
         <div ref={imgRef} className="about-img-wrap">
           <img
             src="https://res.cloudinary.com/dzadpggxn/image/upload/q_auto,f_auto,w_1000/v1774166640/WhatsApp_Image_2026-03-06_at_12.21.54_AM_zagne4.jpg"
             alt="SR Travels Luxury Bus Service"
           />
-          <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(135deg, var(--accent) 0%, transparent 60%)', opacity: 0.1 }} />
+          <div
+            style={{
+              position: 'absolute',
+              inset: 0,
+              background: 'linear-gradient(135deg, var(--accent) 0%, transparent 60%)',
+              opacity: 0.1,
+            }}
+          />
         </div>
       </section>
     </>
