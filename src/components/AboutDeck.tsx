@@ -1,9 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import gsap from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
-gsap.registerPlugin(ScrollTrigger)
+
 
 type CardProps = {
   id: string
@@ -18,7 +16,9 @@ type CardProps = {
 function Card({ id, imgSrc, imgAlt, tag, title, subtitle, children }: CardProps) {
   const [expanded, setExpanded] = useState(false)
   return (
-    <div id={id} className="deck-card" style={{ position: 'absolute', left: '50%', top: '50%', width: 'min(860px, 86vw)', height: 'min(500px, 60vh)', display: 'grid', gridTemplateColumns: '1fr 1fr', borderRadius: 14, overflow: 'hidden', background: 'rgba(22,18,14,0.62)', backdropFilter: 'blur(24px) saturate(1.4)', border: '1px solid rgba(255,255,255,0.1)', boxShadow: '0 30px 80px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.07)', willChange: 'transform, opacity' }}>
+    <div id={id} className="deck-card" style={{ position: 'relative', width: '100%', height: '100%', display: 'grid', gridTemplateColumns: '1fr 1fr', borderRadius: 14, overflow: 'hidden', background: 'rgba(22,18,14,0.62)', backdropFilter: 'blur(24px) saturate(1.4)', border: '1px solid rgba(255,255,255,0.1)', boxShadow: '0 30px 80px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.07)', transition: 'transform 0.3s', cursor: 'grab' }}
+      onMouseEnter={e => (e.currentTarget.style.transform = 'translateY(-5px)')}
+      onMouseLeave={e => (e.currentTarget.style.transform = 'translateY(0)')}>
       <div style={{ position: 'relative', overflow: 'hidden' }}>
         <img className="deck-card-img" src={imgSrc} alt={imgAlt} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
         <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to right, transparent 45%, rgba(22,18,14,0.75))' }} />
@@ -36,38 +36,34 @@ function Card({ id, imgSrc, imgAlt, tag, title, subtitle, children }: CardProps)
   )
 }
 
-function Deck({ name, cards, outerHeight, bgIcon }: { name: string; cards: CardProps[]; outerHeight: string; bgIcon: React.ReactNode }) {
-  const outerRef = useRef<HTMLDivElement>(null)
-  const stickyRef = useRef<HTMLDivElement>(null)
+function Deck({ name, cards, bgIcon }: { name: string; cards: CardProps[]; bgIcon: React.ReactNode }) {
+  const containerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    if (!outerRef.current) return
-    const cardEls = cards.map((_, i) => document.getElementById(`${name}-c${i}`))
-    const n = cardEls.length
-    cardEls.forEach((c, i) => {
-      if (!c) return
-      gsap.set(c, { xPercent: -50, yPercent: -50, x: i === 0 ? 0 : '110vw', scale: i === 0 ? 1 : 0.94, opacity: i === 0 ? 1 : 0, zIndex: 50 + i })
-    })
-    const tl = gsap.timeline({ defaults: { ease: 'none' } })
-    for (let i = 1; i < n; i++) {
-      const pos = i - 1
-      tl.fromTo(cardEls[i], { x: '110vw', opacity: 0, scale: 0.94 }, { x: 0, opacity: 1, scale: 1, duration: 1 }, pos)
-      tl.to(cardEls[i - 1], { x: -260, scale: 0.88, opacity: 0.35, duration: 1 }, pos)
-      for (let j = 0; j < i - 1; j++) {
-        const depth = i - j
-        tl.to(cardEls[j], { x: -260 - (depth - 1) * 36, scale: Math.max(0.72, 0.88 - (depth - 1) * 0.05), opacity: Math.max(0.08, 0.35 - (depth - 1) * 0.12), duration: 1 }, pos)
-      }
-    }
-    ScrollTrigger.create({ trigger: outerRef.current, start: 'top top', end: 'bottom bottom', pin: stickyRef.current, pinSpacing: false, scrub: 0.8, animation: tl })
-    return () => { ScrollTrigger.getAll().forEach(t => { if (t.vars.trigger === outerRef.current) t.kill() }) }
-  }, [cards, name])
+    const el = containerRef.current
+    if (!el) return
+    let isDown = false, startX = 0, scrollLeft = 0
+    const onDown = (e: MouseEvent) => { isDown = true; el.style.cursor = 'grabbing'; startX = e.pageX - el.offsetLeft; scrollLeft = el.scrollLeft }
+    const onLeave = () => { isDown = false; el.style.cursor = 'grab' }
+    const onUp = () => { isDown = false; el.style.cursor = 'grab' }
+    const onMove = (e: MouseEvent) => { if (!isDown) return; e.preventDefault(); el.scrollLeft = scrollLeft - (e.pageX - el.offsetLeft - startX) * 2 }
+    el.addEventListener('mousedown', onDown); el.addEventListener('mouseleave', onLeave); el.addEventListener('mouseup', onUp); el.addEventListener('mousemove', onMove)
+    return () => { el.removeEventListener('mousedown', onDown); el.removeEventListener('mouseleave', onLeave); el.removeEventListener('mouseup', onUp); el.removeEventListener('mousemove', onMove) }
+  }, [])
 
   return (
-    <div ref={outerRef} style={{ height: outerHeight, position: 'relative' }}>
-      <div ref={stickyRef} style={{ position: 'sticky', top: 0, height: '100vh', overflow: 'hidden', background: '#181410' }}>
-        <div style={{ position: 'absolute', top: '50%', left: '50%', width: 420, height: 420, opacity: 0.055, pointerEvents: 'none', zIndex: 0, filter: 'blur(3px)', transform: 'translate(-50%,-50%)', animation: 'bgRotate 20s linear infinite' }}>{bgIcon}</div>
-        <div style={{ position: 'absolute', inset: 0, zIndex: 1, pointerEvents: 'none', background: 'radial-gradient(ellipse 75% 75% at 50% 50%, transparent 45%, rgba(0,0,0,0.55))' }} />
-        {cards.map((card, i) => <Card key={i} {...card} id={`${name}-c${i}`} />)}
+    <div style={{ position: 'relative', background: '#181410', paddingBottom: '3rem', overflow: 'hidden' }}>
+      <div style={{ position: 'absolute', top: '50%', left: '50%', width: 420, height: 420, opacity: 0.055, pointerEvents: 'none', zIndex: 0, filter: 'blur(3px)', transform: 'translate(-50%,-50%)', animation: 'bgRotate 20s linear infinite' }}>{bgIcon}</div>
+      <div style={{ position: 'absolute', inset: 0, zIndex: 1, pointerEvents: 'none', background: 'radial-gradient(ellipse 75% 75% at 50% 50%, transparent 45%, rgba(0,0,0,0.55))' }} />
+      <div className="deck-scroll" ref={containerRef} style={{ display: 'flex', gap: '1.5rem', overflowX: 'auto', scrollSnapType: 'x mandatory', WebkitOverflowScrolling: 'touch', cursor: 'grab', scrollBehavior: 'smooth', padding: '1rem 1.5rem 3rem 1.5rem', position: 'relative', zIndex: 2 }}>
+        {cards.map((card, i) => (
+          <div key={i} className="deck-card-wrapper">
+            <Card {...card} id={`${name}-c${i}`} />
+          </div>
+        ))}
+      </div>
+      <div style={{ textAlign: 'center', fontSize: '0.62rem', letterSpacing: '0.2em', color: 'rgba(255,255,255,0.2)', textTransform: 'uppercase', marginTop: '-1rem', userSelect: 'none', position: 'relative', zIndex: 2 }}>
+        ← scroll to explore →
       </div>
     </div>
   )
@@ -173,14 +169,22 @@ export default function AboutDeck() {
   return (
     <>
       <style>{`
+        .deck-scroll::-webkit-scrollbar { display: none; }
+        .deck-scroll { -ms-overflow-style: none; scrollbar-width: none; }
+        .deck-card-wrapper {
+          flex: 0 0 clamp(640px, 56vw, 820px);
+          height: clamp(400px, 50vh, 500px);
+          scroll-snap-align: center;
+        }
         @media (min-width: 769px) { .read-more-wrapper { display: none !important; } }
         @media (max-width: 768px) {
+          .deck-card-wrapper { flex: 0 0 85vw; height: 500px !important; }
           /* Deck cards on mobile */
           .deck-card {
-            width: 88vw !important;
-            height: 65vh !important;
-            min-height: 480px !important;
-            max-height: 580px !important;
+            width: 100% !important;
+            height: 100% !important;
+            min-height: auto !important;
+            max-height: none !important;
             grid-template-columns: 1fr !important;
             grid-template-rows: 54% 46% !important;
           }
@@ -232,7 +236,7 @@ export default function AboutDeck() {
           ))}
         </div>
       </div>
-      <Deck name="sunder" cards={SUNDER_CARDS.map((c, i) => ({ ...c, id: `sunder-c${i}` }))} outerHeight="200vh" bgIcon={SteeringWheel} />
+      <Deck name="sunder" cards={SUNDER_CARDS.map((c, i) => ({ ...c, id: `sunder-c${i}` }))} bgIcon={SteeringWheel} />
 
       <div style={{ background: 'var(--bg)', padding: '4rem 1.5rem 2rem', transition: 'background 0.4s' }}>
         <span className="section-label">🚌 Meet the CEO</span>
@@ -243,7 +247,7 @@ export default function AboutDeck() {
           ))}
         </div>
       </div>
-      <Deck name="tushar" cards={TUSHAR_CARDS.map((c, i) => ({ ...c, id: `tushar-c${i}` }))} outerHeight="400vh" bgIcon={Camera} />
+      <Deck name="tushar" cards={TUSHAR_CARDS.map((c, i) => ({ ...c, id: `tushar-c${i}` }))} bgIcon={Camera} />
     </>
   )
 }

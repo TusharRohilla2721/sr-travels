@@ -76,43 +76,40 @@ export default function Hero() {
           #hero { display: flex !important; flex-direction: column !important; min-height: auto !important; }
           #hero > div:first-child { padding: 7rem 1.5rem 2rem !important; }
           #hero .hero-right-col {
-            min-height: unset !important;
-            height: auto !important;
-            margin: 0 !important;
-            padding: 0 1.25rem 3rem !important;
-            border-radius: 0 !important;
-            overflow: visible !important;
-          }
-          .hero-img-wrap {
-            width: 100% !important;
-            height: auto !important;
-            aspect-ratio: 4 / 3 !important;
-            min-height: unset !important;
-            max-height: unset !important;
-            border-radius: 16px !important;
-            overflow: hidden !important;
             position: relative !important;
+            width: 100% !important;
+            height: clamp(260px, 60vw, 420px) !important;
+            min-height: unset !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            border-radius: 0 !important;
+            overflow: hidden !important;
+          }
+          #hero .hero-img-inner {
+            position: absolute !important;
+            inset: 0 !important;
+            width: 100% !important;
+            height: 100% !important;
             transform: none !important;
           }
-          .hero-img-wrap img {
-             object-fit: cover !important;
-             object-position: center !important;
+          #hero .hero-img-inner img {
+            width: 100% !important;
+            height: 100% !important;
+            object-fit: cover !important;
+            object-position: center center !important;
           }
           .hero-badge {
-            bottom: auto !important;
-            left: auto !important;
-            transform: none !important;
-            position: static !important;
-            padding: 0 !important;
+            bottom: 1rem !important;
+            left: 50% !important;
+            transform: translateX(-50%) !important;
+            position: absolute !important;
+            padding: 0.6rem 1.2rem !important;
             min-width: unset !important;
-            text-align: left !important;
-            margin-top: 1rem !important;
-            background: transparent !important;
-            backdrop-filter: none !important;
-            border: none !important;
+            text-align: center !important;
+            margin-top: 0 !important;
           }
-          .hero-badge-num { font-size: 2rem !important; margin-bottom: 0 !important; line-height: 1.1 !important; color: var(--accent) !important; }
-          .hero-badge-label { font-size: 0.75rem !important; }
+          .hero-badge-num { font-size: 1.6rem !important; margin-bottom: 0 !important; line-height: 1.1 !important; color: var(--accent) !important; }
+          .hero-badge-label { font-size: 0.65rem !important; }
         }
       `}</style>
       <section id="hero" ref={containerRef} style={{ minHeight: '100vh', display: 'grid', gridTemplateColumns: '1fr 1fr', position: 'relative', overflow: 'hidden', background: 'var(--bg)' }}>

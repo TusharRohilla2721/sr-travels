@@ -32,37 +32,36 @@ export default function AboutCompany() {
           padding: 7rem 4rem;
           background: var(--bg);
           display: grid;
-          grid-template-columns: 1fr 36%;
-          gap: 6rem;
-          /* CHANGE 4: let the grid row stretch to the taller column so the
-             image column can fill 100% of that height */
-          align-items: stretch;
+          /* wider image column so the landscape photo has room to breathe */
+          grid-template-columns: 1fr 42%;
+          gap: 5rem;
+          align-items: center;
           transition: background 0.4s;
         }
 
-        /* CHANGE 4: image wrapper fills 100% of its grid cell vertically */
         .about-img-wrap {
           position: relative;
           border-radius: 12px;
           overflow: hidden;
           width: 100%;
-          /* height: 100% instead of aspect-ratio so it stretches to fill
-             whatever height the text column produces */
-          height: 100%;
-          min-height: 420px;     /* sensible floor so it never collapses */
-          box-shadow: 0 8px 40px rgba(0,0,0,0.1);
+          /* dark background shows behind the image in contain mode */
+          background: #080604;
+          box-shadow: 0 8px 40px rgba(0,0,0,0.18);
           transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease;
           cursor: pointer;
+          /* Let the image's natural aspect ratio drive the height */
+          display: flex;
+          align-items: center;
+          justify-content: center;
         }
         .about-img-wrap:hover {
           transform: translateY(-8px);
-          box-shadow: 0 20px 45px rgba(0,0,0,0.25);
+          box-shadow: 0 20px 45px rgba(0,0,0,0.3);
         }
         .about-img-wrap img {
           width: 100%;
-          height: 100%;          /* fills wrapper fully — 100% vertical */
-          object-fit: cover;
-          object-position: center;
+          height: auto;            /* natural height — no vertical crop */
+          object-fit: contain;     /* full image always visible */
           display: block;
         }
 
@@ -74,9 +73,7 @@ export default function AboutCompany() {
             align-items: start !important;
           }
           .about-img-wrap {
-            height: auto !important;
-            min-height: unset !important;
-            aspect-ratio: 4 / 3 !important;
+            width: 100% !important;
           }
         }
       `}</style>
