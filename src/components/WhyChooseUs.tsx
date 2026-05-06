@@ -56,103 +56,26 @@ const CARDS = [
 function WCard({ card }: { card: typeof CARDS[0] }) {
   const [expanded, setExpanded] = useState(false)
   return (
-    <div
-      id={card.id}
-      className="w-card"
-      style={{
-        position: 'relative',
-        width: '100%',
-        height: '100%',
-        display: 'grid',
-        // ── CHANGE 2: 70% image / 30% text ratio ──────────────────
-        gridTemplateColumns: '70% 30%',
-        borderRadius: 14,
-        overflow: 'hidden',
-        background: 'var(--card-bg)',
-        border: '1px solid var(--border)',
-        boxShadow: '0 8px 40px rgba(0,0,0,0.1)',
-        transition: 'background 0.4s, border-color 0.4s, transform 0.3s',
-        cursor: 'grab',
-      }}
+    <div id={card.id} className="w-card" style={{ position: 'relative', width: '100%', height: '100%', display: 'grid', gridTemplateColumns: '260px 1fr', borderRadius: 14, overflow: 'hidden', background: 'var(--card-bg)', border: '1px solid var(--border)', boxShadow: '0 8px 40px rgba(0,0,0,0.1)', transition: 'background 0.4s, border-color 0.4s, transform 0.3s', cursor: 'grab' }}
       onMouseEnter={e => (e.currentTarget.style.transform = 'translateY(-5px)')}
-      onMouseLeave={e => (e.currentTarget.style.transform = 'translateY(0)')}
-    >
-      {/* Image — 70% */}
+      onMouseLeave={e => (e.currentTarget.style.transform = 'translateY(0)')}>
       <div style={{ position: 'relative', overflow: 'hidden', zIndex: 1 }}>
-        <img
-          src={card.img}
-          alt={card.title}
-          loading="lazy"
-          style={{
-            width: '100%',
-            height: '100%',
-            objectFit: 'cover',
-            display: 'block',
-            filter: 'grayscale(1) contrast(1.1) brightness(0.9)',
-          }}
-        />
+        <img src={card.img} alt={card.title} loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', filter: 'grayscale(1) contrast(1.1) brightness(0.9)' }} />
       </div>
-
-      {/* Text — 30% */}
-      <div
-        className={`w-card-text${expanded ? ' is-expanded' : ''}`}
-        style={{
-          padding: '1.6rem 1.4rem',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          position: 'relative',
-          overflowY: 'hidden',
-          zIndex: 2,
-          transition: 'all 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
-        }}
-      >
-        <div
-          className="w-card-num"
-          style={{
-            fontFamily: 'Cormorant Garamond, serif',
-            fontSize: '2.2rem',
-            fontWeight: 300,
-            color: 'var(--border)',
-            lineHeight: 1,
-            marginBottom: '0.4rem',
-          }}
-        >
-          {card.num}
-        </div>
-        <h3
-          style={{
-            fontFamily: 'Cormorant Garamond, serif',
-            fontSize: 'clamp(1rem, 1.4vw, 1.3rem)',
-            fontWeight: 400,
-            color: 'var(--text)',
-            marginBottom: '0.5rem',
-          }}
-        >
-          {card.emoji} {card.title}
-        </h3>
-        <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)', lineHeight: 1.65 }}>{card.desc}</p>
-        <ul className="w-card-list" style={{ listStyle: 'none', marginTop: '0.6rem' }}>
+      <div className={`w-card-text${expanded ? ' is-expanded' : ''}`} style={{ padding: '2.2rem 2.4rem', display: 'flex', flexDirection: 'column', justifyContent: 'center', position: 'relative', overflowY: 'hidden', zIndex: 2, transition: 'all 0.4s cubic-bezier(0.16, 1, 0.3, 1)' }}>
+        <div className="w-card-num" style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: '2.8rem', fontWeight: 300, color: 'var(--border)', lineHeight: 1, marginBottom: '0.4rem' }}>{card.num}</div>
+        <h3 style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: 'clamp(1.2rem, 1.8vw, 1.5rem)', fontWeight: 400, color: 'var(--text)', marginBottom: '0.7rem' }}>{card.emoji} {card.title}</h3>
+        <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', lineHeight: 1.75 }}>{card.desc}</p>
+        <ul className="w-card-list" style={{ listStyle: 'none', marginTop: '0.8rem' }}>
           {card.points.map((p, i) => (
-            <li
-              key={i}
-              style={{
-                fontSize: '0.74rem',
-                color: 'var(--text-muted)',
-                lineHeight: 1.6,
-                padding: '0.15rem 0 0.15rem 1rem',
-                position: 'relative',
-              }}
-            >
-              <span style={{ position: 'absolute', left: 0, color: 'var(--accent)', fontSize: '0.5rem', top: '0.5rem' }}>✦</span>
+            <li key={i} style={{ fontSize: '0.82rem', color: 'var(--text-muted)', lineHeight: 1.72, padding: '0.2rem 0 0.2rem 1rem', position: 'relative' }}>
+              <span style={{ position: 'absolute', left: 0, color: 'var(--accent)', fontSize: '0.5rem', top: '0.55rem' }}>✦</span>
               <strong>{p.b}</strong> {p.t}
             </li>
           ))}
         </ul>
         <div className="read-more-wrapper">
-          <button className="read-more-btn" onClick={() => setExpanded(!expanded)}>
-            {expanded ? 'Show Less ↑' : 'Read More ↓'}
-          </button>
+          <button className="read-more-btn" onClick={() => setExpanded(!expanded)}>{expanded ? 'Show Less ↑' : 'Read More ↓'}</button>
         </div>
       </div>
     </div>
@@ -179,79 +102,25 @@ export default function WhyChooseUs() {
       <style>{`
         .whyus-scroll::-webkit-scrollbar { display: none; }
         .whyus-scroll { -ms-overflow-style: none; scrollbar-width: none; }
-
-        /* Desktop: wider card wrapper to accommodate the 70/30 layout nicely */
+        /* Desktop */
         .whyus-card-wrapper {
-          flex: 0 0 clamp(680px, 60vw, 860px);
+          flex: 0 0 clamp(640px, 56vw, 820px);
           height: clamp(360px, 40vh, 460px);
           scroll-snap-align: center;
         }
-
-        /* Desktop: hide mobile expand button */
         @media (min-width: 769px) {
           .read-more-wrapper { display: none !important; }
-          /* image column fills full card height */
-          .w-card > div:first-child img {
-            height: 100% !important;
-            object-fit: cover !important;
-          }
+          .w-card { grid-template-columns: 280px 1fr !important; }
         }
-
-        /* Mobile overrides */
         @media (max-width: 768px) {
           .whyus-card-wrapper { flex: 0 0 85vw; height: 440px !important; }
-          .w-card {
-            display: flex !important;
-            flex-direction: column !important;
-            background: #0f0d0b !important;
-            /* reset grid on mobile */
-            grid-template-columns: unset !important;
-          }
-          .w-card > div:first-child {
-            height: 55% !important;
-            width: 100% !important;
-            border-radius: 14px 14px 0 0 !important;
-            flex-shrink: 0 !important;
-          }
-          .w-card-text {
-            height: 45% !important;
-            padding: 0.8rem 1.2rem 0.8rem 1.2rem !important;
-            justify-content: flex-start !important;
-            overflow-y: auto;
-          }
-          .w-card-num {
-            position: absolute !important;
-            top: 0.6rem !important;
-            right: 0.8rem !important;
-            font-size: 1.8rem !important;
-            margin: 0 !important;
-            opacity: 0.15 !important;
-          }
+          .w-card { display: flex !important; flex-direction: column !important; background: #0f0d0b !important; }
+          .w-card > div:first-child { height: 55% !important; width: 100% !important; border-radius: 14px 14px 0 0 !important; flex-shrink: 0 !important; }
+          .w-card-text { height: 45% !important; padding: 0.8rem 1.2rem 0.8rem 1.2rem !important; justify-content: flex-start !important; overflow-y: auto; }
+          .w-card-num { position: absolute !important; top: 0.6rem !important; right: 0.8rem !important; font-size: 1.8rem !important; margin: 0 !important; opacity: 0.15 !important; }
           .w-card-list { display: none; }
-          .read-more-btn {
-            margin-top: 0.5rem !important;
-            padding: 0.3rem 0.8rem !important;
-            background: rgba(196,98,45,0.1) !important;
-            border: 1px solid var(--accent) !important;
-            color: var(--accent) !important;
-            border-radius: 20px !important;
-            font-size: 0.68rem !important;
-            text-transform: uppercase !important;
-            cursor: pointer;
-          }
-          .w-card-text.is-expanded {
-            position: absolute !important;
-            top: 0 !important;
-            left: 0 !important;
-            width: 100% !important;
-            height: 100% !important;
-            border-radius: 14px !important;
-            background: rgba(15,13,11,0.96) !important;
-            backdrop-filter: blur(12px) !important;
-            justify-content: center !important;
-            z-index: 10;
-            padding: 1.2rem !important;
-          }
+          .read-more-btn { margin-top: 0.5rem !important; padding: 0.3rem 0.8rem !important; background: rgba(196,98,45,0.1) !important; border: 1px solid var(--accent) !important; color: var(--accent) !important; border-radius: 20px !important; font-size: 0.68rem !important; text-transform: uppercase !important; cursor: pointer; }
+          .w-card-text.is-expanded { position: absolute !important; top: 0 !important; left: 0 !important; width: 100% !important; height: 100% !important; border-radius: 14px !important; background: rgba(15,13,11,0.96) !important; backdrop-filter: blur(12px) !important; justify-content: center !important; z-index: 10; padding: 1.2rem !important; }
           .w-card-text.is-expanded .w-card-list { display: block; margin-bottom: 1rem; }
         }
       `}</style>
@@ -260,24 +129,9 @@ export default function WhyChooseUs() {
           <span className="section-label">Our Promise</span>
           <h2 className="section-title">Why Choose <em>SR Travels?</em></h2>
         </div>
-        <div
-          className="whyus-scroll"
-          ref={containerRef}
-          style={{
-            display: 'flex',
-            gap: '1.5rem',
-            overflowX: 'auto',
-            scrollSnapType: 'x mandatory',
-            WebkitOverflowScrolling: 'touch',
-            cursor: 'grab',
-            scrollBehavior: 'smooth',
-            padding: '1rem 1.5rem 3rem 1.5rem',
-          }}
-        >
+        <div className="whyus-scroll" ref={containerRef} style={{ display: 'flex', gap: '1.5rem', overflowX: 'auto', scrollSnapType: 'x mandatory', WebkitOverflowScrolling: 'touch', cursor: 'grab', scrollBehavior: 'smooth', padding: '1rem 1.5rem 3rem 1.5rem' }}>
           {CARDS.map(card => (
-            <div key={card.id} className="whyus-card-wrapper">
-              <WCard card={card} />
-            </div>
+            <div key={card.id} className="whyus-card-wrapper"><WCard card={card} /></div>
           ))}
         </div>
         <div style={{ textAlign: 'center', fontSize: '0.62rem', letterSpacing: '0.2em', color: 'rgba(255,255,255,0.2)', textTransform: 'uppercase', marginTop: '-1rem', userSelect: 'none' }}>
